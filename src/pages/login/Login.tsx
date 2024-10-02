@@ -4,8 +4,38 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Helmet } from "react-helmet-async"
+import { useForm } from "react-hook-form"
+import { z } from "zod";
+import { toast } from "sonner"
+import supabase from "@/lib/supabase"
+
+const signInForm = z.object({
+  email: z.string().email(),
+  password: z.string()
+});
+
+type SignInForm = z.infer<typeof signInForm>;
 
 export function Login() {
+  const { register, handleSubmit } = useForm<SignInForm>();
+
+  async function handleLogin(dataResp: SignInForm) {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: dataResp.email,
+        password: dataResp.password,
+      }) 
+
+      if (error) throw error
+      console.log(data)
+      toast.success("Sucesso, você irá ser redirecionado para a página principal!")
+      
+    } catch (error) {
+      console.error(error)
+      toast.error("Usuario ou Senha invalido!")
+    }
+  }
+
   return (
     <Card className="mx-auto max-w-sm">
       <Helmet title="Login" />
@@ -15,19 +45,19 @@ export function Login() {
       </CardHeader>
       <Separator className="w-4/5 m-auto mb-2" />
       <CardContent>
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="email@exemplo.com" required />
+            <Input id="email" type="email" placeholder="email@exemplo.com" required {...register("email")} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
+            <Input id="password" type="password" required {...register("password")} />
           </div>
           <Button type="submit" className="w-full">
             Login
           </Button>
-        </div>
+        </form>
       </CardContent>
     </Card>
   )
