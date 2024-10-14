@@ -1,39 +1,29 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Helmet } from "react-helmet-async"
-import { useForm } from "react-hook-form"
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Helmet } from "react-helmet-async";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "sonner"
-import supabase from "@/lib/supabase"
+import { useAuth } from "@/contexts/authContext";
+import { useNavigate } from "react-router-dom";
 
 const signInForm = z.object({
   email: z.string().email(),
-  password: z.string()
+  password: z.string(),
 });
 
 type SignInForm = z.infer<typeof signInForm>;
 
 export function Login() {
   const { register, handleSubmit } = useForm<SignInForm>();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   async function handleLogin(dataResp: SignInForm) {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: dataResp.email,
-        password: dataResp.password,
-      }) 
-
-      if (error) throw error
-      console.log(data)
-      toast.success("Sucesso, você irá ser redirecionado para a página principal!")
-      
-    } catch (error) {
-      console.error(error)
-      toast.error("Usuario ou Senha invalido!")
-    }
+    await login(dataResp);
+    navigate("/");
   }
 
   return (
@@ -60,5 +50,5 @@ export function Login() {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }
