@@ -25,15 +25,15 @@ export function Login() {
   async function handleLogin(dataResp: SignInForm) {
     await login(dataResp);
 
-    const { data: tipo_usuario, error: roleError } = await supabase
-      .from('tipo_usuario')
+    const { data: funcionario, error: roleError } = await supabase
+      .from('funcionario')
       .select('role')
-      .eq('id', user.id) 
+      .eq('funcionario_id', user.id) 
       .single();
 
     if (roleError) throw roleError;
 
-    const userRole = tipo_usuario?.role;
+    const userRole = funcionario?.role;
 
     switch (userRole) {
       case "admin":
