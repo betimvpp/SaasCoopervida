@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAuth } from "@/contexts/authContext";
 import { useNavigate } from "react-router-dom";
+import supabase from "@/lib/supabase";
 
 const signInForm = z.object({
   email: z.string().email(),
@@ -18,14 +19,35 @@ type SignInForm = z.infer<typeof signInForm>;
 
 export function Login() {
   const { register, handleSubmit } = useForm<SignInForm>();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogin(dataResp: SignInForm) {
     await login(dataResp);
-    navigate("/");
-  }
 
+    const { data: tipo_usuario, error: roleError } = await supabase
+      .from('tipo_usuario')
+      .select('role')
+      .eq('id', user.id) 
+      .single();
+
+    if (roleError) throw roleError;
+
+    const userRole = tipo_usuario?.role;
+
+    switch (userRole) {
+      case "admin":
+        navigate("/admin");
+        break;
+      case "rh":
+        navigate("/rh");
+        break;
+      case "colaborador":
+        navigate("/colaborador");
+        break;
+    }
+
+  }
   return (
     <Card className="mx-auto max-w-sm">
       <Helmet title="Login" />

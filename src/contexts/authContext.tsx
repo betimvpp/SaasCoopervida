@@ -14,7 +14,7 @@ interface AuthContextType {
     login: (data: SignInForm) => Promise<void>;
     logout: () => void;
     isAuthenticated: boolean;
-    user: any | null; 
+    user: any | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,8 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             setIsAuthenticated(true);
             setUser(data.user);
-            console.log(data, data.user)
-            toast.success("Sucesso, você será redirecionado para a página principal!");
+            // console.log(data, data.user)
+            // toast.success("Sucesso, você será redirecionado para a página principal!");
         } catch (error: any) {
             console.error("Erro durante o login:", error.message);
             toast.error("Usuário ou senha inválido!");
@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         supabase.auth.signOut();
         setIsAuthenticated(false);
         setUser(null);
-        clearTokens();  
+        clearTokens();
         toast.info("Logout realizado com sucesso!");
     }
 
