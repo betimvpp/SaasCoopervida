@@ -11,7 +11,7 @@ const signInForm = z.object({
 type SignInForm = z.infer<typeof signInForm>;
 
 interface AuthContextType {
-    login: (data: SignInForm) => Promise<void>;
+    login: (data: SignInForm) => Promise<boolean>;
     logout: () => void;
     isAuthenticated: boolean;
     user: any | null;
@@ -23,16 +23,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState<any>(null);
 
-    const saveTokens = (accessToken: string, refreshToken: string) => {
-        localStorage.setItem("access_token", accessToken);
-        localStorage.setItem("refresh_token", refreshToken);
-    };
-
-    const clearTokens = () => {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-    };
-
     async function login(dataResp: SignInForm) {
         try {
             const { email, password } = dataResp;
@@ -40,23 +30,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             if (error) throw error;
 
-            saveTokens(data.session.access_token, data.session.refresh_token);
-
             setIsAuthenticated(true);
             setUser(data.user);
-            // console.log(data, data.user)
-            // toast.success("Sucesso, você será redirecionado para a página principal!");
+            toast.success("Sucesso, você será redirecionado para a página principal!");
+            console.log(user)
+            return true
         } catch (error: any) {
             console.error("Erro durante o login:", error.message);
             toast.error("Usuário ou senha inválido!");
+            return false;
         }
-    }
+    }    
+
 
     function logout() {
         supabase.auth.signOut();
         setIsAuthenticated(false);
         setUser(null);
-        clearTokens();
         toast.info("Logout realizado com sucesso!");
     }
 
@@ -71,7 +61,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            saveTokens(data.session!.access_token, data.session!.refresh_token);
             setIsAuthenticated(true);
             setUser(data.user);
         }

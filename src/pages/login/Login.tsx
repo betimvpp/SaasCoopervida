@@ -23,31 +23,38 @@ export function Login() {
   const navigate = useNavigate();
 
   async function handleLogin(dataResp: SignInForm) {
-    await login(dataResp);
+    // const { data: funcionario, error: roleError } = await supabase
+    //   .from('funcionario')
+    //   .select('role')
+    //   .eq('funcionario_id', user.id)
+    //   .single();
 
-    const { data: funcionario, error: roleError } = await supabase
-      .from('funcionario')
-      .select('role')
-      .eq('funcionario_id', user.id) 
-      .single();
+    // if (roleError) throw roleError;
 
-    if (roleError) throw roleError;
+    // const userRole = funcionario?.role;
 
-    const userRole = funcionario?.role;
+    // switch (userRole) {
+    //   case "admin":
+    //     navigate("/admin");
+    //     break;
+    //   case "rh":
+    //     navigate("/rh");
+    //     break;
+    //   case "colaborador":
+    //     navigate("/colaborador");
+    //     break;
+    // }
 
-    switch (userRole) {
-      case "admin":
-        navigate("/admin");
-        break;
-      case "rh":
-        navigate("/rh");
-        break;
-      case "colaborador":
-        navigate("/colaborador");
-        break;
+    const loginSuccess = await login(dataResp);  // Aguarda a resposta do login
+
+    if (loginSuccess) {
+      // O login foi bem-sucedido, redirecione o usuário
+      navigate("/");
     }
 
   }
+
+
   return (
     <Card className="mx-auto max-w-sm">
       <Helmet title="Login" />

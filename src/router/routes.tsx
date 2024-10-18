@@ -1,4 +1,7 @@
 import { Admin } from '@/pages/app/admin/Admin'
+import { Collaborator } from '@/pages/app/collaborator/Collaborator'
+import { HumanResources } from '@/pages/app/humanResources/HumanResources'
+import { Patient } from '@/pages/app/patient/Patient'
 import { AppLayout } from '@/pages/layouts/app'
 import { AuthLayout } from '@/pages/layouts/auth'
 import { Login } from '@/pages/login/Login'
@@ -11,9 +14,9 @@ export const router = createBrowserRouter([
     // errorElement: <NotFound/>,
     children: [
       { path: '/admin', element: <Admin /> },
-      // { path: '/orders', element: <Order /> },
-      // { path: '/products', element: <Products /> },
-      // { path: '/employees', element: <Employees /> },
+      { path: '/colaboradores', element: <Collaborator /> },
+      { path: '/recursoshumanos', element: <HumanResources /> },
+      { path: '/pacientes', element: <Patient /> },
     ],
   },
   {
