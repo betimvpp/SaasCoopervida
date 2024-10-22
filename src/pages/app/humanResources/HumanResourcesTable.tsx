@@ -25,7 +25,7 @@ export const HumanResourcesTable = () => {
             </TableHeader>
             <TableBody>
                 { employees && employees.map((employee) => (
-                    <HumanResourcesRow employee={employee}/>
+                    <HumanResourcesRow key={employee.funcionario_id} employee={employee}/>
                 ))}
             </TableBody>
             {loading === true && <HumanResourcesTableSkeleton />}

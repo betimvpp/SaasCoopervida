@@ -23,15 +23,15 @@ export const CollaboratorRow = ({ collaborator }: { collaborator: Collaborator }
             </TableCell>
 
             <TableCell className="text-center">
-                {collaborator.email}
+                {collaborator?.email}
             </TableCell>
 
             <TableCell className="text-center">
-                {collaborator.nome}
+                {collaborator?.nome}
             </TableCell>
 
             <TableCell className="text-center">
-                {collaborator.cpf}
+                {collaborator?.cpf}
             </TableCell >
 
             <TableCell className="text-center">
@@ -39,27 +39,27 @@ export const CollaboratorRow = ({ collaborator }: { collaborator: Collaborator }
             </TableCell>
 
             <TableCell className="text-center">
-              {collaborator.rua}
+              {collaborator?.rua}
             </TableCell>
 
             <TableCell className="text-center">
-                {collaborator.cidade}
+                {collaborator?.cidade}
             </TableCell>
 
             <TableCell className="text-center">
-                {collaborator.banco}
+                {collaborator?.banco}
             </TableCell>
 
             <TableCell className="text-center">
-                {collaborator.agencia}
+                {collaborator?.agencia}
             </TableCell>
 
             <TableCell className="text-center">
-                {collaborator.conta}
+                {collaborator?.conta}
             </TableCell>
 
             <TableCell className="text-center">
-                {collaborator.role}
+                {collaborator?.role}
             </TableCell>
         </TableRow >
     )

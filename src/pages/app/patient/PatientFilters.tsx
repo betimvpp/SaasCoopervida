@@ -1,70 +1,32 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Search, X } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { useSearchParams } from 'react-router-dom'
-import { z } from 'zod'
-
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-
-const patientFiltersSchema = z.object({
-  patientId: z.string().optional(),
-  patientName: z.string().optional(),
-  role: z.string().optional(),
-})
-
-type PatientFiltersSchema = z.infer<typeof patientFiltersSchema>
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Search, X } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { patientFiltersSchema, PatientFiltersSchema, usePatients } from '@/contexts/patientContext';
 
 export function PatientFilters() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const { fetchPatients } = usePatients();
 
-  const patientId = searchParams.get('patientId')
-  const patientName = searchParams.get('patientName')
+  const { register, handleSubmit, reset } = useForm<PatientFiltersSchema>({
+    resolver: zodResolver(patientFiltersSchema),
+    defaultValues: {
+      patientId: '',
+      patientName: '',
+    },
+  });
 
-
-  const { register, handleSubmit, reset } =
-    useForm<PatientFiltersSchema>({
-      resolver: zodResolver(patientFiltersSchema),
-      defaultValues: {
-        patientId: patientId ?? '',
-        patientName: patientName ?? '',
-
-      },
-    })
-
-  function handleFilter({ patientId, patientName }: PatientFiltersSchema) {
-    setSearchParams((state) => {
-      if (patientId) {
-        state.set('patientId', patientId)
-      } else {
-        state.delete('patientId')
-      }
-
-      if (patientName) {
-        state.set('patientName', patientName)
-      } else {
-        state.delete('patientName')
-      }
-
-      state.set('page', '1')
-
-      return state
-    })
+  async function handleFilter(data: PatientFiltersSchema) {
+    await fetchPatients(data);
   }
 
   function handleClearFilters() {
-    setSearchParams((state) => {
-      state.delete('patientId')
-      state.delete('patientName')
-      state.set('page', '1')
-
-      return state
-    })
-
     reset({
       patientId: '',
       patientName: '',
-    })
+    });
+
+    fetchPatients({ patientId: '', patientName: '' });
   }
 
   return (
@@ -101,8 +63,8 @@ export function PatientFilters() {
       </form>
 
       <Button variant={'secondary'}>
-        Adcionar Paciente
+        Adicionar Paciente
       </Button>
     </div>
-  )
+  );
 }

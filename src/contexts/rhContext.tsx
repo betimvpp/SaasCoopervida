@@ -20,10 +20,17 @@ export const employeeSchema = z.object({
 
 export type Employee = z.infer<typeof employeeSchema>;
 
+export const humanResourcesFiltersSchema = z.object({
+    humanResourcesId: z.string().optional(),
+    humanResourcesName: z.string().optional(),
+  })
+  
+export type HumanResourcesFiltersSchema = z.infer<typeof humanResourcesFiltersSchema>
+
 const HumanResourcesContext = createContext<{
     employees: Employee[];
     loading: boolean;
-    fetchHumanResources: () => Promise<void>;
+    fetchHumanResources: (filters?: HumanResourcesFiltersSchema) => Promise<void>
 }>({
     employees: [],
     loading: true,
@@ -36,13 +43,20 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [loading, setLoading] = useState(true);
 
-    async function fetchHumanResources() {
+    async function fetchHumanResources(filters: HumanResourcesFiltersSchema = { humanResourcesId: '', humanResourcesName: '' }) {
         setLoading(true);
 
-        const { data: funcionario, error } = await supabase
-            .from('funcionario')
-            .select('*')
-            .eq('role', 'rh');
+        let query = supabase.from('funcionario').select('*').eq('role', 'rh');
+
+        if (filters.humanResourcesId) {
+            query = query.eq('funcionario_id', filters.humanResourcesId);
+        }
+
+        if (filters.humanResourcesName) {
+            query = query.ilike('nome', `%${filters.humanResourcesName}%`);
+        }
+
+        const { data: funcionario, error } = await query;
 
         if (error) {
             console.error('Erro ao buscar dados de RH:', error);
@@ -51,7 +65,6 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         }
 
         if (funcionario) {
-
             const parsedData = funcionario.map((item) => employeeSchema.safeParse(item));
 
             const validEmployees = parsedData
@@ -61,8 +74,7 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
             setEmployees(validEmployees);
         }
 
-        setLoading(false)
-
+        setLoading(false);
     }
 
     useEffect(() => {

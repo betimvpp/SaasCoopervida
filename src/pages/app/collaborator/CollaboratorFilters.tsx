@@ -1,9 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Search, X } from 'lucide-react'
 import { Controller, useForm } from 'react-hook-form'
-import { useSearchParams } from 'react-router-dom'
-import { z } from 'zod'
-
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -13,74 +10,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { collaboratorFiltersSchema, CollaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
 
-const collaboratorFiltersSchema = z.object({
-  collaboratorId: z.string().optional(),
-  collaboratorName: z.string().optional(),
-  role: z.string().optional(),
-})
 
-type CollaboratorFiltersSchema = z.infer<typeof collaboratorFiltersSchema>
 
 export function CollaboratorFilters() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const { fetchCollaborator } = useCollaborator(); 
 
-  const collaboratorId = searchParams.get('collaboratorId')
-  const collaboratorName = searchParams.get('collaboratorName')
-  const role = searchParams.get('role')
+  const { register, handleSubmit, control, reset } = useForm<CollaboratorFiltersSchema>({
+    resolver: zodResolver(collaboratorFiltersSchema),
+    defaultValues: {
+      collaboratorId: '',
+      collaboratorName: '',
+      role: 'all',
+    },
+  });
 
-  const { register, handleSubmit, control, reset } =
-    useForm<CollaboratorFiltersSchema>({
-      resolver: zodResolver(collaboratorFiltersSchema),
-      defaultValues: {
-        collaboratorId: collaboratorId ?? '',
-        collaboratorName: collaboratorName ?? '',
-        role: role ?? 'all',
-      },
-    })
-
-  function handleFilter({ collaboratorId, collaboratorName, role }: CollaboratorFiltersSchema) {
-    setSearchParams((state) => {
-      if (collaboratorId) {
-        state.set('collaboratorId', collaboratorId)
-      } else {
-        state.delete('collaboratorId')
-      }
-
-      if (collaboratorName) {
-        state.set('collaboratorName', collaboratorName)
-      } else {
-        state.delete('collaboratorName')
-      }
-
-      if (role && role !== 'all') {
-        state.set('role', role)
-      } else {
-        state.delete('role')
-      }
-
-      state.set('page', '1')
-
-      return state
-    })
+  async function handleFilter(data: CollaboratorFiltersSchema) {
+    await fetchCollaborator(data); 
   }
 
   function handleClearFilters() {
-    setSearchParams((state) => {
-      state.delete('collaboratorId')
-      state.delete('collaboratorName')
-      state.delete('role')
-      state.set('page', '1')
-
-      return state
-    })
-
     reset({
       collaboratorId: '',
       collaboratorName: '',
       role: 'all',
-    })
+    });
+
+    fetchCollaborator({ collaboratorId: '', collaboratorName: '', role: 'all' }); 
   }
+
 
   return (
     <div className='flex justify-between'>

@@ -23,7 +23,7 @@ export const PatientTable = () => {
             </TableHeader>
             <TableBody>
                 {patients && patients.map((patient) => (
-                    <PatientRow patient={patient} />
+                    <PatientRow key={patient.paciente_id} patient={patient} />
                 ))}
             </TableBody>
             {loading === true && <PatientTableSkeleton />}
