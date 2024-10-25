@@ -4,6 +4,7 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import { Employee } from '@/contexts/rhContext'
 import { Search } from 'lucide-react'
 import { useState } from 'react'
+import { HumanResourceDetails } from './HumanResourceDetails'
 
 export const HumanResourcesRow = ({ employee }: { employee: Employee }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -18,7 +19,7 @@ export const HumanResourcesRow = ({ employee }: { employee: Employee }) => {
                             <span className="sr-only">Detalhes do RH</span>
                         </Button>
                     </DialogTrigger>
-                    {/* <HumanResourceDetails open={isDetailsOpen} humanResourceId={humanResource.humanResourceId} /> */}
+                    <HumanResourceDetails open={isDetailsOpen} humanResource={employee} />
                 </Dialog>
             </TableCell>
 

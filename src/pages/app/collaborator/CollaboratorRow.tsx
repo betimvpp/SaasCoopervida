@@ -4,6 +4,7 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import { Collaborator } from '@/contexts/collaboratorContext'
 import { Search} from 'lucide-react'
 import { useState } from 'react'
+import { CollaboratorDetails } from './CollaboratorDetails'
 
 export const CollaboratorRow = ({ collaborator }: { collaborator: Collaborator }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -18,7 +19,7 @@ export const CollaboratorRow = ({ collaborator }: { collaborator: Collaborator }
                             <span className="sr-only">Detalhes do Colaborador</span>
                         </Button>
                     </DialogTrigger>
-                    {/* <OrderDetails open={isDetailsOpen} orderId={order.orderId} /> */}
+                    <CollaboratorDetails open={isDetailsOpen} collaborator={collaborator} />
                 </Dialog>
             </TableCell>
 

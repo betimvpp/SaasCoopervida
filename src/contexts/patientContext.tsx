@@ -12,6 +12,7 @@ export const patientSchema = z.object({
   email: z.string(),
   rua: z.string(),
   cidade: z.string(),
+  status:z.string().optional(),
 });
 
 export type Patient = z.infer<typeof patientSchema>;

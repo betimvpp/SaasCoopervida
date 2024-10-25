@@ -4,6 +4,7 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import { Patient } from '@/contexts/patientContext'
 import { Search} from 'lucide-react'
 import { useState } from 'react'
+import { PatientDetails } from './PatientDetails'
 
 export const PatientRow = ({ patient }: { patient: Patient }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -18,7 +19,7 @@ export const PatientRow = ({ patient }: { patient: Patient }) => {
                             <span className="sr-only">Detalhes do RH</span>
                         </Button>
                     </DialogTrigger>
-                    {/* <OrderDetails open={isDetailsOpen} orderId={order.orderId} /> */}
+                    <PatientDetails open={isDetailsOpen} patient={patient} />
                 </Dialog>
             </TableCell>
 

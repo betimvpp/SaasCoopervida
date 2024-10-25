@@ -2,9 +2,18 @@ import { Helmet } from "react-helmet-async"
 import { CollaboratorTable } from "./CollaboratorTable"
 import { CollaboratorFilters } from "./CollaboratorFilters"
 import { useCollaborator } from "@/contexts/collaboratorContext";
+import { useState } from "react";
+import { Pagination } from "@/components/pagination";
 
 export const Collaborator = () => {
   const { collaborators, loading } = useCollaborator();
+  const [pageIndex, setPageIndex] = useState(0);
+  const totalCount = collaborators?.length || 0;
+
+  const handlePageChange = (newPageIndex: number) => {
+    setPageIndex(newPageIndex);
+  };
+
   return (
     <div className="flex flex-col w-full gap-2">
       <Helmet title="Colaboradores" />
@@ -16,6 +25,12 @@ export const Collaborator = () => {
           <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhum usuário encontrado!</div>
         }
       </div>
+      <Pagination
+        pageIndex={pageIndex}
+        totalCount={totalCount}
+        perPage={10}
+        onPageChange={handlePageChange}
+      />
     </div>
   )
 }
