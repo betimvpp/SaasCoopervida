@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAuth } from "@/contexts/authContext";
 import { useNavigate } from "react-router-dom";
-import supabase from "@/lib/supabase";
 
 const signInForm = z.object({
   email: z.string().email(),
@@ -19,7 +18,7 @@ type SignInForm = z.infer<typeof signInForm>;
 
 export function Login() {
   const { register, handleSubmit } = useForm<SignInForm>();
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   async function handleLogin(dataResp: SignInForm) {
@@ -45,10 +44,9 @@ export function Login() {
     //     break;
     // }
 
-    const loginSuccess = await login(dataResp);  // Aguarda a resposta do login
+    const loginSuccess = await login(dataResp); 
 
     if (loginSuccess) {
-      // O login foi bem-sucedido, redirecione o usuário
       navigate("/");
     }
 
