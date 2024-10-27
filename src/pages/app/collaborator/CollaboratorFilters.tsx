@@ -11,11 +11,15 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { collaboratorFiltersSchema, CollaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import { CollaboratorAdditioner } from './CollaboratorAdditioner'
+import { useState } from 'react'
 
 
 
 export function CollaboratorFilters() {
-  const { fetchCollaborator } = useCollaborator(); 
+  const { fetchCollaborator } = useCollaborator();
+  const [isAdditionerOpen, setIsAdditionerOpen] = useState(false);
 
   const { register, handleSubmit, control, reset } = useForm<CollaboratorFiltersSchema>({
     resolver: zodResolver(collaboratorFiltersSchema),
@@ -27,7 +31,7 @@ export function CollaboratorFilters() {
   });
 
   async function handleFilter(data: CollaboratorFiltersSchema) {
-    await fetchCollaborator(data); 
+    await fetchCollaborator(data);
   }
 
   function handleClearFilters() {
@@ -37,7 +41,7 @@ export function CollaboratorFilters() {
       role: 'all',
     });
 
-    fetchCollaborator({ collaboratorId: '', collaboratorName: '', role: 'all' }); 
+    fetchCollaborator({ collaboratorId: '', collaboratorName: '', role: 'all' });
   }
 
 
@@ -98,9 +102,14 @@ export function CollaboratorFilters() {
         </Button>
       </form>
 
-      <Button variant={'secondary'}>
-        Adcionar Colaborador
-      </Button>
+      <Dialog open={isAdditionerOpen} onOpenChange={setIsAdditionerOpen}>
+        <DialogTrigger asChild>
+          <Button variant={'secondary'}>
+            Adcionar Colaborador
+          </Button>
+        </DialogTrigger>
+        <CollaboratorAdditioner />
+      </Dialog>
     </div>
   )
 }

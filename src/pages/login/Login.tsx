@@ -47,7 +47,7 @@ export function Login() {
     const loginSuccess = await login(dataResp); 
 
     if (loginSuccess) {
-      navigate("/");
+      navigate("/dashboard");
     }
 
   }

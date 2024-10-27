@@ -1,5 +1,6 @@
-import { Admin } from '@/pages/app/admin/Admin'
 import { Collaborator } from '@/pages/app/collaborator/Collaborator'
+import { Dashboard } from '@/pages/app/dashboard/Dashboard'
+import { Escala } from '@/pages/app/escala/Escala'
 import { HumanResources } from '@/pages/app/humanResources/HumanResources'
 import { Patient } from '@/pages/app/patient/Patient'
 import { AppLayout } from '@/pages/layouts/app'
@@ -13,7 +14,8 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     // errorElement: <NotFound/>,
     children: [
-      { path: '/admin', element: <Admin /> },
+      { path: '/dashboard', element: <Dashboard /> },
+      { path: '/escala', element: <Escala /> },
       { path: '/colaboradores', element: <Collaborator /> },
       { path: '/recursoshumanos', element: <HumanResources /> },
       { path: '/pacientes', element: <Patient /> },

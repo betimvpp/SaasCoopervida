@@ -5,11 +5,15 @@ import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { humanResourcesFiltersSchema, HumanResourcesFiltersSchema, useHumanResources } from '@/contexts/rhContext'
+import { Dialog, DialogTrigger } from '@/components/ui/dialog'
+import { HumanResourceAdditioner } from './HumanResourceAdditioner'
+import { useState } from 'react'
 
 
 
 export function HumanResourcesFilters() {
-  const { fetchHumanResources } = useHumanResources(); 
+  const { fetchHumanResources } = useHumanResources();
+  const [isAdditionerOpen, setIsAdditionerOpen] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<HumanResourcesFiltersSchema>({
     resolver: zodResolver(humanResourcesFiltersSchema),
@@ -20,7 +24,7 @@ export function HumanResourcesFilters() {
   });
 
   async function handleFilter(data: HumanResourcesFiltersSchema) {
-    await fetchHumanResources(data); 
+    await fetchHumanResources(data);
   }
 
   function handleClearFilters() {
@@ -29,7 +33,7 @@ export function HumanResourcesFilters() {
       humanResourcesName: '',
     });
 
-    fetchHumanResources({ humanResourcesId: '', humanResourcesName: ''}); 
+    fetchHumanResources({ humanResourcesId: '', humanResourcesName: '' });
   }
   return (
     <div className='flex justify-between'>
@@ -64,9 +68,14 @@ export function HumanResourcesFilters() {
         </Button>
       </form>
 
-      <Button variant={'secondary'}>
-        Adcionar RH
-      </Button>
+      <Dialog open={isAdditionerOpen} onOpenChange={setIsAdditionerOpen}>
+        <DialogTrigger asChild>
+          <Button variant={'secondary'}>
+            Adcionar RH
+          </Button>
+        </DialogTrigger>
+        <HumanResourceAdditioner />
+      </Dialog>
     </div>
   )
 }

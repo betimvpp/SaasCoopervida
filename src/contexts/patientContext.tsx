@@ -9,10 +9,10 @@ export const patientSchema = z.object({
   plano_saude: z.string(),
   telefone: z.string(),
   pagamento_dia: z.number(),
-  email: z.string(),
+  email: z.string().optional(),
   rua: z.string(),
   cidade: z.string(),
-  status:z.string().optional(),
+  status: z.string().optional(),
 });
 
 export type Patient = z.infer<typeof patientSchema>;

@@ -85,10 +85,6 @@ export const HumanResourceDetails = ({ humanResource }: HumanResourceDetailsProp
                             <TableCell className="flex justify-start -mt-2">
                                 <Select
                                     defaultValue={humanResource.status}
-                                // name={name}
-                                // onValueChange={onChange}
-                                // value={value}
-                                // disabled={disabled}
                                 >
                                     <SelectTrigger >
                                         <SelectValue />

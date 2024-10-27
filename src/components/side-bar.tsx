@@ -16,28 +16,28 @@ export function SideBar() {
     
     return (
         <div className='flex flex-col items-center'>
-            <nav className='flex flex-col items-start mt-6 gap-3 break-words text-secondary'>
-                <NavLink to="/" className='flex items-center gap-1'>
+            <nav className='flex flex-col items-start mt-6 gap-3 break-words text-muted-foreground'>
+                <NavLink to="/dashboard" >
                     <Home className='h-6 w-6' />
                     Inicio
                 </NavLink>
 
-                <NavLink to="/" className='flex items-center gap-1'>
+                <NavLink to="/escala" >
                     <CalendarDays className='h-6 w-6' />
-                    Escalas
+                    Escala
                 </NavLink>
 
-                <NavLink to="/pacientes" className='flex items-center gap-1'>
+                <NavLink to="/pacientes" >
                     <Stethoscope className='h-6 w-6' />
                     Pacientes
                 </NavLink>
 
-                <NavLink to="/recursoshumanos" className='flex items-center gap-1'>
+                <NavLink to="/recursoshumanos" >
                     <Speech className='min-h-6 min-w-6' />
                     Recursos Humanos
                 </NavLink>
 
-                <NavLink to="/colaboradores"className='flex items-center gap-1'>
+                <NavLink to="/colaboradores">
                     <Contact2 className='h-6 w-6' />
                     Colaboradores
                 </NavLink>

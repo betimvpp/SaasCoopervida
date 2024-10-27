@@ -80,10 +80,6 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
                             <TableCell className="flex justify-start -mt-2">
                                 <Select
                                     defaultValue={collaborator.role}
-                                // name={name}
-                                // onValueChange={onChange}
-                                // value={value}
-                                // disabled={disabled}
                                 >
                                     <SelectTrigger>
                                         <SelectValue />
@@ -101,11 +97,7 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
                             <TableCell className="font-semibold">Status:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
                                 <Select
-                                    defaultValue={collaborator.status}
-                                // name={name}
-                                // onValueChange={onChange}
-                                // value={value}
-                                // disabled={disabled}
+                                    defaultValue={collaborator.status} 
                                 >
                                     <SelectTrigger >
                                         <SelectValue />

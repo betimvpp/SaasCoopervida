@@ -24,35 +24,35 @@ export const PatientRow = ({ patient }: { patient: Patient }) => {
             </TableCell>
 
             <TableCell className="text-center">
-                {patient.email}
+                {patient?.email}
             </TableCell>
 
             <TableCell className="text-center">
-                {patient.nome}
+                {patient?.nome}
             </TableCell>
 
             <TableCell className="text-center">
-                {patient.cpf}
+                {patient?.cpf}
             </TableCell >
 
             <TableCell className="text-center">
-               {patient.telefone}
+               {patient?.telefone}
             </TableCell>
 
             <TableCell className="text-center">
-               {patient.plano_saude}
+               {patient?.plano_saude}
             </TableCell>
 
             <TableCell className="text-center">
-              {patient.rua}
+              {patient?.rua}
             </TableCell>
 
             <TableCell className="text-center">
-                {patient.cidade}
+                {patient?.cidade}
             </TableCell>
 
             <TableCell className="text-center">
-                {patient.pagamento_dia}
+                {patient?.pagamento_dia}
             </TableCell>
         </TableRow >
     )

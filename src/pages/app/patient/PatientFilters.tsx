@@ -4,9 +4,13 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { patientFiltersSchema, PatientFiltersSchema, usePatients } from '@/contexts/patientContext';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { PatientAdditioner } from './PatientAdditioner';
+import { useState } from 'react';
 
 export function PatientFilters() {
   const { fetchPatients } = usePatients();
+  const [isAdditionerOpen, setIsAdditionerOpen] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<PatientFiltersSchema>({
     resolver: zodResolver(patientFiltersSchema),
@@ -62,9 +66,14 @@ export function PatientFilters() {
         </Button>
       </form>
 
-      <Button variant={'secondary'}>
-        Adicionar Paciente
-      </Button>
+      <Dialog open={isAdditionerOpen} onOpenChange={setIsAdditionerOpen}>
+        <DialogTrigger asChild>
+          <Button variant={'secondary'}>
+            Adicionar Paciente
+          </Button>
+        </DialogTrigger>
+        <PatientAdditioner />
+      </Dialog>
     </div>
   );
 }
