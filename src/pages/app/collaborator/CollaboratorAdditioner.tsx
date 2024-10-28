@@ -4,8 +4,11 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/compon
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useHabilitys } from "@/contexts/habilitiesContext";
 
 export const CollaboratorAdditioner = () => {
+    const { habilities, loading } = useHabilitys();
+
     return (
         <DialogContent className="min-w-[1000px]">
             <DialogHeader>
@@ -105,35 +108,23 @@ export const CollaboratorAdditioner = () => {
                             </TableCell>
                         </TableRow>
                         <TableRow className="col-span-3 flex">
-                            <TableCell className="font-semibold">Habilidades:</TableCell>
-                            <TableCell className="w-full justify-start grid grid-cols-3 ">
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox id="ventrilação" />
-                                    <label
-                                        htmlFor="ventrilação"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                        Ventrilação Mecânica
-                                    </label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox id="aspiração" />
-                                    <label
-                                        htmlFor="aspiração"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                        Aspiração
-                                    </label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox id="ventrilação" />
-                                    <label
-                                        htmlFor="ventrilação"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                        Fisioterapia
-                                    </label>
-                                </div>
+                            <TableCell className="font-semibold">Especialidades:</TableCell>
+                            <TableCell className="w-full grid grid-cols-3 gap-2">
+                                {loading ? (
+                                    <p>Carregando especialidades...</p>
+                                ) : (
+                                    habilities.map((hability) => (
+                                        <div key={hability.especialidade_id} className="flex items-center space-x-2">
+                                            <Checkbox id={`especialidade-${hability.especialidade_id}`} />
+                                            <label
+                                                htmlFor={`especialidade-${hability.especialidade_id}`}
+                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                            >
+                                                {hability.nome}
+                                            </label>
+                                        </div>
+                                    ))
+                                )}
                             </TableCell>
                         </TableRow>
                     </TableBody>

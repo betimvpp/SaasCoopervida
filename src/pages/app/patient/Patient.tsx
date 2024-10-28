@@ -29,8 +29,8 @@ export const Patient = () => {
         pageIndex={pageIndex}
         totalCount={totalCount}
         perPage={10}
-        onPageChange={handlePageChange} 
-        />
+        onPageChange={handlePageChange}
+      />
     </div>
   )
 }

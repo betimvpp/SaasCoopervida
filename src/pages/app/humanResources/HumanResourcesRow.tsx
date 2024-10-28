@@ -32,7 +32,7 @@ export const HumanResourcesRow = ({ employee }: { employee: Employee }) => {
             <TableCell className="text-center">{employee?.banco}</TableCell>
             <TableCell className="text-center">{employee?.agencia}</TableCell>
             <TableCell className="text-center">{employee?.conta}</TableCell>
-            <TableCell className="text-center">{employee?.role}</TableCell>
+            <TableCell className="text-center">{employee?.role.toLocaleUpperCase()}</TableCell>
         </TableRow >
     )
 }

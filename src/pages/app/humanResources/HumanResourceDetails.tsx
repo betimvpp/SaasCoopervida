@@ -14,7 +14,7 @@ export const HumanResourceDetails = ({ humanResource }: HumanResourceDetailsProp
     return (
         <DialogContent className="min-w-[1000px]">
             <DialogHeader>
-                <DialogTitle>Detalhes do RH: {humanResource.nome}!</DialogTitle>
+                <DialogTitle>Detalhes do RH: {humanResource.nome}</DialogTitle>
                 <DialogDescription>Status: {humanResource.status}</DialogDescription>
             </DialogHeader>
             <div className="space-y-6">

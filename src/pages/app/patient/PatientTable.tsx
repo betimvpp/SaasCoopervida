@@ -18,7 +18,7 @@ export const PatientTable = () => {
                     <TableHead className="text-center">Plano de Saúde</TableHead>
                     <TableHead className="text-center">Rua</TableHead>
                     <TableHead className="text-center">Cidade</TableHead>
-                    <TableHead className="text-center">Data Pagamento</TableHead>
+                    <TableHead className="text-center">Pagamento/Dia</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>

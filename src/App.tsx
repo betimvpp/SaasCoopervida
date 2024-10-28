@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/authContext'
 import { HumanResourcesProvider } from './contexts/rhContext'
 import { PatientProvider } from './contexts/patientContext'
 import { CollaboratorProvider } from './contexts/collaboratorContext'
+import { HabilityProvider } from './contexts/habilitiesContext'
 
 export function App() {
   return (
@@ -18,13 +19,15 @@ export function App() {
         <HumanResourcesProvider>
           <PatientProvider>
             <CollaboratorProvider>
-              <HelmetProvider>
-                <Helmet titleTemplate='%s | CooperVida' />
-                <Toaster richColors />
-                <QueryClientProvider client={queryClient}>
-                  <RouterProvider router={router} />
-                </QueryClientProvider>
-              </HelmetProvider>
+              <HabilityProvider>
+                <HelmetProvider>
+                  <Helmet titleTemplate='%s | CooperVida' />
+                  <Toaster richColors />
+                  <QueryClientProvider client={queryClient}>
+                    <RouterProvider router={router} />
+                  </QueryClientProvider>
+                </HelmetProvider>
+              </HabilityProvider>
             </CollaboratorProvider>
           </PatientProvider>
         </HumanResourcesProvider>

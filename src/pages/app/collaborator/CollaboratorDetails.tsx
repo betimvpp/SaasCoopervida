@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Collaborator } from "@/contexts/collaboratorContext";
+import { useHabilitys } from "@/contexts/habilitiesContext";
 
 export interface CollaboratorDetailsProps {
     collaborator: Collaborator;
@@ -12,10 +13,12 @@ export interface CollaboratorDetailsProps {
 }
 
 export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) => {
+    const { habilities, loading } = useHabilitys();
+
     return (
         <DialogContent className="min-w-[1000px]">
             <DialogHeader>
-                <DialogTitle>Detalhes do colaborador: {collaborator.nome}!</DialogTitle>
+                <DialogTitle>Detalhes do colaborador: {collaborator.nome}</DialogTitle>
                 <DialogDescription>Status: {collaborator.status}</DialogDescription>
             </DialogHeader>
             <div className="space-y-6">
@@ -24,55 +27,55 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
                         <TableRow>
                             <TableCell className="font-semibold">Nome:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="nome" type="text" placeholder={collaborator.nome}/>
+                                <Input id="nome" type="text" placeholder={collaborator.nome} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">E-mail:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="email" type="email" placeholder={collaborator.email}/>
+                                <Input id="email" type="email" placeholder={collaborator.email} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">CPF:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="cpf" type="text" placeholder={collaborator.cpf}/>
+                                <Input id="cpf" type="text" placeholder={collaborator.cpf} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Telefone:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="telefone" type="text" placeholder={collaborator.telefone}/>
+                                <Input id="telefone" type="text" placeholder={collaborator.telefone} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Cidade:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="cidade" type="text" placeholder={collaborator.cidade}/>
+                                <Input id="cidade" type="text" placeholder={collaborator.cidade} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Rua:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="rua" type="text" placeholder={collaborator.rua}/>
+                                <Input id="rua" type="text" placeholder={collaborator.rua} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Banco:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="banco" type="text" placeholder={collaborator.banco}/>
+                                <Input id="banco" type="text" placeholder={collaborator.banco} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Agencia:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="agencia" type="text" placeholder={collaborator.agencia}/>
+                                <Input id="agencia" type="text" placeholder={collaborator.agencia} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Conta:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="conta" type="text" placeholder={collaborator.conta}/>
+                                <Input id="conta" type="text" placeholder={collaborator.conta} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
@@ -97,7 +100,7 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
                             <TableCell className="font-semibold">Status:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
                                 <Select
-                                    defaultValue={collaborator.status} 
+                                    defaultValue={collaborator.status}
                                 >
                                     <SelectTrigger >
                                         <SelectValue />
@@ -116,35 +119,23 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
                             </TableCell>
                         </TableRow>
                         <TableRow className="col-span-3 flex">
-                            <TableCell className="font-semibold">Habilidades:</TableCell>
-                            <TableCell className="w-full justify-start grid grid-cols-3 ">
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox id="ventrilação" />
-                                    <label
-                                        htmlFor="ventrilação"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                        Ventrilação Mecânica 
-                                    </label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox id="aspiração" />
-                                    <label
-                                        htmlFor="aspiração"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                        Aspiração
-                                    </label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <Checkbox id="ventrilação" />
-                                    <label
-                                        htmlFor="ventrilação"
-                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                    >
-                                        Fisioterapia 
-                                    </label>
-                                </div>
+                            <TableCell className="font-semibold">Especialidades:</TableCell>
+                            <TableCell className="w-full grid grid-cols-3 gap-2">
+                                {loading ? (
+                                    <p>Carregando especialidades...</p>
+                                ) : (
+                                    habilities.map((hability) => (
+                                        <div key={hability.especialidade_id} className="flex items-center space-x-2">
+                                            <Checkbox id={`especialidade-${hability.especialidade_id}`} />
+                                            <label
+                                                htmlFor={`especialidade-${hability.especialidade_id}`}
+                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                            >
+                                                {hability.nome}
+                                            </label>
+                                        </div>
+                                    ))
+                                )}
                             </TableCell>
                         </TableRow>
                     </TableBody>
