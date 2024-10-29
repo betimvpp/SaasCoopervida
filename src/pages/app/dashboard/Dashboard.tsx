@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async'
 import { BillingChart } from './charts/billingChart'
-import { MostUsedServices } from './charts/mostUsedServices'
 import { EmployeeSpecialty } from './charts/employeeSpecialty'
 import { EmployeeBilling } from './charts/employeeBilling'
 import { SwitchedScale } from './charts/switchedScale'
