@@ -12,6 +12,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+
+const currentMonth = new Date().getMonth();
+const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
+
 export const description = "A mixed bar chart"
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
@@ -47,13 +51,13 @@ const chartConfig = {
 } satisfies ChartConfig
 export const EmployeeBilling = () => {
   return (
-    <Card>
+    <Card className="h-full rounded-xl">
       <CardHeader>
-        <CardTitle>Bar Chart - Mixed</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Faturamento do Colaborador</CardTitle>
+        <CardDescription>{months[(currentMonth - (5 - 5) + 12) % 12]} {new Date().getFullYear()}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig}>
+      <CardContent >
+        <ChartContainer config={chartConfig} >
           <BarChart
             accessibilityLayer
             data={chartData}
@@ -72,7 +76,7 @@ export const EmployeeBilling = () => {
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
             />
-            <XAxis dataKey="visitors" type="number" hide />
+            <XAxis dataKey="visitors" type="number" tickLine={true} axisLine={false}/>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
@@ -81,14 +85,6 @@ export const EmployeeBilling = () => {
           </BarChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
     </Card>
   )
 }

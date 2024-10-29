@@ -13,6 +13,7 @@ export const patientSchema = z.object({
   rua: z.string(),
   cidade: z.string(),
   status: z.string().optional(),
+  pagamento_a_profissional: z.number()
 });
 
 export type Patient = z.infer<typeof patientSchema>;

@@ -18,7 +18,8 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 
-export const description = "A donut chart"
+const currentMonth = new Date().getMonth();
+const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 
 const chartData = [
     { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
@@ -56,10 +57,10 @@ const chartConfig = {
 
 export const EmployeeSpecialty = () => {
     return (
-        <Card className="flex flex-col h-full">
-            <CardHeader className="items-center pb-0">
-                <CardTitle>Pie Chart - Donut</CardTitle>
-                <CardDescription>January - June 2024</CardDescription>
+        <Card className="flex flex-col h-full rounded-xl">
+            <CardHeader className="pb-0">
+                <CardTitle>Colaboradores por Especialidade</CardTitle>
+                <CardDescription>{months[(currentMonth + 12) % 12]} {new Date().getFullYear()}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
@@ -68,14 +69,14 @@ export const EmployeeSpecialty = () => {
                 >
                     <PieChart>
                         <ChartTooltip
-                            cursor={false}
+                            cursor={true}
                             content={<ChartTooltipContent hideLabel />}
                         />
                         <Pie
                             data={chartData}
                             dataKey="visitors"
                             nameKey="browser"
-                            innerRadius={60}
+                            innerRadius={50}
                         />
                         <ChartLegend
                             content={<ChartLegendContent nameKey="browser" />}

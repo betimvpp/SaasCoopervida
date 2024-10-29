@@ -27,7 +27,7 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                         <TableRow>
                             <TableCell className="font-semibold">Nome:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="nome" type="text" placeholder={patient.nome} />
+                                <Input id="nome" type="text" placeholder={patient.nome}/>
                             </TableCell>
                         </TableRow>
                         <TableRow>
@@ -61,9 +61,15 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                             </TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell className="font-semibold">Data Pagamento:</TableCell>
+                            <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="pagamento_dia" type="date" placeholder={patient.pagamento_dia.toLocaleString()} />
+                                <Input id="pagamento_dia" type="number" placeholder={patient.pagamento_dia.toLocaleString()} />
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">Pagamento/Profisional:</TableCell>
+                            <TableCell className="flex justify-start -mt-2">
+                                <Input id="pagamento_a_profissional" type="number" placeholder={patient.pagamento_dia.toLocaleString()} />
                             </TableCell>
                         </TableRow>
                         <TableRow>

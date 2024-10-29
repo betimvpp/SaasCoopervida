@@ -54,9 +54,15 @@ export const PatientAdditioner = () => {
                             </TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell className="font-semibold">Data Pagamento:</TableCell>
+                            <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="pagamento_dia" type="date" placeholder="Ex: 26/10/2024" />
+                                <Input id="pagamento_dia" type="number" placeholder="Ex: 26/10/2024" />
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">Pagamento/Profissional:</TableCell>
+                            <TableCell className="flex justify-start -mt-2">
+                                <Input id="pagamento_a_profissional" type="number" placeholder="Ex: 26/10/2024" />
                             </TableCell>
                         </TableRow>
                         <TableRow>

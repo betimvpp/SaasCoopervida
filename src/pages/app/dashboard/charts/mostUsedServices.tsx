@@ -11,7 +11,7 @@ import { TrendingUp } from "lucide-react";
 export const description = "A radar chart with dots"
 
 const currentMonth = new Date().getMonth();
-const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 
 const chartData = [
     { month: months[(currentMonth - (5 - 5) + 12) % 12], habilidade1: 218, habilidade2: 120, habilidade3: 200, habilidade4: 150, habilidade5: 170 },
@@ -32,11 +32,11 @@ const chartConfig = {
 
 export const MostUsedServices = () => {
     return (
-        <Card className="h-full">
-            <CardHeader className="items-center">
-                <CardTitle>Radar Chart - Dots</CardTitle>
+        <Card className="h-full rounded-xl">
+            <CardHeader className="">
+                <CardTitle>Especialidades mais utilizadas</CardTitle>
                 <CardDescription>
-                    Showing total visitors for the last 6 months
+                    {months[(currentMonth - (5 - 0) + 12) % 12]} - {months[(currentMonth - (5 - 5) + 12) % 12]} {new Date().getFullYear()}
                 </CardDescription>
             </CardHeader>
             <CardContent className="pb-0">

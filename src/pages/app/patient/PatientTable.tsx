@@ -19,6 +19,7 @@ export const PatientTable = () => {
                     <TableHead className="text-center">Rua</TableHead>
                     <TableHead className="text-center">Cidade</TableHead>
                     <TableHead className="text-center">Pagamento/Dia</TableHead>
+                    <TableHead className="text-center">Pagamento/Profissional</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
