@@ -59,7 +59,7 @@ export function CollaboratorFilters() {
         />
         <Input
           placeholder="Nome do colaborador"
-          className="h-8 w-[320px]"
+          className="h-8 w-[17rem]"
           {...register('collaboratorName')}
         />
         <Controller

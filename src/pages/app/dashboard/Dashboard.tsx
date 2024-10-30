@@ -12,7 +12,7 @@ export const Dashboard = () => {
         <div className="flex flex-col w-full gap-2">
             <Helmet title="Dashboard" />
             <h1 className="text-4xl font-bold textslate mb-4">Dashboard</h1>
-            <div className="h-full w-full overflow-hidden shadow-lg border rounded-md p-4 grid grid-cols-3 grid-rows-2 gap-6 gap-y-10 ">
+            <div className="h-full w-full overflow-hidden shadow-lg border rounded-md p-4 grid grid-cols-3 grid-rows-2 gap-2 ">
                 <div className='col-span-2'>
                     <BillingChart />
                 </div>

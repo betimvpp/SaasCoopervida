@@ -54,7 +54,7 @@ export function Login() {
 
 
   return (
-    <Card className="mx-auto max-w-sm">
+    <Card className="mx-auto">
       <Helmet title="Login" />
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Login</CardTitle>

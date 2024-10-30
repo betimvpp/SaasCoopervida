@@ -38,7 +38,7 @@ export const SwitchedScale = () => {
     const totalVisitors = chartData[0].desktop + chartData[0].mobile
 
     return (
-        <Card className="flex flex-col h-full rounded-xl">
+        <Card className="flex flex-col h-full rounded-xl shadow-lg">
             <CardHeader className="pb-2">
                 <CardTitle>Escalas Concluidas/Trocadas</CardTitle>
                 <CardDescription>{months[(currentMonth + 12) % 12]} {new Date().getFullYear()}</CardDescription>
@@ -46,7 +46,7 @@ export const SwitchedScale = () => {
             <CardContent className="flex flex-1 items-center pb-0">
                 <ChartContainer
                     config={chartConfig}
-                    className="mx-auto aspect-square w-full max-w-[300px]"
+                    className="mx-auto aspect-square w-full min-w-[20rem] max-w-[20rem] -mb-16"
                 >
                     <RadialBarChart
                         data={chartData}

@@ -51,7 +51,7 @@ const chartConfig = {
 } satisfies ChartConfig
 export const EmployeeBilling = () => {
   return (
-    <Card className="h-full rounded-xl">
+    <Card className="h-full rounded-xl shadow-lg">
       <CardHeader>
         <CardTitle>Faturamento do Colaborador</CardTitle>
         <CardDescription>{months[(currentMonth - (5 - 5) + 12) % 12]} {new Date().getFullYear()}</CardDescription>
@@ -59,6 +59,7 @@ export const EmployeeBilling = () => {
       <CardContent >
         <ChartContainer config={chartConfig} >
           <BarChart
+            className="min-h-[20rem] -ml-4 pt-0 pb-0 -mt-7"
             accessibilityLayer
             data={chartData}
             layout="vertical"
@@ -70,13 +71,13 @@ export const EmployeeBilling = () => {
               dataKey="browser"
               type="category"
               tickLine={false}
-              tickMargin={10}
+              tickMargin={0}
               axisLine={false}
               tickFormatter={(value) =>
                 chartConfig[value as keyof typeof chartConfig]?.label
               }
             />
-            <XAxis dataKey="visitors" type="number" tickLine={true} axisLine={false}/>
+            <XAxis dataKey="visitors" type="number" tickLine={true} axisLine={false} />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}

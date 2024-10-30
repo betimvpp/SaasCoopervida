@@ -39,7 +39,7 @@ const chartConfig = {
 
 export const BillingChart = () => {
     return (
-        <Card className="h-full w-full border rounded-xl">
+        <Card className="h-full w-full border rounded-xl shadow-lg">
             <CardHeader className="-mb-4">
                 <CardTitle>Faturamento Mensal da Empresa</CardTitle>
                 <CardDescription>{months[(currentMonth - (5 - 0) + 12) % 12]} - {months[(currentMonth - (5 - 5) + 12) % 12]} {new Date().getFullYear()}</CardDescription>

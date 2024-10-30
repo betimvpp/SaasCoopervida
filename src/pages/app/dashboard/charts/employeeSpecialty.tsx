@@ -1,11 +1,9 @@
-import { TrendingUp } from "lucide-react"
 import { Pie, PieChart } from "recharts"
 
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
@@ -57,17 +55,17 @@ const chartConfig = {
 
 export const EmployeeSpecialty = () => {
     return (
-        <Card className="flex flex-col h-full rounded-xl">
+        <Card className="flex flex-col h-full rounded-xl shadow-lg">
             <CardHeader className="pb-0">
                 <CardTitle>Colaboradores por Especialidade</CardTitle>
                 <CardDescription>{months[(currentMonth + 12) % 12]} {new Date().getFullYear()}</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0">
+            <CardContent className=" pb-0">
                 <ChartContainer
                     config={chartConfig}
-                    className="mx-auto aspect-square max-h-[250px]"
+                    className="mx-auto min-h-[15rem] w-full"
                 >
-                    <PieChart>
+                    <PieChart className="">
                         <ChartTooltip
                             cursor={true}
                             content={<ChartTooltipContent hideLabel />}
@@ -76,23 +74,23 @@ export const EmployeeSpecialty = () => {
                             data={chartData}
                             dataKey="visitors"
                             nameKey="browser"
-                            innerRadius={50}
+                            innerRadius={35}
                         />
                         <ChartLegend
                             content={<ChartLegendContent nameKey="browser" />}
-                            className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+                            className="text-sm -translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
                         />
                     </PieChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col gap-2 text-sm">
+            {/* <CardFooter className="flex-col gap-2 text-sm">
                 <div className="flex items-center gap-2 font-medium leading-none">
                     Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
                 </div>
                 <div className="leading-none text-muted-foreground">
                     Showing total visitors for the last 6 months
                 </div>
-            </CardFooter>
+            </CardFooter> */}
         </Card>
     )
 }
