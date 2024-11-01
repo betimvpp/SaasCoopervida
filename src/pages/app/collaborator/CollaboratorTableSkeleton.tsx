@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { TableCell, TableRow } from '@/components/ui/table'
 
 export function CollaboratorTableSkeleton() {
-    return Array.from({ length: 10 }).map((_, i) => {
+    return Array.from({ length: 5 }).map((_, i) => {
         return (
             <TableRow key={i}>
                 <TableCell>
@@ -11,31 +11,19 @@ export function CollaboratorTableSkeleton() {
                 <TableCell >
                     <Skeleton className='w-full h-4' />
                 </TableCell>
-                <TableCell>
+                <TableCell >
                     <Skeleton className='w-full h-4' />
                 </TableCell>
-                <TableCell>
+                <TableCell >
                     <Skeleton className='w-full h-4' />
                 </TableCell>
-                <TableCell>
+                <TableCell >
                     <Skeleton className='w-full h-4' />
                 </TableCell>
-                <TableCell>
+                <TableCell >
                     <Skeleton className='w-full h-4' />
                 </TableCell>
-                <TableCell>
-                    <Skeleton className='w-full h-4' />
-                </TableCell>
-                <TableCell>
-                    <Skeleton className='w-full h-4' />
-                </TableCell>
-                <TableCell>
-                    <Skeleton className='w-full h-4' />
-                </TableCell>
-                <TableCell>
-                    <Skeleton className='w-full h-4' />
-                </TableCell>
-                <TableCell>
+                <TableCell >
                     <Skeleton className='w-full h-4' />
                 </TableCell>
             </TableRow>

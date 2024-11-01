@@ -3,17 +3,26 @@ import { HumanResourcesTable } from "./HumanResourcesTable"
 import { HumanResourcesFilters } from "./HumanResourcesFilters"
 import { useHumanResources } from "@/contexts/rhContext";
 import { Pagination } from "@/components/pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const HumanResources = () => {
-  const { employees, loading } = useHumanResources();
+  const { employees, loading, fetchHumanResources, fetchHumanResourcesNotPaginated } = useHumanResources();
   const [pageIndex, setPageIndex] = useState(0);
   const totalCount = employees?.length || 0;
 
   const handlePageChange = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
   };
-  
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchHumanResources({}, pageIndex);
+      await fetchHumanResourcesNotPaginated({});
+    };
+
+    fetchData();
+  }, [fetchHumanResources, pageIndex, fetchHumanResourcesNotPaginated]);
+
   return (
     <div className="flex flex-col w-full gap-2">
       <Helmet title="RH" />

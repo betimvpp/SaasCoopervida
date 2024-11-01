@@ -28,30 +28,6 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                 <DialogTitle>Escalas para {date.format("DD/MM/YYYY")}</DialogTitle>
             </DialogHeader>
             <div className=" h-full w-full shadow-lg border rounded-md">
-                {/* <Table>
-                    <TableHeader>
-                        <TableRow className="text-center">
-                            <TableHead className="text-center font-semibold">Tipo de Serviço</TableHead>
-                            <TableHead className="text-center font-semibold">Nome do Funcionário</TableHead>
-                            <TableHead className="text-center font-semibold">Nome do Paciente</TableHead>
-                            <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
-                            <TableHead className="text-center font-semibold">Valor Pago</TableHead>
-                            <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
-                        </TableRow>
-                    </TableHeader>
-
-                    {loading ? (
-                        <div className="w-full h-full font-semibold text-muted-foreground p-4">Carregando Usuarios...</div>
-                    ) : (
-                        <>
-                            <TableBody>
-                                {scales && scales.map((scale) => (
-                                    <ScaleCalendarDetailsRow key={scale.escala_id} scale={scale} />
-                                ))}
-                            </TableBody>
-                        </>
-                    )}
-                </Table> */}
                 {loading ? (
                     <>
                         <Table>

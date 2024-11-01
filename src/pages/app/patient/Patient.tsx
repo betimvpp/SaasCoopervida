@@ -3,16 +3,25 @@ import { PatientTable } from "./PatientTable"
 import { PatientFilters } from "./PatientFilters"
 import { usePatients } from "@/contexts/patientContext";
 import { Pagination } from "@/components/pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Patient = () => {
-  const { patients, loading } = usePatients();
+  const { patients, loading, fetchPatients, fetchPatientsNotPaginated } = usePatients();
   const [pageIndex, setPageIndex] = useState(0);
   const totalCount = patients?.length || 0;
 
   const handlePageChange = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchPatients({}, pageIndex);
+      await fetchPatientsNotPaginated({});
+    };
+
+    fetchData();
+  }, [fetchPatients, pageIndex, fetchPatientsNotPaginated]);
 
   return (
     <div className="flex flex-col w-full gap-2">

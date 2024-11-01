@@ -7,25 +7,21 @@ export const CollaboratorTable = () => {
     const { collaborators, loading } = useCollaborator();
 
     return (
-        <Table>
+        <Table className="max-w-full">
             <TableHeader>
-                <TableRow className="text-center">
+                <TableRow className="text-center ">
                     <TableHead className="w-4"></TableHead>
                     <TableHead className="text-center">E-mail</TableHead>
                     <TableHead className="text-center">Nome Completo</TableHead>
                     <TableHead className="text-center">CPF</TableHead>
                     <TableHead className="text-center">Telefone</TableHead>
-                    <TableHead className="text-center">Rua</TableHead>
-                    <TableHead className="text-center">Cidade</TableHead>
-                    <TableHead className="text-center">Banco</TableHead>
-                    <TableHead className="text-center">Agencia</TableHead>
-                    <TableHead className="text-center">Conta</TableHead>
+                    <TableHead className="text-center">Chave Pix</TableHead>
                     <TableHead className="text-center">Cargo</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {collaborators && collaborators.map((collaborator) => (
-                    <CollaboratorRow key={collaborator?.colaborador_id} collaborator={collaborator} />
+                    <CollaboratorRow key={collaborator?.funcionario_id} collaborator={collaborator} />
                 ))}
             </TableBody>
             {loading === true && <CollaboratorTableSkeleton />}

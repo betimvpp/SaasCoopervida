@@ -10,12 +10,12 @@ export const CollaboratorRow = ({ collaborator }: { collaborator: Collaborator }
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     
     return (
-        <TableRow>
+        <TableRow className=''>
             <TableCell>
                 <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
                     <DialogTrigger asChild>
                         <Button variant="outline" size="xs">
-                            <Search className="h-3 w-3" />
+                            <Search className="h-2 w-2" />
                             <span className="sr-only">Detalhes do Colaborador</span>
                         </Button>
                     </DialogTrigger>
@@ -39,24 +39,8 @@ export const CollaboratorRow = ({ collaborator }: { collaborator: Collaborator }
                {collaborator.telefone}
             </TableCell>
 
-            <TableCell className="text-center">
-              {collaborator?.rua}
-            </TableCell>
-
-            <TableCell className="text-center">
-                {collaborator?.cidade}
-            </TableCell>
-
-            <TableCell className="text-center">
-                {collaborator?.banco}
-            </TableCell>
-
-            <TableCell className="text-center">
-                {collaborator?.agencia}
-            </TableCell>
-
-            <TableCell className="text-center">
-                {collaborator?.conta}
+            <TableCell className="text-center overflow-hidden">
+                {collaborator?.chave_pix}
             </TableCell>
 
             <TableCell className="text-center">

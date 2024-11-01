@@ -1,88 +1,118 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+// import { Checkbox } from "@/components/ui/checkbox";
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useHabilitys } from "@/contexts/habilitiesContext";
+import { Collaborator, useCollaborator } from "@/contexts/collaboratorContext";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+export interface CollaboratorAdditionerProps {
+    collaborator: Collaborator;
+    open: boolean;
+}
 
 export const CollaboratorAdditioner = () => {
-    const { habilities, loading } = useHabilitys();
+    const { register, handleSubmit, setValue } = useForm<Collaborator>({});
+    const { addCollaborator } = useCollaborator();
+
+    const handleAdd = async (dataResp: Collaborator) => {
+        try {
+            await addCollaborator(dataResp);
+            toast.success("Colaborador adicionado com sucesso!");
+        } catch (error) {
+            console.error("Erro ao adicionar colaborador:", error);
+            toast.error("Erro ao adicionar colaborador.");
+        }
+    };
 
     return (
         <DialogContent className="min-w-[1000px]">
             <DialogHeader>
                 <DialogTitle>Adicione um colaborador: </DialogTitle>
             </DialogHeader>
-            <div className="space-y-6">
+            <form action="" className="space-y-6" onSubmit={handleSubmit(handleAdd)}>
+
                 <Table >
                     <TableBody className="grid grid-cols-3">
                         <TableRow>
                             <TableCell className="font-semibold">Nome:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="nome" type="text" placeholder="Ex: Pedro Silva" />
+                                <Input id="nome" type="text" {...register("nome")} required />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">E-mail:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="email" type="email" placeholder="Ex: exemplo@email.com" />
+                                <Input id="email" type="email" {...register("email")} required />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">CPF:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="cpf" type="text" placeholder="Ex: 00011122233" />
+                                <Input id="cpf" type="text" {...register("cpf")} required/>
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Telefone:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="telefone" type="text" placeholder="Ex: 74988776655" />
+                                <Input id="telefone" type="text" {...register("telefone")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Cidade:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="cidade" type="text" placeholder="Ex: Alagoinhas" />
+                                <Input id="cidade" type="text" {...register("cidade")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Rua:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="rua" type="text" placeholder="Ex: Rua Silva Lopes" />
+                                <Input id="rua" type="text" {...register("rua")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Banco:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="banco" type="text" placeholder="Ex: Banco do Brasil" />
+                                <Input id="banco" type="text" {...register("banco")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Agencia:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="agencia" type="text" placeholder="Ex: 1111-1" />
+                                <Input id="agencia" type="text" {...register("agencia")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Conta:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="conta" type="text" placeholder="Ex: 111222333" />
+                                <Input id="conta" type="text" {...register("conta")} />
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
+                            <TableCell className="font-semibold">Chave Pix:</TableCell>
+                            <TableCell className="flex justify-start -mt-2">
+                                <Input id="chave_pix" type="text" {...register("chave_pix")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Cargo:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Select>
+                                <Select
+                                    {...register("role")}
+                                    onValueChange={(value) => setValue("role", value)}
+                                >
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem className="cursor-pointer" value="colaborador">Colaborador</SelectItem>
-                                        <SelectItem className="cursor-pointer" value="fisioterapeuta">Fisioterapeuta</SelectItem>
-                                        <SelectItem className="cursor-pointer" value="enfermeiro">Enfermeiro</SelectItem>
-                                        <SelectItem className="cursor-pointer" value="tecnico-enfermagem">Técnico de Enfermagem</SelectItem>
+                                        <SelectItem className="cursor-pointer" {...register("role")} value="nutricionista">Nutricionista</SelectItem>
+                                        <SelectItem className="cursor-pointer" {...register("role")} value="fisioterapeuta">Fisioterapeuta</SelectItem>
+                                        <SelectItem className="cursor-pointer" {...register("role")} value="enfermeiro">Enfermeiro</SelectItem>
+                                        <SelectItem className="cursor-pointer" {...register("role")} value="técnico de enfermagem">Técnico de Enfermagem</SelectItem>
+                                        <SelectItem className="cursor-pointer" {...register("role")} value="fonoaudiólogo">Fonoaudiólogo</SelectItem>
+                                        <SelectItem className="cursor-pointer" {...register("role")} value="psicólogo">Psicólogo</SelectItem>
+                                        <SelectItem className="cursor-pointer" {...register("role")} value="dentista">Dentista</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </TableCell>
@@ -90,7 +120,10 @@ export const CollaboratorAdditioner = () => {
                         <TableRow>
                             <TableCell className="font-semibold">Status:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Select defaultValue="Ativo">
+                                <Select
+                                    {...register("status")}
+                                    onValueChange={(value) => setValue("status", value)}
+                                >
                                     <SelectTrigger >
                                         <SelectValue />
                                     </SelectTrigger>
@@ -101,13 +134,7 @@ export const CollaboratorAdditioner = () => {
                                 </Select>
                             </TableCell>
                         </TableRow>
-                        <TableRow>
-                            <TableCell ></TableCell>
-                            <TableCell className="flex justify-start -mt-2">
-
-                            </TableCell>
-                        </TableRow>
-                        <TableRow className="col-span-3 flex">
+                        {/* <TableRow className="col-span-3 flex">
                             <TableCell className="font-semibold">Especialidades:</TableCell>
                             <TableCell className="w-full grid grid-cols-3 gap-2">
                                 {loading ? (
@@ -126,13 +153,14 @@ export const CollaboratorAdditioner = () => {
                                     ))
                                 )}
                             </TableCell>
-                        </TableRow>
+                        </TableRow> */}
                     </TableBody>
                 </Table>
-            </div>
-            <DialogFooter className="mt-2">
-                <Button type="submit">Adicionar</Button>
-            </DialogFooter>
+
+                <DialogFooter className="mt-2">
+                    <Button type="submit">Adicionar</Button>
+                </DialogFooter>
+            </form>
         </DialogContent>
     )
 }

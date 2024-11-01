@@ -11,7 +11,7 @@ export const scaleSchema = z.object({
     valor_recebido: z.number(),
     valor_pago: z.number(),
     pagamentoAR_AV: z.string().nullable(),
-    nomeFuncionario: z.string().optional().nullable(),  // Campo para o nome do colaborador
+    nomeFuncionario: z.string().optional().nullable(),
     nomePaciente: z.string().optional().nullable()
 });
 
@@ -42,49 +42,6 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
     const [scales, setScales] = useState<Scale[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // async function fetchScales(filters: ScaleFiltersSchema = {}) {
-    //     setLoading(true);
-
-    //     let query = supabase.from('escala').select('*');
-
-    //     if (filters.pacienteId) {
-    //         query = query.eq('paciente_id', filters.pacienteId);
-    //     }
-    //     if (filters.funcionarioId) {
-    //         query = query.eq('funcionario_id', filters.funcionarioId);
-    //     }
-    //     if (filters.data) {
-    //         query = query.eq('data', filters.data);
-    //     }
-    //     if (filters.tipoServico) {
-    //         query = query.ilike('tipo_servico', `%${filters.tipoServico}%`);
-    //     }
-
-    //     const { data: escalas, error } = await query;
-
-    //     if (error) {
-    //         console.error('Erro ao buscar dados de escala:', error);
-    //         setLoading(false);
-    //         return;
-    //     }
-
-    //     if (escalas) {
-    //         console.log("Dados de escalas brutos:", escalas);
-
-    //         const parsedData = escalas.map((item) => {
-    //             const parsedItem = scaleSchema.safeParse(item);
-    //             if (!parsedItem.success) {
-    //                 console.warn("Erro de validação para item:", item, parsedItem.error);
-    //             }
-    //             return parsedItem;
-    //         });
-
-    //         const validScales = parsedData.filter((item) => item.success).map((item) => item.data);
-    //         setScales(validScales);
-    //     }
-
-    //     setLoading(true);
-    // }
     async function fetchScales(filters: ScaleFiltersSchema = {}) {
         setLoading(true);
 

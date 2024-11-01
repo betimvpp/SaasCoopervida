@@ -41,7 +41,7 @@ export function AppLayout() {
         <SideBar />
       </div>
       <Separator orientation='vertical' />
-      <div className='w-full p-8 flex gap-2'>
+      <div className='w-full h-screen overflow-hidden p-8 flex gap-2'>
         <Outlet />
         <span className="absolute top-8 right-8">
           <ModeToggle />

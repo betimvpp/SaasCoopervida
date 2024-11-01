@@ -33,7 +33,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setIsAuthenticated(true);
             setUser(data.user);
             toast.success("Sucesso, você será redirecionado para a página principal!");
-            console.log(user)
             return true
         } catch (error: any) {
             console.error("Erro durante o login:", error.message);
