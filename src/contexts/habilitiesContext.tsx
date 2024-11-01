@@ -58,7 +58,6 @@ export const HabilityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     );
 };
 
-// Hook personalizado para acessar o contexto de habilities
 export const useHabilitys = () => {
     const context = useContext(HabilityContext);
     if (!context) {

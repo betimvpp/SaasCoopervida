@@ -41,7 +41,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }    
 
-
     function logout() {
         supabase.auth.signOut();
         setIsAuthenticated(false);
