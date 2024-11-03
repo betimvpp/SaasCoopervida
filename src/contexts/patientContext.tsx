@@ -31,6 +31,8 @@ interface PatientContextType {
   loading: boolean;
   fetchPatients: (filters?: PatientFiltersSchema, pageIndex?: number) => Promise<void>;
   fetchPatientsNotPaginated: (filters?: PatientFiltersSchema) => Promise<void>;
+  addPatient: (newPatient: Omit<Patient, 'paciente_id'>) => Promise<void>;
+  updatePatient: (updatedPatient: Partial<Patient>, pacienteId: string) => Promise<void>;
 }
 
 const PatientContext = createContext<PatientContextType | undefined>(undefined);
@@ -113,13 +115,63 @@ export const PatientProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setLoading(false);
   }, []);
 
+  const addPatient = useCallback(async (newPatient: Omit<Patient, 'paciente_id'>) => {
+    setLoading(true);
+
+    const parsedPatient = patientSchema.omit({ paciente_id: true }).safeParse(newPatient);
+    if (!parsedPatient.success) {
+      console.error('Erro na validação do paciente:', parsedPatient.error);
+      setLoading(false);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('paciente')
+      .insert(parsedPatient.data)
+      .select();
+
+    if (error) {
+      console.error('Erro ao adicionar paciente:', error);
+    } else if (data) {
+      setPatients((prev) => [...prev, { paciente_id: data[0].paciente_id, ...parsedPatient.data }]);
+    }
+
+    setLoading(false);
+  }, []);
+
+  const updatePatient = useCallback(async (updatedPatient: Partial<Patient>, pacienteId: string) => {
+    setLoading(true);
+
+    const parsedPatient = patientSchema.safeParse(updatedPatient);
+    if (!parsedPatient.success) {
+        console.error('Erro na validação do paciente:', parsedPatient.error);
+        setLoading(false);
+        return;
+    }
+
+    const { data, error } = await supabase
+        .from('paciente')
+        .update(parsedPatient.data)
+        .eq('paciente_id', pacienteId)
+        .select();
+
+    if (error) {
+        console.error('Erro ao atualizar paciente:', error);
+    } else if (data) {
+        setPatients((prev) => prev.map((patient) => (patient.paciente_id === data[0].paciente_id ? data[0] : patient)));
+    }
+
+    setLoading(false);
+}, []);
+
+
   useEffect(() => {
     fetchPatients();
     fetchPatientsNotPaginated();
   }, [fetchPatients, fetchPatientsNotPaginated]);
 
   return (
-    <PatientContext.Provider value={{ fetchPatientsNotPaginated, patientsNotPaginated, patients, loading, fetchPatients }}>
+    <PatientContext.Provider value={{ fetchPatientsNotPaginated, updatePatient, patientsNotPaginated, patients, loading, fetchPatients, addPatient }}>
       {children}
     </PatientContext.Provider>
   );

@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Collaborator, collaboratorFiltersSchema, CollaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
+import { collaboratorFiltersSchema, CollaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { CollaboratorAdditioner } from './CollaboratorAdditioner'
 import { useState } from 'react'

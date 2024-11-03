@@ -6,9 +6,9 @@ import { Pagination } from "@/components/pagination";
 import { useEffect, useState } from "react";
 
 export const HumanResources = () => {
-  const { employees, loading, fetchHumanResources, fetchHumanResourcesNotPaginated } = useHumanResources();
+  const { humanResources, loading, fetchHumanResources, fetchHumanResourcesNotPaginated, humanResourcesNotPaginated } = useHumanResources();
   const [pageIndex, setPageIndex] = useState(0);
-  const totalCount = employees?.length || 0;
+  const totalCount = humanResourcesNotPaginated?.length || 0;
 
   const handlePageChange = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
@@ -30,7 +30,7 @@ export const HumanResources = () => {
       <HumanResourcesFilters />
       <div className=" h-full w-full shadow-lg border rounded-md">
         <HumanResourcesTable />
-        {employees?.length === 0 && loading === false &&
+        {humanResources?.length === 0 && loading === false &&
           <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhum usuário encontrado!</div>
         }
       </div>

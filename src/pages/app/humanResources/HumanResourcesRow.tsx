@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { TableCell, TableRow } from '@/components/ui/table'
-import { Employee } from '@/contexts/rhContext'
+import { HumanResource } from '@/contexts/rhContext'
 import { Search } from 'lucide-react'
 import { useState } from 'react'
 import { HumanResourceDetails } from './HumanResourceDetails'
 
-export const HumanResourcesRow = ({ employee }: { employee: Employee }) => {
+export const HumanResourcesRow = ({ humanResource }: { humanResource: HumanResource }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     return (
@@ -19,20 +19,17 @@ export const HumanResourcesRow = ({ employee }: { employee: Employee }) => {
                             <span className="sr-only">Detalhes do RH</span>
                         </Button>
                     </DialogTrigger>
-                    <HumanResourceDetails open={isDetailsOpen} humanResource={employee} />
+                    <HumanResourceDetails open={isDetailsOpen} humanResource={humanResource} />
                 </Dialog>
             </TableCell>
 
-            <TableCell className="text-center">{employee?.email}</TableCell>
-            <TableCell className="text-center">{employee?.nome}</TableCell>
-            <TableCell className="text-center">{employee?.cpf}</TableCell>
-            <TableCell className="text-center">{employee?.telefone}</TableCell>
-            <TableCell className="text-center">{employee?.rua}</TableCell>
-            <TableCell className="text-center">{employee?.cidade}</TableCell>
-            <TableCell className="text-center">{employee?.banco}</TableCell>
-            <TableCell className="text-center">{employee?.agencia}</TableCell>
-            <TableCell className="text-center">{employee?.conta}</TableCell>
-            <TableCell className="text-center">{employee?.role.toLocaleUpperCase()}</TableCell>
+            <TableCell className="text-center">{humanResource?.email}</TableCell>
+            <TableCell className="text-center">{humanResource?.nome}</TableCell>
+            <TableCell className="text-center">{humanResource?.cpf}</TableCell>
+            <TableCell className="text-center">{humanResource?.telefone}</TableCell>
+            <TableCell className="text-center">{humanResource?.rua}</TableCell>
+            <TableCell className="text-center">{humanResource?.cidade}</TableCell>
+            <TableCell className="text-center">{humanResource?.chave_pix}</TableCell>
         </TableRow >
     )
 }

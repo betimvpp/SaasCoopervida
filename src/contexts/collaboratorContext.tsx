@@ -56,27 +56,27 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
 
     const fetchCollaborator = useCallback(async (filters: CollaboratorFiltersSchema = { collaboratorId: '', collaboratorName: '', role: 'all' }, pageIndex: number = 0) => {
         setLoading(true);
-        
+
         let query = supabase.from('funcionario')
             .select('*')
             .neq("role", "rh")
             .neq("role", "admin")
             .range(pageIndex * 10, pageIndex * 10 + 9); // Atualiza o range com base no pageIndex
-    
+
         if (filters.collaboratorId) {
             query = query.eq('funcionario_id', filters.collaboratorId);
         }
-    
+
         if (filters.collaboratorName) {
             query = query.ilike('nome', `%${filters.collaboratorName}%`);
         }
-    
+
         if (filters.role && filters.role !== 'all') {
             query = query.eq('role', filters.role);
         }
-    
+
         const { data: funcionario, error } = await query;
-    
+
         if (error) {
             console.error('Erro ao buscar dados de Colaboradores:', error);
         } else {
@@ -84,7 +84,7 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
         }
         setLoading(false);
     }, []);
-    
+
 
     const fetchCollaboratorNotPaginated = useCallback(async (filters: CollaboratorFiltersSchema = { collaboratorId: '', collaboratorName: '', role: 'all' }) => {
         setLoading(true);
@@ -116,6 +116,41 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
         setLoading(false);
     }, []);
 
+    const addCollaborator = async (newCollaborator: Partial<Collaborator>) => {
+        try {
+            if (!newCollaborator.email || !newCollaborator.cpf) {
+                throw new Error('Dados inválidos');
+            }
+
+            const { data, error: signUpError } = await supabase.auth.signUp({
+                email: newCollaborator.email,
+                password: newCollaborator.cpf,
+            });
+
+            if (signUpError) {
+                throw new Error(`Erro ao criar usuário: ${signUpError.message}`);
+            }
+
+            const collaboratorWithId = {
+                ...newCollaborator,
+                funcionario_id: data.user?.id,
+                status: newCollaborator.status || "Ativo",
+            };
+
+            const { error: insertError } = await supabase
+                .from('funcionario')
+                .insert(collaboratorWithId);
+
+            if (insertError) {
+                throw new Error(`Erro ao inserir colaborador: ${insertError.message}`);
+            }
+
+            console.log('Colaborador adicionado com sucesso!');
+        } catch (error) {
+            console.error("Erro ao adicionar colaborador:", error);
+        }
+    };
+
     async function updateCollaborator(updatedData: Partial<Collaborator>, funcionarioId: string) {
         try {
             const { error: updateError } = await supabase
@@ -131,28 +166,6 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
             console.error("Erro geral ao atualizar funcionario:", error);
         }
     }
-
-    const addCollaborator = async (newCollaborator: Partial<Collaborator>) => {
-        try {
-            const collaboratorWithId = {
-                ...newCollaborator,
-                funcionario_id: crypto.randomUUID(),
-                status: newCollaborator.status || "Ativo",
-            };
-
-            const { error } = await supabase
-                .from('funcionario')
-                .insert(collaboratorWithId);
-
-            if (error) {
-                console.error("Erro ao adicionar colaborador:", error);
-                throw new Error("Erro ao adicionar colaborador");
-            }
-        } catch (error) {
-            console.error("Erro ao adicionar colaborador:", error);
-        }
-    };
-
 
     useEffect(() => {
         fetchCollaborator();

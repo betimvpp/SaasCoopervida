@@ -26,7 +26,7 @@ export const Patient = () => {
   return (
     <div className="flex flex-col w-full gap-2">
       <Helmet title="Pacientes" />
-      <h1 className="text-4xl font-bold textslate mb-4">Painel de Pacientes</h1>
+      <h1 className="text-4xl font-bold textslate mb-2">Painel de Pacientes</h1>
       <PatientFilters />
       <div className=" h-full w-full shadow-lg border rounded-md">
         <PatientTable />

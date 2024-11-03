@@ -58,7 +58,7 @@ export const HabilityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     );
 };
 
-export const useHabilitys = () => {
+export const useHabilities = () => {
     const context = useContext(HabilityContext);
     if (!context) {
         throw new Error('useHabilitys deve ser usado dentro do HabilityProvider');

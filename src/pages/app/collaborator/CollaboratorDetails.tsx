@@ -1,12 +1,11 @@
 import { Button } from "@/components/ui/button";
-// import { Checkbox } from "@/components/ui/checkbox"; 
 import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Collaborator, useCollaborator } from "@/contexts/collaboratorContext";
-// import { useHabilitys } from "@/contexts/habilitiesContext";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export interface CollaboratorDetailsProps {
     collaborator: Collaborator;
@@ -17,22 +16,23 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
     const { register, handleSubmit, setValue } = useForm<Collaborator>({
         defaultValues: collaborator,
     });
+    
     const { updateCollaborator } = useCollaborator()
 
     const handleUpdate = async (dataResp: Collaborator) => {
         if (!collaborator.funcionario_id) {
             console.error("ID do colaborador está indefinido");
-            alert("Erro: colaborador ID indefinido.");
+            toast.error("Erro: colaborador ID indefinido.");
             return;
         }
 
         try {
             await updateCollaborator(dataResp, collaborator.funcionario_id);
             console.log("Dados enviados:", dataResp);
-            alert("Colaborador atualizado com sucesso!");
+            toast.success("Colaborador atualizado com sucesso!");
         } catch (error) {
             console.error("Erro ao atualizar colaborador:", error);
-            alert("Erro ao atualizar colaborador.");
+            toast.error("Erro ao atualizar colaborador.");
         }
     };
 

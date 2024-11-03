@@ -2,23 +2,24 @@ import { z } from 'zod';
 import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from 'react';
 import supabase from '@/lib/supabase';
 
-export const employeeSchema = z.object({
-    funcionario_id: z.string().uuid(),
-    nome: z.string(),
-    cpf: z.string(),
-    telefone: z.string(),
+export const humanResourceSchema = z.object({
+    funcionario_id: z.string().uuid().optional(),
+    nome: z.string().optional(),
+    cpf: z.string().optional(),
+    telefone: z.string().optional(),
     email: z.string().email(),
-    rua: z.string(),
-    status: z.string(),
-    role: z.string(),
-    cidade: z.string(),
-    banco: z.string(),
-    agencia: z.string(),
-    conta: z.string(),
-    data_nascimento: z.string(),
+    rua: z.string().optional(),
+    status: z.string().optional(),
+    role: z.string().optional(),
+    cidade: z.string().optional(),
+    banco: z.string().optional(),
+    agencia: z.string().optional(),
+    conta: z.string().optional(),
+    data_nascimento: z.date().optional(),
+    chave_pix: z.string().optional(),
 });
 
-export type Employee = z.infer<typeof employeeSchema>;
+export type HumanResource = z.infer<typeof humanResourceSchema>;
 
 export const humanResourcesFiltersSchema = z.object({
     humanResourcesId: z.string().optional(),
@@ -28,24 +29,28 @@ export const humanResourcesFiltersSchema = z.object({
 export type HumanResourcesFiltersSchema = z.infer<typeof humanResourcesFiltersSchema>;
 
 const HumanResourcesContext = createContext<{
-    employees: Employee[];
-    employeesNotPaginated: Employee[];
+    humanResources: HumanResource[];
+    humanResourcesNotPaginated: HumanResource[];
     loading: boolean;
     fetchHumanResources: (filters?: HumanResourcesFiltersSchema, pageIndex?: number) => Promise<void>;
     fetchHumanResourcesNotPaginated: (filters?: HumanResourcesFiltersSchema, pageIndex?: number) => Promise<void>;
+    addHumanResources: (newHumanResources: Omit<HumanResource, 'funcionario_id'>) => Promise<void>; // Adicione esta linha
+    updateHumanResources: (updatedData: Partial<HumanResource>, funcionarioId: string) => Promise<void>; // Adicione esta linha
 }>({
-    employees: [],
-    employeesNotPaginated: [],
+    humanResources: [],
+    humanResourcesNotPaginated: [],
     loading: true,
     fetchHumanResources: async () => { },
     fetchHumanResourcesNotPaginated: async () => { },
+    addHumanResources: async () => { },
+    updateHumanResources: async () => { },
 });
 
 export const useHumanResources = () => useContext(HumanResourcesContext);
 
 export const HumanResourcesProvider = ({ children }: { children: ReactNode }) => {
-    const [employees, setEmployees] = useState<Employee[]>([]);
-    const [employeesNotPaginated, setEmployeesNotPaginated] = useState<Employee[]>([]);
+    const [humanResources, setHumanResources] = useState<HumanResource[]>([]);
+    const [humanResourcesNotPaginated, setHumanResourcesNotPaginated] = useState<HumanResource[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchHumanResources = useCallback(async (filters: HumanResourcesFiltersSchema = { humanResourcesId: '', humanResourcesName: '' }, pageIndex: number = 0) => {
@@ -54,7 +59,7 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         let query = supabase
             .from('funcionario')
             .select('*')
-            .eq('role', 'rh')
+            .eq("role", "rh")
             .range(pageIndex * 10, pageIndex * 10 + 9);
 
         if (filters.humanResourcesId) {
@@ -68,20 +73,21 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         const { data: funcionario, error } = await query;
 
         if (error) {
-            console.error('Erro ao buscar dados de RH:', error);
-            setLoading(false);
-            return;
+            console.error('Erro ao buscar dados de Colaboradores:', error);
+        } else {
+            setHumanResources(funcionario);
         }
+        setLoading(false);
 
-        if (funcionario) {
-            const parsedData = funcionario.map((item) => employeeSchema.safeParse(item));
+        // if (funcionario) {
+        //     const parsedData = funcionario.map((item) => humanResourceSchema.safeParse(item));
 
-            const validEmployees = parsedData
-                .filter((item) => item.success)
-                .map((item) => item.data);
+        //     const validHumanResources = parsedData
+        //         .filter((item) => item.success)
+        //         .map((item) => item.data);
 
-            setEmployees(validEmployees);
-        }
+        //     setHumanResources(validHumanResources);
+        // }
 
         setLoading(false);
     }, []);
@@ -112,17 +118,71 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         }
 
         if (funcionario) {
-            const parsedData = funcionario.map((item) => employeeSchema.safeParse(item));
+            const parsedData = funcionario.map((item) => humanResourceSchema.safeParse(item));
 
-            const validEmployees = parsedData
+            const validHumanResources = parsedData
                 .filter((item) => item.success)
                 .map((item) => item.data);
 
-            setEmployeesNotPaginated(validEmployees);
+            setHumanResourcesNotPaginated(validHumanResources);
         }
 
         setLoading(false);
     }, []);
+
+    const addHumanResources = async (newHumanResources: Omit<HumanResource, 'funcionario_id'>) => {
+        try {
+            if (!newHumanResources.email || !newHumanResources.cpf) {
+                throw new Error('Dados inválidos');
+            }
+
+            const { data, error: signUpError } = await supabase.auth.signUp({
+                email: newHumanResources.email,
+                password: newHumanResources.cpf,
+            });
+
+            if (signUpError) {
+                throw new Error(`Erro ao criar usuário: ${signUpError.message}`);
+            }
+
+            const humanResourcesWithId = {
+                ...newHumanResources,
+                funcionario_id: data.user?.id, // Usando o ID gerado pelo Supabase
+                status: newHumanResources.status || "Ativo",
+                role: "rh",
+            };
+
+            const { error: insertError } = await supabase
+                .from('funcionario')
+                .insert(humanResourcesWithId);
+
+            if (insertError) {
+                throw new Error(`Erro ao inserir colaborador: ${insertError.message}`);
+            }
+
+            console.log('Colaborador de RH adicionado com sucesso!');
+        } catch (error) {
+            console.error("Erro ao adicionar colaborador de RH:", error);
+        }
+    };
+
+    const updateHumanResources = async (updatedData: Partial<HumanResource>, funcionarioId: string) => {
+        try {
+            const { error: updateError } = await supabase
+                .from('funcionario')
+                .update(updatedData)
+                .eq('funcionario_id', funcionarioId);
+
+            if (updateError) {
+                console.error("Erro ao atualizar colaborador de RH:", updateError);
+                throw new Error("Erro ao atualizar colaborador de RH");
+            }
+        } catch (error) {
+            console.error("Erro geral ao atualizar colaborador de RH:", error);
+        }
+    };
+
+
 
     useEffect(() => {
         fetchHumanResources();
@@ -130,7 +190,7 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
     }, [fetchHumanResources, fetchHumanResourcesNotPaginated]);
 
     return (
-        <HumanResourcesContext.Provider value={{ employees, employeesNotPaginated, fetchHumanResources, fetchHumanResourcesNotPaginated, loading }}>
+        <HumanResourcesContext.Provider value={{ humanResources, humanResourcesNotPaginated, fetchHumanResources, fetchHumanResourcesNotPaginated, loading, addHumanResources, updateHumanResources }}>
             {children}
         </HumanResourcesContext.Provider>
     );

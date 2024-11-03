@@ -4,7 +4,7 @@ import { useHumanResources } from "@/contexts/rhContext"
 import { HumanResourcesTableSkeleton } from "./HumanResourcesTableSkeleton";
 
 export const HumanResourcesTable = () => {
-    const { employees, loading } = useHumanResources(); 
+    const { humanResources, loading } = useHumanResources(); 
 
     return (
         <Table>
@@ -17,15 +17,12 @@ export const HumanResourcesTable = () => {
                     <TableHead className="text-center">Telefone</TableHead>
                     <TableHead className="text-center">Rua</TableHead>
                     <TableHead className="text-center">Cidade</TableHead>
-                    <TableHead className="text-center">Banco</TableHead>
-                    <TableHead className="text-center">Agencia</TableHead>
-                    <TableHead className="text-center">Conta</TableHead>
-                    <TableHead className="text-center">Cargo</TableHead>
+                    <TableHead className="text-center">Chave Pix</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                { employees && employees.map((employee) => (
-                    <HumanResourcesRow key={employee.funcionario_id} employee={employee}/>
+                { humanResources && humanResources.map((humanResource) => (
+                    <HumanResourcesRow key={humanResource.funcionario_id} humanResource={humanResource}/>
                 ))}
             </TableBody>
             {loading === true && <HumanResourcesTableSkeleton />}

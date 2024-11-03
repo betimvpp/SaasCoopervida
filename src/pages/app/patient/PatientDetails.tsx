@@ -4,8 +4,11 @@ import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTit
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useHabilitys } from "@/contexts/habilitiesContext";
-import { Patient } from "@/contexts/patientContext";
+import { useHabilities } from "@/contexts/habilitiesContext";
+import { Patient, usePatients } from "@/contexts/patientContext";
+
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export interface PatientDetailsProps {
     patient: Patient;
@@ -13,7 +16,28 @@ export interface PatientDetailsProps {
 }
 
 export const PatientDetails = ({ patient }: PatientDetailsProps) => {
-    const { habilities, loading } = useHabilitys();
+    const { habilities, loading } = useHabilities();
+    const { register, handleSubmit, setValue } = useForm<Patient>({
+        defaultValues: patient,
+    });
+    const { updatePatient } = usePatients()
+
+    const handleUpdate = async (dataResp: Patient) => {
+        if (!patient.paciente_id) {
+            console.error("ID do pacient está indefinido");
+            toast.error("Erro: pacient ID indefinido.");
+            return;
+        }
+
+        try {
+            await updatePatient(dataResp, patient.paciente_id);
+            console.log("Dados enviados:", dataResp);
+            toast.success("Colaborador atualizado com sucesso!");
+        } catch (error) {
+            console.error("Erro ao atualizar pacient:", error);
+            toast.success("Erro ao atualizar pacient.");
+        }
+    };
 
     return (
         <DialogContent className="min-w-[1000px]">
@@ -21,68 +45,70 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                 <DialogTitle>Detalhes do Paciente: {patient.nome}</DialogTitle>
                 <DialogDescription>Status: {patient.status}</DialogDescription>
             </DialogHeader>
-            <div className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit(handleUpdate)}>
                 <Table >
                     <TableBody className="grid grid-cols-3">
                         <TableRow>
                             <TableCell className="font-semibold">Nome:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="nome" type="text" placeholder={patient.nome}/>
+                                <Input id="nome" type="text" {...register("nome")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">E-mail:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="email" type="email" placeholder={patient.email} />
+                                <Input id="email" type="email" {...register("email")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">CPF:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="cpf" type="text" placeholder={patient.cpf} />
+                                <Input id="cpf" type="text" {...register("cpf")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Telefone:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="telefone" type="text" placeholder={patient.telefone} />
+                                <Input id="telefone" type="text" {...register("telefone")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Cidade:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="cidade" type="text" placeholder={patient.cidade} />
+                                <Input id="cidade" type="text" {...register("cidade")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Rua:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="rua" type="text" placeholder={patient.rua} />
+                                <Input id="rua" type="text" {...register("rua")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="pagamento_dia" type="number" placeholder={patient.pagamento_dia.toLocaleString()} />
+                                <Input id="pagamento_dia" type="number" {...register("pagamento_dia")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Pagamento/Profisional:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="pagamento_a_profissional" type="number" placeholder={patient.pagamento_dia.toLocaleString()} />
+                                <Input id="pagamento_a_profissional" type="number" {...register("pagamento_a_profissional")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Plano de Saúde:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="plano" type="text" placeholder={patient.plano_saude} />
+                                <Input id="plano" type="text" {...register("plano_saude")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Status:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
                                 <Select
+                                    {...register("status")}
                                     defaultValue={patient.status}
+                                    onValueChange={(value) => setValue("status", value)}
                                 >
                                     <SelectTrigger >
                                         <SelectValue />
@@ -116,10 +142,11 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                         </TableRow>
                     </TableBody>
                 </Table>
-            </div>
-            <DialogFooter>
-                <Button type="submit">Editar</Button>
-            </DialogFooter>
+
+                <DialogFooter>
+                    <Button type="submit">Editar</Button>
+                </DialogFooter>
+            </form>
         </DialogContent>
     )
 }
