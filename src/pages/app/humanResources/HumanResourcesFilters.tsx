@@ -42,11 +42,11 @@ export function HumanResourcesFilters() {
         className="flex items-center gap-2"
       >
         <span className="text-sm font-semibold">Filtros:</span>
-        <Input
+        {/* <Input
           placeholder="ID do RH"
           className="h-8 w-auto"
           {...register('humanResourcesId')}
-        />
+        /> */}
         <Input
           placeholder="Nome do RH"
           className="h-8 w-[320px]"
@@ -70,7 +70,7 @@ export function HumanResourcesFilters() {
 
       <Dialog open={isAdditionerOpen} onOpenChange={setIsAdditionerOpen}>
         <DialogTrigger asChild>
-          <Button variant={'secondary'}>
+          <Button variant={'secondary'} size={"xs"}>
             Adcionar RH
           </Button>
         </DialogTrigger>

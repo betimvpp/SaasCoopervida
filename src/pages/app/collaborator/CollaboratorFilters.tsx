@@ -52,11 +52,11 @@ export function CollaboratorFilters() {
         className="flex items-center gap-2"
       >
         <span className="text-sm font-semibold">Filtros:</span>
-        <Input
+        {/* <Input
           placeholder="ID do colaborador"
           className="h-8 w-auto"
           {...register('collaboratorId')}
-        />
+        /> */}
         <Input
           placeholder="Nome do colaborador"
           className="h-8 w-[17rem]"
@@ -104,7 +104,7 @@ export function CollaboratorFilters() {
 
       <Dialog open={isAdditionerOpen} onOpenChange={setIsAdditionerOpen}>
         <DialogTrigger asChild>
-          <Button variant={'secondary'}>
+          <Button variant={'secondary'} size={"xs"}>
             Adcionar Colaborador
           </Button>
         </DialogTrigger>

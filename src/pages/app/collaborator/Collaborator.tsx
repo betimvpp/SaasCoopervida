@@ -26,7 +26,7 @@ export const Collaborator = () => {
   return (
     <div className="flex flex-col w-full h-full gap-2">
       <Helmet title="Colaboradores" />
-      <h1 className="text-4xl font-bold textslate mb-4">Painel de Colaboradores</h1>
+      <h1 className="text-4xl font-bold textslate mb-2">Painel de Colaboradores</h1>
       <CollaboratorFilters />
       <div className="w-full h-full shadow-lg border rounded-md">
         <CollaboratorTable />

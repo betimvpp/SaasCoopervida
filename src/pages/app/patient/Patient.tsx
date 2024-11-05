@@ -24,7 +24,7 @@ export const Patient = () => {
   }, [fetchPatients, pageIndex, fetchPatientsNotPaginated]);
 
   return (
-    <div className="flex flex-col w-full gap-2">
+    <div className="flex flex-col w-full h-full gap-2">
       <Helmet title="Pacientes" />
       <h1 className="text-4xl font-bold textslate mb-2">Painel de Pacientes</h1>
       <PatientFilters />

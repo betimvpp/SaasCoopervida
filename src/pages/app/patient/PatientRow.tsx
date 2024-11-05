@@ -44,14 +44,6 @@ export const PatientRow = ({ patient }: { patient: Patient }) => {
             </TableCell>
 
             <TableCell className="text-center">
-              {patient?.rua}
-            </TableCell>
-
-            <TableCell className="text-center">
-                {patient?.cidade}
-            </TableCell>
-
-            <TableCell className="text-center">
                 {patient?.pagamento_dia}
             </TableCell>
 

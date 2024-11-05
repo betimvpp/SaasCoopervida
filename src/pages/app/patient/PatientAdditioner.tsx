@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useHabilities } from "@/contexts/habilitiesContext";
 import { Patient, usePatients } from "@/contexts/patientContext";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -14,19 +14,34 @@ export const PatientAdditioner = () => {
     const { register, handleSubmit, setValue } = useForm<Patient>({});
     const { addPatient } = usePatients();
 
+    const [selectedHabilities, setSelectedHabilities] = useState<number[]>([]);
+
     const handleAdd = async (dataResp: Patient) => {
         try {
-            await addPatient(dataResp);
-            toast.success("Colaborador adicionado com sucesso!");
+            const patientData = {
+                ...dataResp,
+                especialidades: selectedHabilities,
+            };
+
+            await addPatient(patientData);
+            toast.success("Paciente adicionado com sucesso!");
         } catch (error) {
-            console.error("Erro ao adicionar colaborador:", error);
-            toast.error("Erro ao adicionar colaborador.");
+            console.error("Erro ao adicionar paciente:", error);
+            toast.error("Erro ao adicionar paciente.");
         }
         ;
     };
 
+    const handleCheckboxChange = (especialidadeId: number) => {
+        setSelectedHabilities((prevSelected) =>
+            prevSelected.includes(especialidadeId)
+                ? prevSelected.filter((id) => id !== especialidadeId)
+                : [...prevSelected, especialidadeId]
+        );
+    };
+
     return (
-        <DialogContent className="min-w-[1000px]">
+        <DialogContent className="min-w-[90vw]">
             <DialogHeader>
                 <DialogTitle>Adicionar Paciente</DialogTitle>
             </DialogHeader>
@@ -122,16 +137,13 @@ export const PatientAdditioner = () => {
                                 ) : (
                                     habilities.map((hability) => (
                                         <div key={hability.especialidade_id} className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id={`especialidade-${hability.especialidade_id}`}
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedHabilities.includes(hability.especialidade_id)}
+                                                onChange={() => handleCheckboxChange(hability.especialidade_id)}
+                                                className="cursor-pointer"
                                             />
-
-                                            <label
-                                                htmlFor={`especialidade-${hability.especialidade_id}`}
-                                                about="" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                            >
-                                                {hability.nome}
-                                            </label>
+                                            <label>{hability.nome}</label>
                                         </div>
                                     ))
                                 )}
