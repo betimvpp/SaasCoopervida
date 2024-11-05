@@ -24,7 +24,7 @@ export const CollaboratorTable = () => {
                     <CollaboratorRow key={collaborator?.funcionario_id} collaborator={collaborator} />
                 ))}
             </TableBody>
-            {loading === true && <CollaboratorTableSkeleton />}
+            {loading === true && collaborators.length <= 0 && <CollaboratorTableSkeleton />}
 
         </Table>
     )

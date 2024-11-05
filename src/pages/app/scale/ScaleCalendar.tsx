@@ -17,7 +17,7 @@ export const ScaleCalendar = () => {
     const [loading, setLoading] = useState(false);
     const today = dayjs();
 
-    const { scales, fetchScales } = useScale();
+    const { scales, fetchScales, scaleCountsByDate } = useScale();
 
     const handlePreviousMonth = () => setCurrentDate(currentDate.subtract(1, "month"));
     const handleNextMonth = () => setCurrentDate(currentDate.add(1, "month"));
@@ -59,18 +59,24 @@ export const ScaleCalendar = () => {
                     <div key={index} className="p-2 h-full bg-secondary opacity-30 shadow"></div>
                 ))}
                 {monthDays.map((day) => {
+                    const date = currentDate.date(day).format("YYYY-MM-DD");
+                    const scaleCount = scaleCountsByDate[date] || 0;
                     const isPastDay = currentDate.date(day).isBefore(today, "day");
-
                     return (
                         <div key={day} className={`p-2 h-full rounded shadow-md ${isPastDay ? "bg-secondary opacity-30" : "bg-secondary"}`}>
                             <Dialog >
                                 <DialogTrigger asChild>
                                     <Button
                                         variant="ghost"
-                                        className="h-full w-full text-start flex items-start justify-start"
+                                        className="h-full w-full text-start flex items-start justify-between"
                                         onClick={() => handleDayClick(day)}
                                     >
                                         {day}
+                                        {scaleCount > 0 && (
+                                            <span className="block text-xs font-bold">
+                                                {scaleCount} escala(s)
+                                            </span>
+                                        )}
                                     </Button>
                                 </DialogTrigger>
                                 {selectedDate && (

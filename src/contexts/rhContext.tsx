@@ -79,16 +79,6 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         }
         setLoading(false);
 
-        // if (funcionario) {
-        //     const parsedData = funcionario.map((item) => humanResourceSchema.safeParse(item));
-
-        //     const validHumanResources = parsedData
-        //         .filter((item) => item.success)
-        //         .map((item) => item.data);
-
-        //     setHumanResources(validHumanResources);
-        // }
-
         setLoading(false);
     }, []);
 
@@ -98,8 +88,7 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         let query = supabase
             .from('funcionario')
             .select('*')
-            .eq('role', 'rh')
-            .range(pageIndex * 10, pageIndex * 10 + 9);
+            .eq("role", "rh")
 
         if (filters.humanResourcesId) {
             query = query.eq('funcionario_id', filters.humanResourcesId);
@@ -112,23 +101,16 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         const { data: funcionario, error } = await query;
 
         if (error) {
-            console.error('Erro ao buscar dados de RH:', error);
-            setLoading(false);
-            return;
+            console.error('Erro ao buscar dados de Colaboradores:', error);
+        } else {
+            setHumanResourcesNotPaginated(funcionario);
         }
-
-        if (funcionario) {
-            const parsedData = funcionario.map((item) => humanResourceSchema.safeParse(item));
-
-            const validHumanResources = parsedData
-                .filter((item) => item.success)
-                .map((item) => item.data);
-
-            setHumanResourcesNotPaginated(validHumanResources);
-        }
+        setLoading(false);
 
         setLoading(false);
     }, []);
+
+   
 
     const addHumanResources = async (newHumanResources: Omit<HumanResource, 'funcionario_id'>) => {
         try {
@@ -147,7 +129,7 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
 
             const humanResourcesWithId = {
                 ...newHumanResources,
-                funcionario_id: data.user?.id, // Usando o ID gerado pelo Supabase
+                funcionario_id: data.user?.id, 
                 status: newHumanResources.status || "Ativo",
                 role: "rh",
             };

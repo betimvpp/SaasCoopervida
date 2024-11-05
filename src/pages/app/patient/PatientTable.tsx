@@ -25,7 +25,7 @@ export const PatientTable = () => {
                     <PatientRow key={patient.paciente_id} patient={patient} />
                 ))}
             </TableBody>
-            {loading === true && <PatientTableSkeleton />}
+            {loading === true && patients.length <= 0 && <PatientTableSkeleton />}
 
         </Table>
     )
