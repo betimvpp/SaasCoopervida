@@ -327,7 +327,7 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
         if (error) {
             console.error('Erro ao adicionar troca de serviços:', error);
         } else {
-            await fetchServiceExchangesNotPaginated(); // Atualiza a lista de trocas
+            await fetchServiceExchangesPaginated(); 
         }
     }, [fetchServiceExchangesNotPaginated]);
 
