@@ -1,26 +1,24 @@
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { ServiceExchange, useScale } from '@/contexts/scaleContext'
-import { useState } from 'react';
-import { toast } from 'sonner';
 
 export const PermutationRow = ({ scale }: { scale: ServiceExchange }) => {
-    const { updateServiceExchange } = useScale();
-    const [loading, setLoading] = useState(false);
+    const { handleApprove, handleReject } = useScale()
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('pt-BR');
     }
 
-    const handleApprove =() => {
-
+    const onApprove = async () => {
+        handleApprove(scale);
+        window.location.reload();
     };
 
-    const handleReject =() => {
-
-    };
-
+    const onReject = async () => {
+        handleReject(scale);
+        window.location.reload();
+    }
     return (
         <TableRow>
             <TableCell className="text-center">
@@ -51,24 +49,41 @@ export const PermutationRow = ({ scale }: { scale: ServiceExchange }) => {
                 {scale?.servico_destino}
             </TableCell>
 
-            <TableCell className="text-center">
-                {scale?.status_func_destino === 'pendente' && (
-                    <Button disabled>
+            <TableCell className="flex items-center justify-center gap-2">
+                {scale?.status_func_destino === 'Pendente' && (
+                    <Button size='xs' disabled variant='link'>
                         Pendente
                     </Button>
                 )}
-                {scale?.status_func_destino === 'aprovado' && (
+
+                {scale?.status_func_destino === 'Aprovado' && scale?.status_gestor === 'Aprovado' && (
+                    <Button size='xs' disabled variant='outline' className='border-primary text-primary'>
+                        Aprovado
+                    </Button>
+                )}
+
+                {/* Status: Aprovado (gestor pendente) */}
+                {scale?.status_func_destino === 'Aprovado' && scale?.status_gestor === 'Pendente' && (
                     <>
-                        <Button onClick={handleApprove} disabled={loading}>
+                        <Button size='xs' onClick={onApprove}>
                             Aprovar
                         </Button>
-                        <Button onClick={handleReject} disabled={loading}>
+                        <Button size='xs' onClick={onReject} variant='destructive'>
                             X
                         </Button>
                     </>
                 )}
-                {scale?.status_func_destino === 'rejeitado' && (
-                    <Button disabled>
+
+                {/* Status: Aprovado (gestor rejeitado) */}
+                {scale?.status_func_destino === 'Aprovado' && scale?.status_gestor === 'Rejeitado' && (
+                    <Button size='xs' disabled variant='outline' className='border-destructive text-destructive'>
+                        Rejeitado
+                    </Button>
+                )}
+
+                {/* Status: Rejeitado (funcionario ou gestor) - Aparece uma vez */}
+                {(scale?.status_func_destino === 'Rejeitado' || scale?.status_gestor === 'Rejeitado') && scale?.status_func_destino !== 'Aprovado' && scale?.status_gestor !== 'Aprovado' && (
+                    <Button size='xs' disabled variant='outline' className='border-destructive text-destructive'>
                         Rejeitado
                     </Button>
                 )}
@@ -76,5 +91,3 @@ export const PermutationRow = ({ scale }: { scale: ServiceExchange }) => {
         </TableRow >
     )
 }
-
-

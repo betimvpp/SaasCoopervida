@@ -82,7 +82,7 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         setLoading(false);
     }, []);
 
-    const fetchHumanResourcesNotPaginated = useCallback(async (filters: HumanResourcesFiltersSchema = { humanResourcesId: '', humanResourcesName: '' }, pageIndex: number = 0) => {
+    const fetchHumanResourcesNotPaginated = useCallback(async (filters: HumanResourcesFiltersSchema = { humanResourcesId: '', humanResourcesName: '' }) => {
         setLoading(true);
 
         let query = supabase

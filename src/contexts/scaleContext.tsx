@@ -53,6 +53,8 @@ export const serviceExchangeFiltersSchema = z.object({
     servicoOrigem: z.string().optional(),
     servicoDestino: z.string().optional(),
 
+    status: z.string().optional(),
+
     dateOrder: z.enum(['asc', 'desc']).nullable().optional(),
     originServiceOrder: z.enum(['asc', 'desc']).nullable().optional(),
     destServiceOrder: z.enum(['asc', 'desc']).nullable().optional(),
@@ -63,27 +65,41 @@ export type ServiceExchangeFiltersSchema = z.infer<typeof serviceExchangeFilters
 const ScaleContext = createContext<{
     scales: Scale[];
     scalesNotPaginated: Scale[];
+
     serviceExchanges: ServiceExchange[];
     serviceExchangesNotPaginated: ServiceExchange[];
+
     loading: boolean;
+
     fetchScales: (filters?: ScaleFiltersSchema, pageIndex?: number) => Promise<void>;
     fetchScalesNotPaginated: (filters?: ScaleFiltersSchema) => Promise<void>;
+
     fetchServiceExchanges: (filters?: ServiceExchangeFiltersSchema, pageIndex?: number) => Promise<void>;
     fetchServiceExchangesNotPaginated: (filters?: ServiceExchangeFiltersSchema,) => Promise<void>;
+
     scaleCountsByDate: Record<string, number>;
-    updateServiceExchange: (newExchange: Omit<ServiceExchange, 'troca_servico_id'>) => Promise<void>;
+
+    handleApprove: (scale: ServiceExchange) => Promise<void>;
+    handleReject: (scale: ServiceExchange) => Promise<void>;
 }>({
     scales: [],
     scalesNotPaginated: [],
+
     serviceExchanges: [],
     serviceExchangesNotPaginated: [],
+
     loading: true,
+
     fetchScales: async () => { },
     fetchScalesNotPaginated: async () => { },
+
     fetchServiceExchanges: async () => { },
     fetchServiceExchangesNotPaginated: async () => { },
+
     scaleCountsByDate: {},
-    updateServiceExchange: async () => { },
+
+    handleApprove: async () => { },
+    handleReject: async () => { },
 });
 
 export const useScale = () => useContext(ScaleContext);
@@ -226,6 +242,9 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
         if (filters.servicoDestino) {
             query = query.eq('servico_destino', filters.servicoDestino);
         }
+        if (filters.status) {
+            query = query.eq('status_gestor', filters.status);
+        }
 
         const { data, error } = await query;
 
@@ -259,7 +278,6 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
                 .map((item) => item.data);
 
             setServiceExchanges(validServiceExchanges);
-            console.log(validServiceExchanges); // Exiba os dados válidos para verificação
         }
 
         setLoading(false);
@@ -272,7 +290,6 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
             .from('troca_servicos')
             .select('*')
 
-        // Adicionando filtros
         if (filters.dataOrigem) {
             query = query.gte('data_servico_colaborador_origem', filters.dataOrigem);
         }
@@ -296,7 +313,6 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
 
         if (data) {
             const parsedData = data.map((item) => {
-                // Convertendo troca_servico_id para bigint se necessário
                 if (typeof item.troca_servico_id === 'number') {
                     item.troca_servico_id = BigInt(item.troca_servico_id);
                 }
@@ -313,23 +329,64 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
                 .map((item) => item.data);
 
             setServiceExchangesNotPaginated(validServiceExchanges);
-            console.log(validServiceExchanges); // Exiba os dados válidos aqui
         }
 
         setLoading(false);
     }, []);
 
-    const updateServiceExchange = useCallback(async (newExchange: Omit<ServiceExchange, 'troca_servico_id'>) => {
-        const { error } = await supabase
-            .from('troca_servicos')
-            .insert([newExchange]);
+    const handleApprove = useCallback(async (scale: ServiceExchange) => {
+        setLoading(true);
+        try {
+            const { error: trocaError } = await supabase
+                .from("troca_servicos")
+                .update({ status_gestor: "Aprovado" })
+                .eq("troca_servico_id", scale.troca_servico_id);
 
-        if (error) {
-            console.error('Erro ao adicionar troca de serviços:', error);
-        } else {
-            await fetchServiceExchanges(); 
+            if (trocaError) {
+                console.error("Erro ao aprovar troca:", trocaError.message);
+                return;
+            }
+
+            const { error: escalaOrigemError } = await supabase
+                .from("escala")
+                .update({ funcionario_id: scale.funcionario_destino_id })
+                .eq("escala_id", scale.escala_origem_id);
+
+            if (escalaOrigemError) {
+                console.error("Erro ao atualizar escala de origem:", escalaOrigemError.message);
+                return;
+            }
+
+            const { error: escalaDestinoError } = await supabase
+                .from("escala")
+                .update({ funcionario_id: scale.funcionario_origem_id })
+                .eq("escala_id", scale.escala_destino_id);
+
+            if (escalaDestinoError) {
+                console.error("Erro ao atualizar escala de destino:", escalaDestinoError.message);
+            }
+        } catch (error) {
+            console.error("Erro desconhecido ao aprovar a troca:", error);
         }
-    }, [fetchServiceExchangesNotPaginated]);
+        setLoading(false);
+    }, []);
+
+    const handleReject = useCallback(async (scale: ServiceExchange) => {
+        setLoading(true);
+        try {
+            const { error } = await supabase
+                .from("troca_servicos")
+                .update({ status_gestor: "Rejeitado" })
+                .eq("troca_servico_id", scale.troca_servico_id);
+
+            if (error) {
+                console.error("Erro ao rejeitar troca:", error.message);
+            }
+        } catch (error) {
+            console.error("Erro desconhecido ao rejeitar a troca:", error);
+        }
+        setLoading(false);
+    }, []);
 
 
     useEffect(() => {
@@ -347,15 +404,21 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
         <ScaleContext.Provider value={{
             scales,
             scalesNotPaginated,
+
             fetchScales,
             fetchScalesNotPaginated,
+
             fetchServiceExchanges,
             fetchServiceExchangesNotPaginated,
+
             loading,
             scaleCountsByDate,
+
             serviceExchanges,
             serviceExchangesNotPaginated,
-            updateServiceExchange
+
+            handleApprove,
+            handleReject
         }}>
             {children}
         </ScaleContext.Provider>

@@ -101,7 +101,7 @@ export function CollaboratorFilters() {
             Adcionar Colaborador
           </Button>
         </DialogTrigger>
-        <CollaboratorAdditioner/>
+        <CollaboratorAdditioner />
       </Dialog>
     </div>
   )

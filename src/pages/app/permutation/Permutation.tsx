@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useScale } from "@/contexts/scaleContext";
 import { Link } from "react-router-dom";
 import { PermutationTable } from "./PermutationTable";
+import { PermutationFilters } from "./PermutationFilters";
 
 export const Permutation = () => {
     const { fetchServiceExchangesNotPaginated, fetchServiceExchanges, loading, serviceExchangesNotPaginated, serviceExchanges } = useScale()
@@ -23,13 +24,15 @@ export const Permutation = () => {
 
         fetchData();
     }, [fetchServiceExchanges, pageIndex, fetchServiceExchangesNotPaginated]);
-    
+
     return (
         <div className="flex flex-col w-full gap-2">
             <Helmet title="Pacientes" />
             <h1 className="text-4xl font-bold textslate mb-2">
                 <Link to={"/escala"}>Painel de Escalas </Link>
-                - Permutas</h1>
+                - Permutas
+            </h1>
+            <PermutationFilters />
             <div className=" h-full w-full max-h-[700px] shadow-lg border rounded-md">
                 <PermutationTable />
                 {serviceExchanges?.length === 0 && loading === false &&

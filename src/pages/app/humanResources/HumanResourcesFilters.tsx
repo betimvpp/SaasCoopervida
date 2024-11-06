@@ -42,11 +42,6 @@ export function HumanResourcesFilters() {
         className="flex items-center gap-2"
       >
         <span className="text-sm font-semibold">Filtros:</span>
-        {/* <Input
-          placeholder="ID do RH"
-          className="h-8 w-auto"
-          {...register('humanResourcesId')}
-        /> */}
         <Input
           placeholder="Nome do RH"
           className="h-8 w-[320px]"
