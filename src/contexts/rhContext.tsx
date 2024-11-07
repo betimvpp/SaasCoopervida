@@ -110,8 +110,6 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         setLoading(false);
     }, []);
 
-   
-
     const addHumanResources = async (newHumanResources: Omit<HumanResource, 'funcionario_id'>) => {
         try {
             if (!newHumanResources.email || !newHumanResources.cpf) {
@@ -163,8 +161,6 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
             console.error("Erro geral ao atualizar colaborador de RH:", error);
         }
     };
-
-
 
     useEffect(() => {
         fetchHumanResources();

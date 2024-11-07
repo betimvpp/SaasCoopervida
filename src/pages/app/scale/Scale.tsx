@@ -17,7 +17,7 @@ export const Scale = () => {
           </Button>
         </Link>
 
-        <Link to={'/criarEscala'}>
+        <Link to={'/escala/criar'}>
           <Button variant={'secondary'}>
             Adcionar Escala
           </Button>

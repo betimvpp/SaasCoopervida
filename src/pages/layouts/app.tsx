@@ -36,7 +36,7 @@ export function AppLayout() {
 
   return (
     <div className='h-screen flex overflow-hidden'>
-      <div className='h-full w-[12%] p-8 default:bg-primary  shadow-lg'>
+      <div className='h-full min-w-[12%] p-8 default:bg-primary  shadow-lg'>
         <Profile />
         <SideBar />
       </div>

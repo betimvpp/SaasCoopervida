@@ -8,6 +8,7 @@ import { AuthLayout } from '@/pages/layouts/auth'
 import { Login } from '@/pages/login/Login'
 import { createBrowserRouter } from 'react-router-dom'
 import { Permutation } from '@/pages/app/permutation/Permutation'
+import { CreateSchedule } from '@/pages/app/createSchedule/CreateSchedule'
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/escala', element: <Scale /> },
       { path: '/escala/permutas', element: <Permutation /> },
+      { path: '/escala/criar', element: <CreateSchedule /> },
       { path: '/colaboradores', element: <Collaborator /> },
       { path: '/recursoshumanos', element: <HumanResources /> },
       { path: '/pacientes', element: <Patient /> },

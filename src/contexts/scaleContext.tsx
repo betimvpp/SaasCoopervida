@@ -3,7 +3,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useState 
 import supabase from '@/lib/supabase';
 
 export const scaleSchema = z.object({
-    escala_id: z.number(),
+    escala_id: z.number().optional().nullable(),
     paciente_id: z.string().uuid(),
     funcionario_id: z.string().uuid(),
     data: z.string(),
@@ -12,7 +12,8 @@ export const scaleSchema = z.object({
     valor_pago: z.number(),
     pagamentoAR_AV: z.string().nullable(),
     nomeFuncionario: z.string().optional().nullable(),
-    nomePaciente: z.string().optional().nullable()
+    nomePaciente: z.string().optional().nullable(),
+    horario_gerenciamento: z.string().optional().nullable(),
 });
 
 export type Scale = z.infer<typeof scaleSchema>;
