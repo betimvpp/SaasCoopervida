@@ -3,11 +3,12 @@ import { Profile } from '@/components/profile'
 import { SideBar } from '@/components/side-bar'
 import { Separator } from '@/components/ui/separator'
 import supabase from '@/lib/supabase'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 export function AppLayout() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -16,6 +17,8 @@ export function AppLayout() {
 
       if (!session || error) {
         navigate('/login', { replace: true });
+      } else {
+        setLoading(false);
       }
     };
 
@@ -24,6 +27,8 @@ export function AppLayout() {
     const { data: authListener } = supabase.auth.onAuthStateChange((session) => {
       if (!session) {
         navigate('/login', { replace: true });
+      } else {
+        setLoading(false);
       }
     });
 
@@ -31,6 +36,10 @@ export function AppLayout() {
       authListener?.subscription?.unsubscribe();
     };
   }, [navigate]);
+
+  if (loading) {
+    return null;
+  }
 
 
 

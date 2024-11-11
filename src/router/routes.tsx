@@ -9,6 +9,7 @@ import { Login } from '@/pages/login/Login'
 import { createBrowserRouter } from 'react-router-dom'
 import { Permutation } from '@/pages/app/permutation/Permutation'
 import { CreateSchedule } from '@/pages/app/createSchedule/CreateSchedule'
+import { ProtectedRoute } from './ProtectedRoute'
 
 export const router = createBrowserRouter([
   {
@@ -16,13 +17,44 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     // errorElement: <NotFound/>,
     children: [
-      { path: '/dashboard', element: <Dashboard /> },
+      {
+        path: '/dashboard', element: (
+          <ProtectedRoute allowedRoles={['admin']}>
+            <Dashboard />
+          </ProtectedRoute>
+        )
+      },
       { path: '/escala', element: <Scale /> },
-      { path: '/escala/permutas', element: <Permutation /> },
-      { path: '/escala/criar', element: <CreateSchedule /> },
-      { path: '/colaboradores', element: <Collaborator /> },
-      { path: '/recursoshumanos', element: <HumanResources /> },
-      { path: '/pacientes', element: <Patient /> },
+      {
+        path: '/escala/permutas', element:
+          <ProtectedRoute allowedRoles={['admin', 'rh']}>
+            <Permutation />
+          </ProtectedRoute>
+      },
+      {
+        path: '/escala/criar', element:
+          <ProtectedRoute allowedRoles={['admin', 'rh']}>
+            <CreateSchedule />
+          </ProtectedRoute>
+      },
+      {
+        path: '/colaboradores', element:
+          <ProtectedRoute allowedRoles={['admin', 'rh']}>
+            <Collaborator />
+          </ProtectedRoute>
+      },
+      {
+        path: '/recursoshumanos', element:
+          <ProtectedRoute allowedRoles={['admin', 'rh']}>
+            <HumanResources />
+          </ProtectedRoute>
+      },
+      {
+        path: '/pacientes', element:
+          <ProtectedRoute allowedRoles={['admin', 'rh']}>
+            <Patient />
+          </ProtectedRoute>
+      },
     ],
   },
   {

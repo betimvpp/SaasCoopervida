@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAuth } from "@/contexts/authContext";
 import { useNavigate } from "react-router-dom";
+import supabase from "@/lib/supabase";
 
 const signInForm = z.object({
   email: z.string().email(),
@@ -22,32 +23,41 @@ export function Login() {
   const navigate = useNavigate();
 
   async function handleLogin(dataResp: SignInForm) {
-    // const { data: funcionario, error: roleError } = await supabase
-    //   .from('funcionario')
-    //   .select('role')
-    //   .eq('funcionario_id', user.id)
-    //   .single();
-
-    // if (roleError) throw roleError;
-
-    // const userRole = funcionario?.role;
-
-    // switch (userRole) {
-    //   case "admin":
-    //     navigate("/admin");
-    //     break;
-    //   case "rh":
-    //     navigate("/rh");
-    //     break;
-    //   case "colaborador":
-    //     navigate("/colaborador");
-    //     break;
-    // }
-
-    const loginSuccess = await login(dataResp); 
+    const loginSuccess = await login(dataResp);
 
     if (loginSuccess) {
-      navigate("/dashboard");
+      // Após o login bem-sucedido, obtemos a session do Supabase
+      const { data, error } = await supabase.auth.getSession();
+      const session = data?.session;
+
+      if (session) {
+        // Obtenha a role do usuário após o login
+        const { data: user, error: userError } = await supabase
+          .from('funcionario') // Substitua 'funcionario' pela tabela correta, se necessário
+          .select('role')
+          .eq('funcionario_id', session.user.id)
+          .single();
+
+        if (userError) {
+          console.error("Erro ao obter a role do usuário", userError);
+          return;
+        }
+
+        const userRole = user?.role;
+
+        // Redireciona com base na role do usuário
+        switch (userRole) {
+          case "admin":
+            navigate("/dashboard"); // Admin tem acesso total
+            break;
+          case "rh":
+            navigate("/recursoshumanos"); // RH tem acesso a recursos humanos e escalas
+            break;
+          default:
+            navigate("/escala"); // Qualquer outra role é redirecionada para a escala
+            break;
+        }
+      }
     }
 
   }

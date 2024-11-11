@@ -5,13 +5,14 @@ import { patientFiltersSchema, PatientFiltersSchema, usePatients } from '@/conte
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useState, useEffect } from 'react'
-import { CollaboratorFiltersSchema, collaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
+import { Collaborator, CollaboratorFiltersSchema, collaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
 import { Scale } from '@/contexts/scaleContext'
 import { DateRange, DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
 import { eachDayOfInterval, format } from 'date-fns'
+import { toast } from 'sonner'
 
 export const CreateScheduleTable = () => {
     const { patients, fetchPatients } = usePatients();
@@ -21,6 +22,8 @@ export const CreateScheduleTable = () => {
     const [collaboratorSearchValue, setCollaboratorSearchValue] = useState('');
     const [selectedServiceType, setSelectedServiceType] = useState<string>('');
     const [selectedData, setSelectedData] = useState<DateRange>();
+    const [selectedCollaborators, setSelectedCollaborators] = useState<any[]>([]);
+    const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<string | null>(null);
 
     const { register, handleSubmit, setValue, watch, reset } = useForm<Scale>({});
 
@@ -40,6 +43,8 @@ export const CreateScheduleTable = () => {
 
     const handlePatientSelection = (patientId: string) => {
         const selectedPatientData = patients.find(patient => patient.paciente_id === patientId);
+        setValue('paciente_id', patientId);
+
         if (selectedPatientData) {
             setValue('valor_recebido', selectedPatientData.pagamento_dia);
             setValue('valor_pago', selectedPatientData.pagamento_a_profissional);
@@ -47,34 +52,65 @@ export const CreateScheduleTable = () => {
     };
 
     const generateRotatedSchedules = () => {
-        if (!selectedData || !selectedData.from || !selectedData.to || collaborators.length === 0) return;
+        if (!selectedData || !selectedData.from || !selectedData.to || selectedCollaborators.length === 0) return;
 
         const dateRange = eachDayOfInterval({ start: selectedData.from, end: selectedData.to });
         const newSchedules: Scale[] = [];
 
         dateRange.forEach((date, index) => {
-            const collaborator = collaborators[index % collaborators.length];
+            const collaborator = selectedCollaborators[index % selectedCollaborators.length];
+
             newSchedules.push({
                 data: format(date, 'yyyy-MM-dd'),
                 paciente_id: watch('paciente_id'),
                 funcionario_id: collaborator.funcionario_id,
                 valor_recebido: watch('valor_recebido'),
-                valor_pago: watch('valor_pago'),
-                tipo_servico: watch('tipo_servico'),
-                pagamentoAR_AV: watch('pagamentoAR_AV'),
-                horario_gerenciamento: selectedServiceType === 'GR' ? watch('horario_gerenciamento') : null,
+                valor_pago: collaborator.valor_pago,
+                tipo_servico: collaborator.tipo_servico,
+                pagamentoAR_AV: collaborator.pagamentoAR_AV,
+                horario_gerenciamento: collaborator.horario_gerenciamento,
             });
         });
-        
+
         setCompletedSchedules((prev) => {
-            console.log("New Schedules to Add:", newSchedules);
             return [...prev, ...newSchedules];
         });
     };
 
     const handleComplete = () => {
-        generateRotatedSchedules();
+        try {
+            if (selectedCollaboratorId) {
+                const selectedCollaborator = collaborators.find(c => c.funcionario_id === selectedCollaboratorId);
+                if (selectedCollaborator) {
+                    const newCollaborator = {
+                        ...selectedCollaborator,
+                        valor_pago: Number(watch('valor_pago')),
+                        tipo_servico: selectedServiceType,
+                        horario_gerenciamento: selectedServiceType === 'GR' ? watch('horario_gerenciamento') : null,
+                        pagamentoAR_AV: watch('pagamentoAR_AV'),
+                    };
+
+                    setSelectedCollaborators(prev => {
+                        if (!prev.some(c => c.funcionario_id === newCollaborator.funcionario_id)) {
+                            return [...prev, newCollaborator];
+                        }
+                        return prev;
+                    });
+                    toast.success("Colaborador adicionado com sucesso!");
+                }
+            }
+            generateRotatedSchedules();
+        } catch (error) {
+            console.error(error);
+            toast.error("Ocorreu um erro ao adicionar o colaborador. Tente novamente.");
+        }
     };
+
+    useEffect(() => {
+        if (selectedCollaborators.length > 0 && selectedData && selectedData.from && selectedData.to) {
+            generateRotatedSchedules();
+        }
+    }, [selectedCollaborators, selectedData]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -106,9 +142,9 @@ export const CreateScheduleTable = () => {
                     <TableRow className='col-span-2'>
                         <TableCell className="font-semibold">Nome do Paciente:</TableCell>
                         <TableCell className="flex justify-start -mt-2">
-                            <Select 
-                            {...register('paciente_id')}
-                            onValueChange={handlePatientSelection}
+                            <Select
+                                {...register('paciente_id')}
+                                onValueChange={handlePatientSelection}
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Selecione um paciente" />
@@ -127,7 +163,7 @@ export const CreateScheduleTable = () => {
                                     />
 
                                     {patients.map((patient) => (
-                                        <SelectItem key={patient.paciente_id} value={patient.paciente_id}>
+                                        <SelectItem {...register('paciente_id')} key={patient.paciente_id} value={patient.paciente_id}>
                                             {patient.nome}
                                         </SelectItem>
                                     ))}
@@ -170,6 +206,7 @@ export const CreateScheduleTable = () => {
                             <Select
                                 onValueChange={(value) => {
                                     setValue("funcionario_id", value); // Atribui o ID do colaborador
+                                    setSelectedCollaboratorId(value);
                                 }}
                             >
                                 <SelectTrigger>
@@ -242,7 +279,7 @@ export const CreateScheduleTable = () => {
                     <Button
                         type="button"
                         onClick={handleComplete}
-                        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
+                        className="mt-4 bg-primary text-white px-4 py-2 rounded"
                     >
                         Concluir
                     </Button>

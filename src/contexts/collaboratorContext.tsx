@@ -37,6 +37,7 @@ const CollaboratorContext = createContext<{
     fetchCollaboratorNotPaginated: (filters?: CollaboratorFiltersSchema, pageIndex?: number) => Promise<void>
     updateCollaborator: (updatedData: Partial<Collaborator>, funcionarioId: string) => Promise<void>;
     addCollaborator: (newData: Omit<Collaborator, 'funcionario_id'>) => Promise<void>;
+    getCollaboratorById: (id: string) => Promise<Collaborator | null>;
 }>({
     collaborators: [],
     collaboratorsNotPaginated: [],
@@ -45,6 +46,7 @@ const CollaboratorContext = createContext<{
     fetchCollaboratorNotPaginated: async () => { },
     updateCollaborator: async () => { },
     addCollaborator: async () => { },
+    getCollaboratorById: async () => null,
 });
 
 export const useCollaborator = () => useContext(CollaboratorContext);
@@ -167,6 +169,20 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
         }
     }
 
+    const getCollaboratorById = async (id: string): Promise<Collaborator | null> => {
+        const { data, error } = await supabase
+            .from('funcionario')
+            .select('*')
+            .eq('funcionario_id', id)
+            .single();
+
+        if (error) {
+            console.error('Erro ao buscar dados do colaborador:', error);
+            return null;
+        }
+        return data || null;
+    };
+
     useEffect(() => {
         fetchCollaborator();
         fetchCollaboratorNotPaginated();
@@ -174,7 +190,7 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
 
     return (
         <CollaboratorContext.Provider
-            value={{ collaborators, collaboratorsNotPaginated, loading, fetchCollaborator, fetchCollaboratorNotPaginated, updateCollaborator, addCollaborator }}
+            value={{ collaborators, collaboratorsNotPaginated, loading, fetchCollaborator, fetchCollaboratorNotPaginated, updateCollaborator, addCollaborator, getCollaboratorById }}
         >
             {children}
         </CollaboratorContext.Provider>

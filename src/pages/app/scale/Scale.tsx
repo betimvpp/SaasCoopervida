@@ -12,13 +12,13 @@ export const Scale = () => {
 
       <div className='w-full justify-end flex gap-2'>
         <Link to={'/escala/permutas'}>
-          <Button variant={'outline'}>
+          <Button variant={'outline'} size={'xs'}>
             Permutas
           </Button>
         </Link>
 
         <Link to={'/escala/criar'}>
-          <Button variant={'secondary'}>
+          <Button variant={'secondary'} size={'xs'}>
             Adcionar Escala
           </Button>
         </Link>
