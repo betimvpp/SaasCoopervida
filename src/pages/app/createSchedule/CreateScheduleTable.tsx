@@ -5,7 +5,7 @@ import { patientFiltersSchema, PatientFiltersSchema, usePatients } from '@/conte
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useState, useEffect } from 'react'
-import { Collaborator, CollaboratorFiltersSchema, collaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
+import {  CollaboratorFiltersSchema, collaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
 import { Scale } from '@/contexts/scaleContext'
 import { DateRange, DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
@@ -17,7 +17,7 @@ import { toast } from 'sonner'
 export const CreateScheduleTable = () => {
     const { patients, fetchPatients } = usePatients();
     const { collaborators, fetchCollaborator } = useCollaborator();
-    const [completedSchedules, setCompletedSchedules] = useState<Scale[]>([]);
+    // const [ completedSchedules ,setCompletedSchedules] = useState<Scale[]>([]);
     const [searchValue, setSearchValue] = useState('');
     const [collaboratorSearchValue, setCollaboratorSearchValue] = useState('');
     const [selectedServiceType, setSelectedServiceType] = useState<string>('');
@@ -25,7 +25,7 @@ export const CreateScheduleTable = () => {
     const [selectedCollaborators, setSelectedCollaborators] = useState<any[]>([]);
     const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<string | null>(null);
 
-    const { register, handleSubmit, setValue, watch, reset } = useForm<Scale>({});
+    const { register, setValue, watch } = useForm<Scale>({});
 
     const { register: registerPatient, setValue: setPatientValue } = useForm<PatientFiltersSchema>({
         resolver: zodResolver(patientFiltersSchema),
@@ -72,9 +72,9 @@ export const CreateScheduleTable = () => {
             });
         });
 
-        setCompletedSchedules((prev) => {
-            return [...prev, ...newSchedules];
-        });
+        // setCompletedSchedules((prev) => {
+        //     return [...prev, ...newSchedules];
+        // });
     };
 
     const handleComplete = () => {

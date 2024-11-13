@@ -13,6 +13,7 @@ export function AppLayout() {
   useEffect(() => {
     const checkSession = async () => {
       const { data, error } = await supabase.auth.getSession();
+      console.log("Sessão atual:", data);
       const session = data.session;
 
       if (!session || error) {
@@ -24,11 +25,9 @@ export function AppLayout() {
 
     checkSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((session) => {
-      if (!session) {
+    const { data: authListener } = supabase.auth.onAuthStateChange(( session) => {
+      if (session === null) {
         navigate('/login', { replace: true });
-      } else {
-        setLoading(false);
       }
     });
 
@@ -37,11 +36,7 @@ export function AppLayout() {
     };
   }, [navigate]);
 
-  if (loading) {
-    return null;
-  }
-
-
+  if (loading) return null;
 
   return (
     <div className='h-screen flex overflow-hidden'>

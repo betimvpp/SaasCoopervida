@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             toast.error("Usuário ou senha inválido!");
             return false;
         }
-    }    
+    }
 
     function logout() {
         supabase.auth.signOut();
@@ -48,36 +48,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         toast.info("Logout realizado com sucesso!");
     }
 
-    const refreshToken = async () => {
-        const refresh_token = localStorage.getItem("refresh_token");
-        if (refresh_token) {
-            const { data, error } = await supabase.auth.refreshSession({ refresh_token });
-
-            if (error) {
-                console.error("Erro ao renovar o token:", error.message);
-                logout();
-                return;
-            }
-
-            setIsAuthenticated(true);
-            setUser(data.user);
-        }
-    };
-
-    const loadUserFromLocalStorage = async () => {
-        const access_token = localStorage.getItem("access_token");
-        if (access_token) {
-            try {
-                await refreshToken();
-            } catch (error) {
-                console.error("Erro ao carregar usuário do localStorage", error);
-                logout();
-            }
-        }
-    };
-
     useEffect(() => {
-        loadUserFromLocalStorage();
+        const loadUserSession = async () => {
+            const { data } = await supabase.auth.getSession();
+            const sessionUser = data?.session?.user || null;
+            setUser(sessionUser);
+            setIsAuthenticated(!!sessionUser);
+        };
+
+        loadUserSession();
+
+    
+        const { data: authListener } = supabase.auth.onAuthStateChange((_, session) => {
+            const sessionUser = session?.user || null;
+            setUser(sessionUser);
+            setIsAuthenticated(!!sessionUser);
+        });
+
+        return () => {
+            authListener?.subscription?.unsubscribe();
+        };
     }, []);
 
     return (

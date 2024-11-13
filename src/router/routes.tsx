@@ -10,6 +10,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { Permutation } from '@/pages/app/permutation/Permutation'
 import { CreateSchedule } from '@/pages/app/createSchedule/CreateSchedule'
 import { ProtectedRoute } from './ProtectedRoute'
+import { WelcolmePage } from '@/pages/app/WelcolmePage'
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ export const router = createBrowserRouter([
     element: <AppLayout />,
     // errorElement: <NotFound/>,
     children: [
+      { path: '/', element: <WelcolmePage /> },
       {
         path: '/dashboard', element: (
           <ProtectedRoute allowedRoles={['admin']}>
@@ -58,7 +60,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: '/',
+    path: '/login',
     element: <AuthLayout />,
     children: [
       { path: '/login', element: <Login /> },
