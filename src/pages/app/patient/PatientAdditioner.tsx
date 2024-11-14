@@ -7,7 +7,6 @@ import { useHabilities } from "@/contexts/habilitiesContext";
 import { Patient, usePatients } from "@/contexts/patientContext";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 export const PatientAdditioner = () => {
     const { habilities, loading } = useHabilities();
@@ -22,12 +21,9 @@ export const PatientAdditioner = () => {
                 ...dataResp,
                 especialidades: selectedHabilities,
             };
-
             await addPatient(patientData);
-            toast.success("Paciente adicionado com sucesso!");
         } catch (error) {
             console.error("Erro ao adicionar paciente:", error);
-            toast.error("Erro ao adicionar paciente.");
         }
         ;
     };
@@ -92,6 +88,7 @@ export const PatientAdditioner = () => {
                                     type="number"
                                     placeholder="Ex: 250"
                                     onChange={(e) => setValue("pagamento_dia", parseInt(e.target.value) || 0)}
+
                                 />
                             </TableCell>
                         </TableRow>
@@ -103,6 +100,7 @@ export const PatientAdditioner = () => {
                                     type="number"
                                     placeholder="Ex: 200"
                                     onChange={(e) => setValue("pagamento_a_profissional", parseInt(e.target.value) || 0)}
+
                                 />
                             </TableCell>
                         </TableRow>
@@ -118,6 +116,7 @@ export const PatientAdditioner = () => {
                                 <Select
                                     {...register("status")}
                                     onValueChange={(value) => setValue("status", value)}
+                                    defaultValue="Ativo"
                                 >
                                     <SelectTrigger >
                                         <SelectValue />

@@ -28,10 +28,8 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
 
         try {
             await updateCollaborator(dataResp, collaborator.funcionario_id);
-            console.log("Dados enviados:", dataResp);
             toast.success("Colaborador atualizado com sucesso!");
         } catch (error) {
-            console.error("Erro ao atualizar colaborador:", error);
             toast.error("Erro ao atualizar colaborador.");
         }
     };

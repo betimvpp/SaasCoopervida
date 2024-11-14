@@ -71,10 +71,14 @@ export function CollaboratorFilters() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Todos cargos</SelectItem>
-                  <SelectItem value="fisioterapeuta">Fisioterapeuta</SelectItem>
-                  <SelectItem value="enfermeiro">Enfermeiro</SelectItem>
-                  <SelectItem value="tecnico-enfermagem">Técnico de Enfermagem</SelectItem>
+                  <SelectItem className="cursor-pointer" value="all">Todos cargos</SelectItem>
+                  <SelectItem className="cursor-pointer" value="nutricionista">Nutricionista</SelectItem>
+                  <SelectItem className="cursor-pointer" value="fisioterapeuta">Fisioterapeuta</SelectItem>
+                  <SelectItem className="cursor-pointer" value="enfermeiro">Enfermeiro</SelectItem>
+                  <SelectItem className="cursor-pointer" value="técnico de enfermagem">Técnico de Enfermagem</SelectItem>
+                  <SelectItem className="cursor-pointer" value="fonoaudiólogo">Fonoaudiólogo</SelectItem>
+                  <SelectItem className="cursor-pointer" value="psicólogo">Psicólogo</SelectItem>
+                  <SelectItem className="cursor-pointer" value="dentista">Dentista</SelectItem>
                 </SelectContent>
               </Select>
             )

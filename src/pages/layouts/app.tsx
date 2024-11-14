@@ -13,7 +13,6 @@ export function AppLayout() {
   useEffect(() => {
     const checkSession = async () => {
       const { data, error } = await supabase.auth.getSession();
-      console.log("Sessão atual:", data);
       const session = data.session;
 
       if (!session || error) {

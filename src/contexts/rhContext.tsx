@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from 'react';
 import supabase from '@/lib/supabase';
+import { api } from '@/lib/api';
+import { toast } from 'sonner';
 
 export const humanResourceSchema = z.object({
     funcionario_id: z.string().uuid().optional(),
@@ -116,33 +118,41 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
                 throw new Error('Dados inválidos');
             }
 
-            const { data, error: signUpError } = await supabase.auth.signUp({
+            const response = await api.post('/auth/v1/signup', {
                 email: newHumanResources.email,
                 password: newHumanResources.cpf,
             });
 
-            if (signUpError) {
-                throw new Error(`Erro ao criar usuário: ${signUpError.message}`);
+            const newUserData = response.data;
+            if (!newUserData?.user?.id) {
+                throw new Error('Erro ao criar usuário: ID de usuário não retornado');
             }
 
             const humanResourcesWithId = {
                 ...newHumanResources,
-                funcionario_id: data.user?.id, 
+                funcionario_id: newUserData.user.id,
                 status: newHumanResources.status || "Ativo",
                 role: "rh",
             };
 
-            const { error: insertError } = await supabase
+            const { data, error: insertError } = await supabase
                 .from('funcionario')
-                .insert(humanResourcesWithId);
+                .insert(humanResourcesWithId)
+                .select();
 
             if (insertError) {
-                throw new Error(`Erro ao inserir colaborador: ${insertError.message}`);
+                throw new Error(`Erro ao inserir colaborador de RH: ${insertError.message}`);
             }
 
-            console.log('Colaborador de RH adicionado com sucesso!');
+            if(humanResources.length>=10){
+                setHumanResourcesNotPaginated((prev) => [...prev, ...data]);
+            } else {
+                setHumanResources((prev) => [...prev, ...data]);
+            }
+
+            toast.success('Colaborador de RH adicionado com sucesso!');
         } catch (error) {
-            console.error("Erro ao adicionar colaborador de RH:", error);
+            toast.error("Erro ao adicionar colaborador de RH:");
         }
     };
 
@@ -157,6 +167,14 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
                 console.error("Erro ao atualizar colaborador de RH:", updateError);
                 throw new Error("Erro ao atualizar colaborador de RH");
             }
+
+            setHumanResources((prevHumanResources) =>
+                prevHumanResources.map((humanResource) =>
+                    humanResource.funcionario_id === funcionarioId
+                        ? { ...humanResource, ...updatedData }
+                        : humanResource
+                )
+            );
         } catch (error) {
             console.error("Erro geral ao atualizar colaborador de RH:", error);
         }

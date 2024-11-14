@@ -1,43 +1,57 @@
 import { NavLink } from './nav-link'
-import { CalendarDays, Contact2, Home, Speech, Stethoscope } from 'lucide-react'
+import { CalendarDays, Contact2, LayoutDashboardIcon, Speech, Stethoscope } from 'lucide-react'
 import { Separator } from './ui/separator'
 import { useAuth } from '@/contexts/authContext'
 import { useNavigate } from 'react-router-dom';
 import { Button } from './ui/button';
+import { Collaborator, useCollaborator } from '@/contexts/collaboratorContext';
+import { useEffect, useState } from 'react';
 
 export function SideBar() {
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
+    const { getCollaboratorById } = useCollaborator();
     const navigate = useNavigate();
-    
+    const [collaboratorData, setCollaboratorData] = useState<Collaborator | null>(null);
+
+    useEffect(() => {
+        if (user) {
+            getCollaboratorById(user.id).then(data => setCollaboratorData(data));
+        }
+    }, [user, getCollaboratorById]);
+
     function handleLogout() {
-        logout(); 
+        logout();
         navigate("/login");
     }
-    
+
+    const isAdmin = collaboratorData?.role === 'admin';
+    const isRH = collaboratorData?.role === 'rh';
+    const isRestricted = !isAdmin && !isRH;
+
     return (
         <div className='flex flex-col items-center'>
             <nav className='flex flex-col items-start mt-6 gap-3 break-words text-muted-foreground'>
-                <NavLink to="/dashboard" >
-                    <Home className='h-6 w-6' />
-                    Inicio
+                <NavLink to="/dashboard" disabled={!isAdmin}>
+                    <LayoutDashboardIcon className='h-6 w-6' />
+                    Dashboard
                 </NavLink>
 
-                <NavLink to="/escala" >
+                <NavLink to="/escala">
                     <CalendarDays className='h-6 w-6' />
                     Escala
                 </NavLink>
 
-                <NavLink to="/pacientes" >
+                <NavLink to="/pacientes" disabled={isRestricted}>
                     <Stethoscope className='h-6 w-6' />
                     Pacientes
                 </NavLink>
 
-                <NavLink to="/recursoshumanos" >
+                <NavLink to="/recursoshumanos" disabled={isRestricted}>
                     <Speech className='min-h-6 min-w-6' />
                     Recursos Humanos
                 </NavLink>
 
-                <NavLink to="/colaboradores">
+                <NavLink to="/colaboradores" disabled={isRestricted}>
                     <Contact2 className='h-6 w-6' />
                     Colaboradores
                 </NavLink>

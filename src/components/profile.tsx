@@ -12,14 +12,14 @@ export function Profile() {
     const { user } = useAuth();
     const { getCollaboratorById } = useCollaborator();
     const [collaboratorData, setCollaboratorData] = useState<Collaborator | null>(null);
-    const [isLoading, setIsLoading] = useState(true); // Estado para controlar o carregamento
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (user) {
-            setIsLoading(true); // Ativa o carregamento enquanto busca os dados
+            setIsLoading(true);
             getCollaboratorById(user.id)
                 .then(data => setCollaboratorData(data))
-                .finally(() => setIsLoading(false)); // Desativa o carregamento após receber os dados
+                .finally(() => setIsLoading(false)); 
         }
     }, [user, getCollaboratorById]);
 
@@ -27,13 +27,11 @@ export function Profile() {
         <span className='flex flex-col items-center justify-center'>
             <CircleUserRound size={48} />
             {isLoading ? (
-                // Skeleton exibido enquanto está carregando
                 <span className='flex flex-col items-center gap-1 mt-3'>
                     <Skeleton className='w-28 h-2' />
                     <Skeleton className='w-20 h-2' />
                 </span>
             ) : (
-                // Dados do colaborador exibidos quando o carregamento terminar
                 <>
                     <p className='text-center text-sm font-semibold '>{collaboratorData?.nome}</p>
                     <p className='text-xs font-semibold text-center opacity-80'>

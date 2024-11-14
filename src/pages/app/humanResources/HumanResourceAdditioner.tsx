@@ -5,7 +5,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { HumanResource, useHumanResources } from "@/contexts/rhContext";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 export const HumanResourceAdditioner = () => {
     const { register, handleSubmit, setValue } = useForm<HumanResource>({});
@@ -14,10 +13,8 @@ export const HumanResourceAdditioner = () => {
     const handleAdd = async (dataResp: HumanResource) => {
         try {
             await addHumanResources(dataResp);
-            toast.success("Colaborador adicionado com sucesso!");
         } catch (error) {
             console.error("Erro ao adicionar colaborador:", error);
-            toast.error("Erro ao adicionar colaborador.");
         }
     };
 
@@ -95,6 +92,7 @@ export const HumanResourceAdditioner = () => {
                                 <Select
                                     {...register("status")}
                                     onValueChange={(value) => setValue("status", value)}
+                                    defaultValue="Ativo"
                                 >
                                     <SelectTrigger >
                                         <SelectValue />

@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Collaborator, useCollaborator } from "@/contexts/collaboratorContext";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 export interface CollaboratorAdditionerProps {
     collaborator: Collaborator;
     open: boolean;
@@ -19,10 +18,8 @@ export const CollaboratorAdditioner = () => {
     const handleAdd = async (dataResp: Collaborator) => {
         try {
             await addCollaborator(dataResp);
-            toast.success("Colaborador adicionado com sucesso!");
         } catch (error) {
             console.error("Erro ao adicionar colaborador:", error);
-            toast.error("Erro ao adicionar colaborador.");
         }
     };
 
@@ -123,6 +120,7 @@ export const CollaboratorAdditioner = () => {
                                 <Select
                                     {...register("status")}
                                     onValueChange={(value) => setValue("status", value)}
+                                    defaultValue="Ativo"
                                 >
                                     <SelectTrigger >
                                         <SelectValue />

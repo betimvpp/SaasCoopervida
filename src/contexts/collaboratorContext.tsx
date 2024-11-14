@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import supabase from '@/lib/supabase';
+import { toast } from 'sonner';
+import { api } from '@/lib/api';
 
 export const collaboratorSchema = z.object({
     funcionario_id: z.string().uuid(),
@@ -124,32 +126,42 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
                 throw new Error('Dados inválidos');
             }
 
-            const { data, error: signUpError } = await supabase.auth.signUp({
+            const response = await api.post('/auth/v1/signup', {
                 email: newCollaborator.email,
                 password: newCollaborator.cpf,
             });
 
-            if (signUpError) {
-                throw new Error(`Erro ao criar usuário: ${signUpError.message}`);
+            const newUserData = response.data;
+            if (!newUserData?.user?.id) {
+                throw new Error('Erro ao criar usuário: ID de usuário não retornado');
             }
 
             const collaboratorWithId = {
                 ...newCollaborator,
-                funcionario_id: data.user?.id,
+                funcionario_id: newUserData.user.id,
                 status: newCollaborator.status || "Ativo",
             };
 
-            const { error: insertError } = await supabase
+            const { data, error: insertError } = await supabase
                 .from('funcionario')
-                .insert(collaboratorWithId);
+                .insert(collaboratorWithId)
+                .select()
+                .single();
 
-            if (insertError) {
-                throw new Error(`Erro ao inserir colaborador: ${insertError.message}`);
+            if (insertError || !data) {
+                throw new Error(`Erro ao inserir colaborador: ${insertError?.message}`);
             }
 
-            console.log('Colaborador adicionado com sucesso!');
+            if(collaborators.length>=10){
+                setCollaboratorsNotPaginated((prevCollaborators) => [...prevCollaborators, data]);
+            } else{
+                setCollaborators((prevCollaborators) => [...prevCollaborators, data]);
+            }
+
+            toast.success("Colaborador adicionado com sucesso!");
         } catch (error) {
             console.error("Erro ao adicionar colaborador:", error);
+            toast.error("Erro ao adicionar colaborador!");
         }
     };
 
@@ -164,8 +176,19 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
                 console.error("Erro ao atualizar funcionario:", updateError);
                 throw new Error("Erro ao atualizar funcionario");
             }
+
+            setCollaborators((prevCollaborators) =>
+                prevCollaborators.map((collaborator) =>
+                    collaborator.funcionario_id === funcionarioId
+                        ? { ...collaborator, ...updatedData }
+                        : collaborator
+                )
+            );
+
+            toast.success("Colaborador atualizado com sucesso!");
         } catch (error) {
             console.error("Erro geral ao atualizar funcionario:", error);
+            toast.error("Erro ao atualizar colaborador!");
         }
     }
 
