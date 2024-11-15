@@ -6,18 +6,47 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Collaborator, useCollaborator } from "@/contexts/collaboratorContext";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 export interface CollaboratorAdditionerProps {
     collaborator: Collaborator;
     open: boolean;
 }
 
 export const CollaboratorAdditioner = () => {
-    const { register, handleSubmit, setValue } = useForm<Collaborator>({});
+    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<Collaborator>({
+        defaultValues: {
+            role: "",
+            status: "Ativo",
+        },
+        mode: "onSubmit",
+    });
     const { addCollaborator } = useCollaborator();
 
     const handleAdd = async (dataResp: Collaborator) => {
+        if (!dataResp.role) {
+            toast.error("Cargo é obrigatório");
+            return;
+        }
+        if (!dataResp.status) {
+            toast.error("Status é obrigatório");
+            return;
+        }
+        if (!dataResp.nome) {
+            toast.error("Nome é obrigatório");
+            return;
+        }
+        if (!dataResp.email) {
+            toast.error("Email é obrigatório");
+            return;
+        }
+        if (!dataResp.cpf) {
+            toast.error("Cpf é obrigatório");
+            return;
+        }
+
         try {
             await addCollaborator(dataResp);
+            reset();
         } catch (error) {
             console.error("Erro ao adicionar colaborador:", error);
         }
@@ -29,7 +58,6 @@ export const CollaboratorAdditioner = () => {
                 <DialogTitle>Adicione um colaborador: </DialogTitle>
             </DialogHeader>
             <form action="" className="space-y-6" onSubmit={handleSubmit(handleAdd)}>
-
                 <Table >
                     <TableBody className="grid grid-cols-3">
                         <TableRow>
@@ -47,7 +75,7 @@ export const CollaboratorAdditioner = () => {
                         <TableRow>
                             <TableCell className="font-semibold">CPF:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="cpf" type="text" {...register("cpf")} required/>
+                                <Input id="cpf" type="text" {...register("cpf")} required />
                             </TableCell>
                         </TableRow>
                         <TableRow>
@@ -98,9 +126,10 @@ export const CollaboratorAdditioner = () => {
                                 <Select
                                     {...register("role")}
                                     onValueChange={(value) => setValue("role", value)}
+                                    defaultValue=""
                                 >
                                     <SelectTrigger>
-                                        <SelectValue />
+                                        <SelectValue placeholder="Selecione um cargo" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem className="cursor-pointer" {...register("role")} value="nutricionista">Nutricionista</SelectItem>
@@ -112,6 +141,7 @@ export const CollaboratorAdditioner = () => {
                                         <SelectItem className="cursor-pointer" {...register("role")} value="dentista">Dentista</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                {errors.role && <p className="text-red-500 text-sm mt-1">Cargo é obrigatório.</p>}
                             </TableCell>
                         </TableRow>
                         <TableRow>

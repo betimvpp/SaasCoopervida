@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 
 export const PatientAdditioner = () => {
     const { habilities, loading } = useHabilities();
-    const { register, handleSubmit, setValue } = useForm<Patient>({});
+    const { register, handleSubmit, setValue, reset } = useForm<Patient>({});
     const { addPatient } = usePatients();
 
     const [selectedHabilities, setSelectedHabilities] = useState<number[]>([]);
@@ -22,6 +22,7 @@ export const PatientAdditioner = () => {
                 especialidades: selectedHabilities,
             };
             await addPatient(patientData);
+            reset();
         } catch (error) {
             console.error("Erro ao adicionar paciente:", error);
         }
@@ -88,7 +89,7 @@ export const PatientAdditioner = () => {
                                     type="number"
                                     placeholder="Ex: 250"
                                     onChange={(e) => setValue("pagamento_dia", parseInt(e.target.value) || 0)}
-
+                                    required
                                 />
                             </TableCell>
                         </TableRow>
@@ -100,14 +101,14 @@ export const PatientAdditioner = () => {
                                     type="number"
                                     placeholder="Ex: 200"
                                     onChange={(e) => setValue("pagamento_a_profissional", parseInt(e.target.value) || 0)}
-
+                                    required={true}
                                 />
                             </TableCell>
                         </TableRow>
                         <TableRow>
                             <TableCell className="font-semibold">Plano de Saúde:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="plano" type="text" placeholder="Ex: Planserve" {...register("plano_saude")} />
+                                <Input id="plano" type="text" placeholder="Ex: Planserve" {...register("plano_saude")} required/>
                             </TableCell>
                         </TableRow>
                         <TableRow>

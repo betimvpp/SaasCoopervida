@@ -121,27 +121,75 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const addCollaborator = async (newCollaborator: Partial<Collaborator>) => {
+        // try {
+        //     if (!newCollaborator.email || !newCollaborator.cpf) {
+        //         throw new Error('Dados inválidos');
+        //     }
+
+        //     const response = await api.post('/auth/v1/signup', {
+        //         email: newCollaborator.email,
+        //         password: newCollaborator.cpf,
+        //     });
+
+        //     const newUserData = response.data;
+        //     if (!newUserData?.user?.id) {
+        //         throw new Error('Erro ao criar usuário: ID de usuário não retornado');
+        //     }
+
+        //     const collaboratorWithId = {
+        //         ...newCollaborator,
+        //         funcionario_id: newUserData.user.id,
+        //         status: newCollaborator.status || "Ativo",
+        //     };
+
+        //     const { data, error: insertError } = await supabase
+        //         .from('funcionario')
+        //         .insert(collaboratorWithId)
+        //         .select()
+        //         .single();
+
+        //     if (insertError || !data) {
+        //         throw new Error(`Erro ao inserir colaborador: ${insertError?.message}`);
+        //     }
+
+        //     if(collaborators.length>=10){
+        //         setCollaboratorsNotPaginated((prevCollaborators) => [...prevCollaborators, data]);
+        //     } else{
+        //         setCollaborators((prevCollaborators) => [...prevCollaborators, data]);
+        //     }
+
+        //     toast.success("Colaborador adicionado com sucesso!");
+        // } catch (error) {
+        //     console.error("Erro ao adicionar colaborador:", error);
+        //     toast.error("Erro ao adicionar colaborador!");
+        // }
+        let createdUserId: string | null = null; // Armazena o ID do usuário criado
         try {
             if (!newCollaborator.email || !newCollaborator.cpf) {
                 throw new Error('Dados inválidos');
             }
 
+            // Criar usuário na tabela de autenticação
             const response = await api.post('/auth/v1/signup', {
                 email: newCollaborator.email,
                 password: newCollaborator.cpf,
             });
 
             const newUserData = response.data;
-            if (!newUserData?.user?.id) {
+            createdUserId = newUserData?.user?.id;
+
+            if (!createdUserId) {
                 throw new Error('Erro ao criar usuário: ID de usuário não retornado');
             }
 
+            // Preparar os dados do colaborador
             const collaboratorWithId = {
                 ...newCollaborator,
-                funcionario_id: newUserData.user.id,
+                funcionario_id: createdUserId,
                 status: newCollaborator.status || "Ativo",
             };
 
+            // Inserir na tabela `funcionario`
             const { data, error: insertError } = await supabase
                 .from('funcionario')
                 .insert(collaboratorWithId)
@@ -152,15 +200,26 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
                 throw new Error(`Erro ao inserir colaborador: ${insertError?.message}`);
             }
 
-            if(collaborators.length>=10){
+            if (collaborators.length >= 10) {
                 setCollaboratorsNotPaginated((prevCollaborators) => [...prevCollaborators, data]);
-            } else{
+            } else {
                 setCollaborators((prevCollaborators) => [...prevCollaborators, data]);
+                setCollaboratorsNotPaginated((prevCollaborators) => [...prevCollaborators, data]);
             }
 
             toast.success("Colaborador adicionado com sucesso!");
         } catch (error) {
             console.error("Erro ao adicionar colaborador:", error);
+
+            if (createdUserId) {
+                try {
+                    await api.delete(`/auth/v1/admin/users/${createdUserId}`);
+                    console.log("Usuário revertido com sucesso na tabela de autenticação");
+                } catch (deleteError) {
+                    console.error("Erro ao reverter usuário na tabela de autenticação:", deleteError);
+                }
+            }
+
             toast.error("Erro ao adicionar colaborador!");
         }
     };

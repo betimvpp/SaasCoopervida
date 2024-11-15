@@ -5,14 +5,33 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { HumanResource, useHumanResources } from "@/contexts/rhContext";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export const HumanResourceAdditioner = () => {
-    const { register, handleSubmit, setValue } = useForm<HumanResource>({});
+    const { register, handleSubmit, setValue, reset } = useForm<HumanResource>({});
     const { addHumanResources } = useHumanResources();
 
     const handleAdd = async (dataResp: HumanResource) => {
+        if (!dataResp.status) {
+            toast.error("Status é obrigatório");
+            return;
+        }
+        if (!dataResp.nome) {
+            toast.error("Nome é obrigatório");
+            return;
+        }
+        if (!dataResp.email) {
+            toast.error("Email é obrigatório");
+            return;
+        }
+        if (!dataResp.cpf) {
+            toast.error("Cpf é obrigatório");
+            return;
+        }
+        
         try {
             await addHumanResources(dataResp);
+            reset();
         } catch (error) {
             console.error("Erro ao adicionar colaborador:", error);
         }

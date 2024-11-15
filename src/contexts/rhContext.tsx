@@ -148,6 +148,7 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
                 setHumanResourcesNotPaginated((prev) => [...prev, ...data]);
             } else {
                 setHumanResources((prev) => [...prev, ...data]);
+                setHumanResourcesNotPaginated((prev) => [...prev, ...data]);
             }
 
             toast.success('Colaborador de RH adicionado com sucesso!');

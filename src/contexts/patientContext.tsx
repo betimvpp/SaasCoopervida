@@ -9,7 +9,7 @@ export const patientSchema = z.object({
   cpf: z.string(),
   plano_saude: z.string().optional(),
   telefone: z.string().optional(),
-  pagamento_dia: z.number(),
+  pagamento_dia: z.number().optional(),
   email: z.string().optional(),
   rua: z.string().optional(),
   cidade: z.string().optional(),
@@ -161,6 +161,7 @@ export const PatientProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setPatientsNotPaginated((prev) => [...prev, { paciente_id: data[0].paciente_id, ...parsedPatient.data }]);
       } else {
         setPatients((prev) => [...prev, { paciente_id: data[0].paciente_id, ...parsedPatient.data }]);
+        setPatientsNotPaginated((prev) => [...prev, { paciente_id: data[0].paciente_id, ...parsedPatient.data }]);
       }
 
     } catch (error) {

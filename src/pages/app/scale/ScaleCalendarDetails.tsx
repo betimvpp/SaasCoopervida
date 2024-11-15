@@ -3,8 +3,10 @@ import { Table, TableBody, TableRow, TableHeader, TableHead } from "@/components
 import { Scale } from "@/contexts/scaleContext";
 import dayjs from "dayjs";
 import { ScaleCalendarDetailsRow } from "./ScaleCalendarDetailsRow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pagination } from "@/components/pagination";
+import { Collaborator, useCollaborator } from "@/contexts/collaboratorContext";
+import { useAuth } from "@/contexts/authContext";
 
 interface ScaleCalendarDetailsProps {
     date: dayjs.Dayjs;
@@ -17,6 +19,17 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
 
     const [pageIndex, setPageIndex] = useState(0);
     const totalCount = selectedDateScales?.length || 0;
+
+    const { user } = useAuth();
+    const { getCollaboratorById } = useCollaborator();
+    const [collaboratorData, setCollaboratorData] = useState<Collaborator | null>(null);
+
+    useEffect(() => {
+        if (user) {
+            getCollaboratorById(user.id)
+                .then(data => setCollaboratorData(data))
+        }
+    }, [user, getCollaboratorById]);
 
     const handlePageChange = (newPageIndex: number) => {
         setPageIndex(newPageIndex);
@@ -36,7 +49,11 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                                     <TableHead className="text-center font-semibold">Tipo de Serviço</TableHead>
                                     <TableHead className="text-center font-semibold">Nome do Funcionário</TableHead>
                                     <TableHead className="text-center font-semibold">Nome do Paciente</TableHead>
-                                    <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
+                                    {collaboratorData?.role === 'admin' ? (
+                                        <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
+                                    ) : (
+                                        <></>
+                                    )}
                                     <TableHead className="text-center font-semibold">Valor Pago</TableHead>
                                     <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
                                 </TableRow>
@@ -52,7 +69,11 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                                 <TableHead className="text-center font-semibold">Tipo de Serviço</TableHead>
                                 <TableHead className="text-center font-semibold">Nome do Funcionário</TableHead>
                                 <TableHead className="text-center font-semibold">Nome do Paciente</TableHead>
-                                <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
+                                {collaboratorData?.role === 'admin' ? (
+                                    <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
+                                ) : (
+                                    <></>
+                                )}
                                 <TableHead className="text-center font-semibold">Valor Pago</TableHead>
                                 <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
                             </TableRow>
