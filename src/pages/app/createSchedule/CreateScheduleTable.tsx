@@ -53,7 +53,7 @@ export const CreateScheduleTable = () => {
         setValue('paciente_id', patientId);
 
         if (selectedPatientData) {
-            setValue('valor_recebido', selectedPatientData.pagamento_dia);
+            setValue('valor_recebido', selectedPatientData.pagamento_dia!);
             setValue('valor_pago', selectedPatientData.pagamento_a_profissional!);
         }
     };
