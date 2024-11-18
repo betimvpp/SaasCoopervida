@@ -3,19 +3,41 @@ import { DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/compon
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useAuth } from "@/contexts/authContext";
+import { Collaborator, useCollaborator } from "@/contexts/collaboratorContext";
 import { useHabilities } from "@/contexts/habilitiesContext";
 import { Patient, usePatients } from "@/contexts/patientContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export const PatientAdditioner = () => {
     const { habilities, loading } = useHabilities();
     const { register, handleSubmit, setValue, reset } = useForm<Patient>({});
     const { addPatient } = usePatients();
 
+    const { user } = useAuth();
+    const { getCollaboratorById } = useCollaborator();
+    const [collaboratorData, setCollaboratorData] = useState<Collaborator | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (user) {
+            setIsLoading(true);
+            getCollaboratorById(user.id)
+                .then(data => setCollaboratorData(data))
+                .finally(() => setIsLoading(false));
+        }
+    }, [user, getCollaboratorById]);
+
     const [selectedHabilities, setSelectedHabilities] = useState<number[]>([]);
 
     const handleAdd = async (dataResp: Patient) => {
+        if (!dataResp.nome) {
+            toast.error("Nome é obrigatório");
+            return;
+        }
+
         try {
             const patientData = {
                 ...dataResp,
@@ -81,34 +103,40 @@ export const PatientAdditioner = () => {
                                 <Input id="rua" type="text" placeholder="Ex: Rua Silva Lopes" {...register("rua")} />
                             </TableCell>
                         </TableRow>
-                        <TableRow>
-                            <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
-                            <TableCell className="flex justify-start -mt-2">
-                                <Input
-                                    id="pagamento_dia"
-                                    type="number"
-                                    placeholder="Ex: 250"
-                                    onChange={(e) => setValue("pagamento_dia", parseInt(e.target.value) || 0)}
-                                    required
-                                />
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-semibold">Pagamento/Profissional:</TableCell>
-                            <TableCell className="flex justify-start -mt-2">
-                                <Input
-                                    id="pagamento_a_profissional"
-                                    type="number"
-                                    placeholder="Ex: 200"
-                                    onChange={(e) => setValue("pagamento_a_profissional", parseInt(e.target.value) || 0)}
-                                    required={true}
-                                />
-                            </TableCell>
-                        </TableRow>
+                        {!isLoading && collaboratorData?.role === 'admin' ? (
+                            <>
+                                <TableRow>
+                                    <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
+                                    <TableCell className="flex justify-start -mt-2">
+                                        <Input
+                                            id="pagamento_dia"
+                                            type="number"
+                                            placeholder="Ex: 250"
+                                            onChange={(e) => setValue("pagamento_dia", parseInt(e.target.value) || 0)}
+                                            required
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className="font-semibold">Pagamento/Profissional:</TableCell>
+                                    <TableCell className="flex justify-start -mt-2">
+                                        <Input
+                                            id="pagamento_a_profissional"
+                                            type="number"
+                                            placeholder="Ex: 200"
+                                            onChange={(e) => setValue("pagamento_a_profissional", parseInt(e.target.value) || 0)}
+                                            required={true}
+                                        />
+                                    </TableCell>
+                                </TableRow>
+                            </>
+                        ) : (
+                            <></>
+                        )}
                         <TableRow>
                             <TableCell className="font-semibold">Plano de Saúde:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="plano" type="text" placeholder="Ex: Planserve" {...register("plano_saude")} required/>
+                                <Input id="plano" type="text" placeholder="Ex: Planserve" {...register("plano_saude")} required />
                             </TableCell>
                         </TableRow>
                         <TableRow>

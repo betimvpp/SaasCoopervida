@@ -2,54 +2,108 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { Patient } from '@/contexts/patientContext'
-import { Search} from 'lucide-react'
-import { useState } from 'react'
+import { Search } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { PatientDetails } from './PatientDetails'
+import { useAuth } from '@/contexts/authContext'
+import { Collaborator, useCollaborator } from '@/contexts/collaboratorContext'
 
 export const PatientRow = ({ patient }: { patient: Patient }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-    
+    const { user } = useAuth();
+    const { getCollaboratorById } = useCollaborator();
+    const [collaboratorData, setCollaboratorData] = useState<Collaborator | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (user) {
+            setIsLoading(true);
+            getCollaboratorById(user.id)
+                .then(data => setCollaboratorData(data))
+                .finally(() => setIsLoading(false));
+        }
+    }, [user, getCollaboratorById]);
+
     return (
-        <TableRow>
-            <TableCell>
-                <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="outline" size="xs">
-                            <Search className="h-3 w-3" />
-                            <span className="sr-only">Detalhes do RH</span>
-                        </Button>
-                    </DialogTrigger>
-                    <PatientDetails open={isDetailsOpen} patient={patient} />
-                </Dialog>
-            </TableCell>
+        <>
+            {!isLoading && collaboratorData?.role === 'admin' ? (
+                <TableRow>
+                    <TableCell>
+                        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="outline" size="xs">
+                                    <Search className="h-3 w-3" />
+                                    <span className="sr-only">Detalhes do RH</span>
+                                </Button>
+                            </DialogTrigger>
+                            <PatientDetails open={isDetailsOpen} patient={patient} />
+                        </Dialog>
+                    </TableCell>
 
-            <TableCell className="text-center">
-                {patient?.email}
-            </TableCell>
+                    <TableCell className="text-center">
+                        {patient?.nome}
+                    </TableCell>
 
-            <TableCell className="text-center">
-                {patient?.nome}
-            </TableCell>
+                    <TableCell className="text-center">
+                        {patient?.cpf}
+                    </TableCell >
 
-            <TableCell className="text-center">
-                {patient?.cpf}
-            </TableCell >
+                    <TableCell className="text-center">
+                        {patient?.telefone}
+                    </TableCell>
 
-            <TableCell className="text-center">
-               {patient?.telefone}
-            </TableCell>
+                    <TableCell className="text-center">
+                        {patient?.plano_saude}
+                    </TableCell>
 
-            <TableCell className="text-center">
-               {patient?.plano_saude}
-            </TableCell>
+                    <TableCell className="text-center">
+                        {patient?.pagamento_dia}
+                    </TableCell>
 
-            <TableCell className="text-center">
-                {patient?.pagamento_dia}
-            </TableCell>
+                    <TableCell className="text-center">
+                        {patient?.pagamento_a_profissional}
+                    </TableCell>
+                </TableRow >
+            ) : (
+                <TableRow>
+                    <TableCell>
+                        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+                            <DialogTrigger asChild>
+                                <Button variant="outline" size="xs">
+                                    <Search className="h-3 w-3" />
+                                    <span className="sr-only">Detalhes do RH</span>
+                                </Button>
+                            </DialogTrigger>
+                            <PatientDetails open={isDetailsOpen} patient={patient} />
+                        </Dialog>
+                    </TableCell>
 
-            <TableCell className="text-center">
-                {patient?.pagamento_a_profissional}
-            </TableCell>
-        </TableRow >
+                    <TableCell className="text-center">
+                        {patient?.nome}
+                    </TableCell>
+
+                    <TableCell className="text-center">
+                        {patient?.cpf}
+                    </TableCell >
+
+                    <TableCell className="text-center">
+                        {patient?.telefone}
+                    </TableCell>
+
+                    <TableCell className="text-center">
+                        {patient?.plano_saude}
+                    </TableCell>
+
+                    <TableCell className="text-center">
+                        {patient?.cidade}
+                    </TableCell>
+
+                    <TableCell className="text-center">
+                        {patient?.rua}
+                    </TableCell>
+                </TableRow >
+            )
+            }
+        </>
     )
 }

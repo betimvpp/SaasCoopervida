@@ -49,16 +49,22 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                                     <TableHead className="text-center font-semibold">Tipo de Serviço</TableHead>
                                     <TableHead className="text-center font-semibold">Nome do Funcionário</TableHead>
                                     <TableHead className="text-center font-semibold">Nome do Paciente</TableHead>
+                                    <TableHead className="text-center font-semibold">Data</TableHead>
                                     {collaboratorData?.role === 'admin' ? (
                                         <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
                                     ) : (
                                         <></>
                                     )}
-                                    <TableHead className="text-center font-semibold">Valor Pago</TableHead>
+                                    {collaboratorData?.role === 'admin' ? (
+                                        <TableHead className="text-center font-semibold">Valor Pago</TableHead>
+                                    ) : (
+                                        <></>
+                                    )}
+
                                     <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
+                                    <TableHead className="text-center font-semibold">Horário</TableHead>
                                 </TableRow>
                             </TableHeader>
-
                         </Table>
                         <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Carregando Usuários...</div>
                     </>
@@ -69,13 +75,19 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                                 <TableHead className="text-center font-semibold">Tipo de Serviço</TableHead>
                                 <TableHead className="text-center font-semibold">Nome do Funcionário</TableHead>
                                 <TableHead className="text-center font-semibold">Nome do Paciente</TableHead>
+                                <TableHead className="text-center font-semibold">Data</TableHead>
                                 {collaboratorData?.role === 'admin' ? (
                                     <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
                                 ) : (
                                     <></>
                                 )}
-                                <TableHead className="text-center font-semibold">Valor Pago</TableHead>
+                                {collaboratorData?.role === 'admin' ? (
+                                    <TableHead className="text-center font-semibold">Valor Pago</TableHead>
+                                ) : (
+                                    <></>
+                                )}
                                 <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
+                                <TableHead className="text-center font-semibold">Horário</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>

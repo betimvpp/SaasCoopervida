@@ -16,18 +16,43 @@ export const ScaleCalendarDetailsRow = ({ scale }: { scale: Scale }) => {
         }
     }, [user, getCollaboratorById]);
 
+    const getServiceTime = (tipoServico: string, defaultHorario: string) => {
+        switch (tipoServico) {
+            case 'SD':
+                return '7:00 às 19:00';
+            case 'SN':
+                return '19:00 às 7:00';
+            case 'P':
+                return '7:00 às 7:00';
+            case 'M':
+                return '7:00 às 13:00';
+            case 'T':
+                return '13:00 às 19:00';
+            default:
+                return defaultHorario; // Usa o horario_gerenciamento como fallback
+        }
+    };
+
     return (
         <TableRow className='text-center' key={scale?.escala_id}>
             <TableCell>{scale?.tipo_servico}</TableCell>
             <TableCell>{scale?.nomeFuncionario}</TableCell>
             <TableCell>{scale?.nomePaciente}</TableCell>
+            <TableCell>{scale?.data}</TableCell>
             {collaboratorData?.role === 'admin' ? (
                 <TableCell className="text-center font-semibold">{scale?.valor_recebido}</TableCell>
             ) : (
                 <></>
             )}
-            <TableCell>{scale?.valor_pago}</TableCell>
+            {collaboratorData?.role === 'admin' ? (
+                <TableCell className="text-center font-semibold">{scale?.valor_pago}</TableCell>
+            ) : (
+                <></>
+            )}
             <TableCell>{scale?.pagamentoAR_AV}</TableCell>
+            <TableCell>
+                {getServiceTime(scale?.tipo_servico, scale?.horario_gerenciamento!)}
+            </TableCell>
         </TableRow>
     )
 }

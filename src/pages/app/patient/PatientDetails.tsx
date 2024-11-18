@@ -3,6 +3,8 @@ import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTit
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useAuth } from "@/contexts/authContext";
+import { Collaborator, useCollaborator } from "@/contexts/collaboratorContext";
 import { useHabilities } from "@/contexts/habilitiesContext";
 import { Patient, usePatients } from "@/contexts/patientContext";
 import { useEffect, useState } from "react";
@@ -23,7 +25,26 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
     const { updatePatient } = usePatients()
     const [selectedHabilities, setSelectedHabilities] = useState<number[]>([]);
 
+    const { user } = useAuth();
+    const { getCollaboratorById } = useCollaborator();
+    const [collaboratorData, setCollaboratorData] = useState<Collaborator | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (user) {
+            setIsLoading(true);
+            getCollaboratorById(user.id)
+                .then(data => setCollaboratorData(data))
+                .finally(() => setIsLoading(false));
+        }
+    }, [user, getCollaboratorById]);
+
     const handleUpdate = async (dataResp: Patient) => {
+        if (!dataResp.cpf) {
+            toast.error("Cpf é obrigatório");
+            return;
+        }
+        
         if (!patient.paciente_id) {
             console.error("ID do paciente está indefinido");
             toast.error("Erro: ID do paciente indefinido.");
@@ -105,18 +126,24 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                                 <Input id="rua" type="text" {...register("rua")} />
                             </TableCell>
                         </TableRow>
-                        <TableRow>
-                            <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
-                            <TableCell className="flex justify-start -mt-2">
-                                <Input id="pagamento_dia" type="number" {...register("pagamento_dia")} />
-                            </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell className="font-semibold">Pagamento/Profisional:</TableCell>
-                            <TableCell className="flex justify-start -mt-2">
-                                <Input id="pagamento_a_profissional" type="number" {...register("pagamento_a_profissional")} />
-                            </TableCell>
-                        </TableRow>
+                        {!isLoading && collaboratorData?.role === 'admin' ? (
+                            <>
+                                <TableRow>
+                                    <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
+                                    <TableCell className="flex justify-start -mt-2">
+                                        <Input id="pagamento_dia" type="number" {...register("pagamento_dia")} />
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell className="font-semibold">Pagamento/Profisional:</TableCell>
+                                    <TableCell className="flex justify-start -mt-2">
+                                        <Input id="pagamento_a_profissional" type="number" {...register("pagamento_a_profissional")} />
+                                    </TableCell>
+                                </TableRow>
+                            </>
+                        ) : (
+                            <></>
+                        )}
                         <TableRow>
                             <TableCell className="font-semibold">Plano de Saúde:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
