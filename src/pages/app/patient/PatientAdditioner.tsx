@@ -74,15 +74,15 @@ export const PatientAdditioner = () => {
                             </TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell className="font-semibold">E-mail:</TableCell>
+                            <TableCell className="font-semibold">Contratante:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="email" type="email" placeholder="Ex: exemplo@email.com" {...register("email")} />
+                                <Input id="plano" type="text" placeholder="Ex: Planserve" {...register("plano_saude")} required />
                             </TableCell>
                         </TableRow>
                         <TableRow>
-                            <TableCell className="font-semibold">CPF:</TableCell>
+                            <TableCell className="font-semibold">E-mail:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="cpf" type="text" placeholder="Ex: 00011122233" {...register("cpf")} required />
+                                <Input id="email" type="email" placeholder="Ex: exemplo@email.com" {...register("email")} />
                             </TableCell>
                         </TableRow>
                         <TableRow>
@@ -117,26 +117,21 @@ export const PatientAdditioner = () => {
                                         />
                                     </TableCell>
                                 </TableRow>
-                                <TableRow>
-                                    <TableCell className="font-semibold">Pagamento/Profissional:</TableCell>
-                                    <TableCell className="flex justify-start -mt-2">
-                                        <Input
-                                            id="pagamento_a_profissional"
-                                            type="number"
-                                            placeholder="Ex: 200"
-                                            onChange={(e) => setValue("pagamento_a_profissional", parseInt(e.target.value) || 0)}
-                                            required={true}
-                                        />
-                                    </TableCell>
-                                </TableRow>
+
                             </>
                         ) : (
                             <></>
                         )}
                         <TableRow>
-                            <TableCell className="font-semibold">Plano de Saúde:</TableCell>
+                            <TableCell className="font-semibold">Pagamento/Profissional:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="plano" type="text" placeholder="Ex: Planserve" {...register("plano_saude")} required />
+                                <Input
+                                    id="pagamento_a_profissional"
+                                    type="number"
+                                    placeholder="Ex: 200"
+                                    onChange={(e) => setValue("pagamento_a_profissional", parseInt(e.target.value) || 0)}
+                                    required={true}
+                                />
                             </TableCell>
                         </TableRow>
                         <TableRow>

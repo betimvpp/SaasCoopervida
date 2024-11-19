@@ -44,7 +44,7 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
             toast.error("Cpf é obrigatório");
             return;
         }
-        
+
         if (!patient.paciente_id) {
             console.error("ID do paciente está indefinido");
             toast.error("Erro: ID do paciente indefinido.");
@@ -97,17 +97,23 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                             </TableCell>
                         </TableRow>
                         <TableRow>
+                            <TableCell className="font-semibold">Contratante:</TableCell>
+                            <TableCell className="flex justify-start -mt-2">
+                                <Input id="plano" type="text" {...register("plano_saude")} />
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
                             <TableCell className="font-semibold">E-mail:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
                                 <Input id="email" type="email" {...register("email")} />
                             </TableCell>
                         </TableRow>
-                        <TableRow>
+                        {/* <TableRow>
                             <TableCell className="font-semibold">CPF:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
                                 <Input id="cpf" type="text" {...register("cpf")} />
                             </TableCell>
-                        </TableRow>
+                        </TableRow> */}
                         <TableRow>
                             <TableCell className="font-semibold">Telefone:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
@@ -134,22 +140,18 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                                         <Input id="pagamento_dia" type="number" {...register("pagamento_dia")} />
                                     </TableCell>
                                 </TableRow>
-                                <TableRow>
-                                    <TableCell className="font-semibold">Pagamento/Profisional:</TableCell>
-                                    <TableCell className="flex justify-start -mt-2">
-                                        <Input id="pagamento_a_profissional" type="number" {...register("pagamento_a_profissional")} />
-                                    </TableCell>
-                                </TableRow>
+
                             </>
                         ) : (
                             <></>
                         )}
                         <TableRow>
-                            <TableCell className="font-semibold">Plano de Saúde:</TableCell>
+                            <TableCell className="font-semibold">Pagamento/Profisional:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
-                                <Input id="plano" type="text" {...register("plano_saude")} />
+                                <Input id="pagamento_a_profissional" type="number" {...register("pagamento_a_profissional")} />
                             </TableCell>
                         </TableRow>
+
                         <TableRow>
                             <TableCell className="font-semibold">Status:</TableCell>
                             <TableCell className="flex justify-start -mt-2">

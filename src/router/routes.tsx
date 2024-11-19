@@ -11,6 +11,9 @@ import { Permutation } from '@/pages/app/permutation/Permutation'
 import { CreateSchedule } from '@/pages/app/createSchedule/CreateSchedule'
 import { ProtectedRoute } from './ProtectedRoute'
 import { WelcolmePage } from '@/pages/app/WelcolmePage'
+import { Payments } from '@/pages/app/payments/Payments'
+import { Complaints } from '@/pages/app/complaints/Complaints'
+import { Documents } from '@/pages/app/documents/Documents'
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +58,24 @@ export const router = createBrowserRouter([
         path: '/pacientes', element:
           <ProtectedRoute allowedRoles={['admin', 'rh']}>
             <Patient />
+          </ProtectedRoute>
+      },
+      {
+        path: '/documentos', element:
+          <ProtectedRoute allowedRoles={['admin', 'rh']}>
+            <Documents />
+          </ProtectedRoute>
+      },
+      {
+        path: '/reclamacoes', element:
+          <ProtectedRoute allowedRoles={['admin', 'rh']}>
+            <Complaints />
+          </ProtectedRoute>
+      },
+      {
+        path: '/pagamentos', element:
+          <ProtectedRoute allowedRoles={['admin', 'rh']}>
+            <Payments />
           </ProtectedRoute>
       },
     ],

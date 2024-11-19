@@ -9,8 +9,6 @@ import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { HumanResourceAdditioner } from './HumanResourceAdditioner'
 import { useState } from 'react'
 
-
-
 export function HumanResourcesFilters() {
   const { fetchHumanResources } = useHumanResources();
   const [isAdditionerOpen, setIsAdditionerOpen] = useState(false);
