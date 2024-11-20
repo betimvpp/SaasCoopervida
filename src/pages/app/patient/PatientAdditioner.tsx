@@ -80,6 +80,12 @@ export const PatientAdditioner = () => {
                             </TableCell>
                         </TableRow>
                         <TableRow>
+                            <TableCell className="font-semibold">Nivel:</TableCell>
+                            <TableCell className="flex justify-start -mt-2">
+                                <Input id="nivel" type="text" placeholder="Ex: 7" {...register("cpf")} required />
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
                             <TableCell className="font-semibold">E-mail:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
                                 <Input id="email" type="email" placeholder="Ex: exemplo@email.com" {...register("email")} />

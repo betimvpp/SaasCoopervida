@@ -103,17 +103,17 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                             </TableCell>
                         </TableRow>
                         <TableRow>
+                            <TableCell className="font-semibold">Nivel:</TableCell>
+                            <TableCell className="flex justify-start -mt-2">
+                                <Input id="nivel" type="text" {...register("cpf")} />
+                            </TableCell>
+                        </TableRow>
+                        <TableRow>
                             <TableCell className="font-semibold">E-mail:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
                                 <Input id="email" type="email" {...register("email")} />
                             </TableCell>
                         </TableRow>
-                        {/* <TableRow>
-                            <TableCell className="font-semibold">CPF:</TableCell>
-                            <TableCell className="flex justify-start -mt-2">
-                                <Input id="cpf" type="text" {...register("cpf")} />
-                            </TableCell>
-                        </TableRow> */}
                         <TableRow>
                             <TableCell className="font-semibold">Telefone:</TableCell>
                             <TableCell className="flex justify-start -mt-2">
