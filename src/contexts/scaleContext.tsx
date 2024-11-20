@@ -14,6 +14,7 @@ export const scaleSchema = z.object({
     nomeFuncionario: z.string().optional().nullable(),
     nomePaciente: z.string().optional().nullable(),
     horario_gerenciamento: z.string().optional().nullable(),
+    troca_servico_id: z.bigint().optional(),
 });
 
 export type Scale = z.infer<typeof scaleSchema>;
@@ -53,7 +54,7 @@ export const serviceExchangeFiltersSchema = z.object({
     dataDestino: z.string().optional(),
     servicoOrigem: z.string().optional(),
     servicoDestino: z.string().optional(),
-
+    troca_servico_id: z.bigint().optional(),
     status: z.string().optional(),
 
     dateOrder: z.enum(['asc', 'desc']).nullable().optional(),
@@ -366,10 +367,20 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
             if (escalaDestinoError) {
                 console.error("Erro ao atualizar escala de destino:", escalaDestinoError.message);
             }
+
+            setScales((prevScales) =>
+                prevScales.map((prevScale) =>
+                    prevScale.troca_servico_id === scale.troca_servico_id
+                        ? { ...prevScale, status_gestor: "Aprovado" }
+                        : prevScale
+                )
+            );
+
+            setLoading(false);
         } catch (error) {
             console.error("Erro desconhecido ao aprovar a troca:", error);
+            setLoading(false);
         }
-        setLoading(false);
     }, []);
 
     const handleReject = useCallback(async (scale: ServiceExchange) => {
@@ -383,10 +394,20 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
             if (error) {
                 console.error("Erro ao rejeitar troca:", error.message);
             }
+
+            setScales((prevScales) =>
+                prevScales.map((prevScale) =>
+                    prevScale.troca_servico_id === scale.troca_servico_id
+                        ? { ...prevScale, status_gestor: "Rejeitado" }
+                        : prevScale
+                )
+            );
+
+            setLoading(false);
         } catch (error) {
             console.error("Erro desconhecido ao rejeitar a troca:", error);
+            setLoading(false);
         }
-        setLoading(false);
     }, []);
 
 

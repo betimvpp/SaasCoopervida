@@ -13,6 +13,7 @@ import { CollaboratorProvider } from './contexts/collaboratorContext'
 import { HabilityProvider } from './contexts/habilitiesContext'
 import { ScaleProvider } from './contexts/scaleContext'
 import { DocumentsProvider } from './contexts/docsContext'
+import { ComplaintsProvider } from './contexts/complaintsContext'
 
 export function App() {
   return (
@@ -24,13 +25,15 @@ export function App() {
               <HabilityProvider>
                 <DocumentsProvider>
                   <ScaleProvider>
-                    <HelmetProvider>
-                      <Helmet titleTemplate='%s | CooperVida' />
-                      <Toaster richColors />
-                      <QueryClientProvider client={queryClient}>
-                        <RouterProvider router={router} />
-                      </QueryClientProvider>
-                    </HelmetProvider>
+                    <ComplaintsProvider>
+                      <HelmetProvider>
+                        <Helmet titleTemplate='%s | CooperVida' />
+                        <Toaster richColors />
+                        <QueryClientProvider client={queryClient}>
+                          <RouterProvider router={router} />
+                        </QueryClientProvider>
+                      </HelmetProvider>
+                    </ComplaintsProvider>
                   </ScaleProvider>
                 </DocumentsProvider>
               </HabilityProvider>

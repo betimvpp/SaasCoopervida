@@ -36,7 +36,7 @@ export const Permutation = () => {
             <div className=" h-full w-full max-h-[700px] shadow-lg border rounded-md">
                 <PermutationTable />
                 {serviceExchanges?.length === 0 && loading === false &&
-                    <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhum usuário encontrado!</div>
+                    <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhuma permuta encontrada!</div>
                 }
             </div>
             <Pagination

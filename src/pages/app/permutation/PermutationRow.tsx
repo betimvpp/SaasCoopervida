@@ -12,12 +12,10 @@ export const PermutationRow = ({ scale }: { scale: ServiceExchange }) => {
 
     const onApprove = async () => {
         handleApprove(scale);
-        window.location.reload();
     };
 
     const onReject = async () => {
         handleReject(scale);
-        window.location.reload();
     }
     return (
         <TableRow>
