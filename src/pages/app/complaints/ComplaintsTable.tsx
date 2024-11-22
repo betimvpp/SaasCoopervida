@@ -14,6 +14,7 @@ export const ComplaintsTable = () => {
                     <TableHead className="text-center w-4">ID</TableHead>
                     <TableHead className="text-center">ID do Colaborador</TableHead>
                     <TableHead className="text-center">Nome do Colaborador</TableHead>
+                    <TableHead className="text-center">Telefone do Colaborador</TableHead>
                     <TableHead className="text-center">Cargo do Colaborador</TableHead>
                     <TableHead className="text-center">Status</TableHead>
                 </TableRow>

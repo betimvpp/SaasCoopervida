@@ -31,11 +31,12 @@ export const ComplaintsRow = ({ complaint }: { complaint: Complaint }) => {
             <TableCell className="text-center">{complaint?.id}</TableCell>
             <TableCell className="text-center">{complaint?.colaborador_id}</TableCell>
             <TableCell className="text-center">{complaint?.nomeFuncionario}</TableCell>
+            <TableCell className="text-center">{complaint?.telefoneFuncionario}</TableCell>
             <TableCell className="text-center">{complaint ? capitalizeFirstLetter(complaint?.roleFuncionario!) : ''}</TableCell>
             <TableCell className="text-center">{complaint?.resolvido ? 'Resolvido' : 'Pendente'}</TableCell>
             <TableCell>
                 <Button
-                    variant="outline"
+                    variant={complaint.resolvido ? "outline" : "default"}
                     size="xs"
                     onClick={() => handleResolve(complaint.id)}
                     disabled={complaint.resolvido}

@@ -10,6 +10,7 @@ export const complaintSchema = z.object({
     data: z.string().nullable().optional(),
     nomeFuncionario: z.string().optional().nullable(),
     roleFuncionario: z.string().optional().nullable(),
+    telefoneFuncionario: z.string().optional().nullable(),
     resolvido: z.boolean().optional(),
 });
 
@@ -55,8 +56,9 @@ export const ComplaintsProvider = ({ children }: { children: ReactNode }) => {
         const { data, error } = await supabase
             .from('financeiro_reclamacao')
             .select(`*
-            ,colaborador:colaborador_id (nome, role)`)
+            ,colaborador:colaborador_id (nome, role, telefone)`)
             .order('id', { ascending: filters.order === 'asc' })
+            .eq('resolvido', false)
             .range(pageIndex * 10, pageIndex * 10 + 9);
 
         if (error) {
@@ -70,6 +72,7 @@ export const ComplaintsProvider = ({ children }: { children: ReactNode }) => {
             ...complaint,
             nomeFuncionario: complaint.colaborador?.nome || null,
             roleFuncionario: complaint.colaborador?.role || null,
+            telefoneFuncionario: complaint.colaborador?.telefone || null,
         })) || [];
 
         setComplaints(validatedData);

@@ -3,13 +3,7 @@ import { Search, X } from 'lucide-react'
 import { Controller, useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/components/ui/select'
 import { collaboratorFiltersSchema, CollaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { CollaboratorAdditioner } from './CollaboratorAdditioner'

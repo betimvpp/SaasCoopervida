@@ -229,9 +229,9 @@ export const ScaleProvider = ({ children }: { children: ReactNode }) => {
                 funcionario_origem:funcionario_origem_id (nome),
                 funcionario_destino:funcionario_destino_id (nome)
             `)
+            .eq('status_gestor', 'pendente')
             .range(pageIndex * 10, pageIndex * 10 + 9);
 
-        // Adicionando filtros
         if (filters.dataOrigem) {
             query = query.gte('data_servico_colaborador_origem', filters.dataOrigem);
         }
