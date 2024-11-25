@@ -14,6 +14,7 @@ import { HabilityProvider } from './contexts/habilitiesContext'
 import { ScaleProvider } from './contexts/scaleContext'
 import { DocumentsProvider } from './contexts/docsContext'
 import { ComplaintsProvider } from './contexts/complaintsContext'
+import { PaymentProvider } from './contexts/paymentContext'
 
 export function App() {
   return (
@@ -26,13 +27,15 @@ export function App() {
                 <DocumentsProvider>
                   <ScaleProvider>
                     <ComplaintsProvider>
-                      <HelmetProvider>
-                        <Helmet titleTemplate='%s | CooperVida' />
-                        <Toaster richColors />
-                        <QueryClientProvider client={queryClient}>
-                          <RouterProvider router={router} />
-                        </QueryClientProvider>
-                      </HelmetProvider>
+                      <PaymentProvider>
+                        <HelmetProvider>
+                          <Helmet titleTemplate='%s | CooperVida' />
+                          <Toaster richColors />
+                          <QueryClientProvider client={queryClient}>
+                            <RouterProvider router={router} />
+                          </QueryClientProvider>
+                        </HelmetProvider>
+                      </PaymentProvider>
                     </ComplaintsProvider>
                   </ScaleProvider>
                 </DocumentsProvider>

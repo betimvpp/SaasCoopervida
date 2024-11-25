@@ -1,43 +1,43 @@
 import { Helmet } from 'react-helmet-async'
-import { PaymentFilters } from './PaymentsFilter'
+import { PaymentFilter } from './PaymentsFilter'
 import { PaymentTable } from './PaymentTable'
 import { useEffect, useState } from 'react';
-import { useScale } from '@/contexts/scaleContext';
-import { useCollaborator } from '@/contexts/collaboratorContext';
+import { usePayment } from '@/contexts/paymentContext';
+import { Pagination } from '@/components/pagination';
 
 export const Payments = () => {
-  const { fetchScales } = useScale();
-  const { fetchCollaborator } = useCollaborator();
-  const [pageIndex] = useState(0);
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const { paymentData, loading, fetchPayments, totalCount } = usePayment();
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const handlePageChange = (newPageIndex: number) => {
+    setPageIndex(newPageIndex);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetchCollaborator({}, pageIndex);
-      await fetchScales()
+      await fetchPayments({}, pageIndex);
     };
 
     fetchData();
-  }, [fetchCollaborator, fetchScales]);
-
-  const handleFilter = (month: string) => {
-    setSelectedMonth(month);
-  };
+  }, [fetchPayments, pageIndex]);
 
   return (
     <div className="flex flex-col w-full h-full gap-2">
       <Helmet title="Pagamentos" />
       <h1 className="text-4xl font-bold textslate mb-2">Painel de Pagamentos</h1>
-      <PaymentFilters selectedMonth={selectedMonth} onFilter={handleFilter} />
+      <PaymentFilter />
       <div className=" h-full w-full max-h-[700px] shadow-lg border rounded-md">
-        <PaymentTable selectedMonth={selectedMonth} onFilter={handleFilter} /> {/* Pass onFilter here */}
+        <PaymentTable />
+        {paymentData?.length === 0 && loading === false &&
+          <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhum usuário encontrado!</div>
+        }
       </div>
-      {/* <Pagination
+      <Pagination
         pageIndex={pageIndex}
         totalCount={totalCount}
         perPage={10}
         onPageChange={handlePageChange}
-      /> */}
+      />
     </div>
   )
 }

@@ -1,37 +1,52 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Search, X } from 'lucide-react'
 import { Controller, useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/components/ui/select'
+import { PaymentFilters, paymentFiltersSchema, usePayment } from '@/contexts/paymentContext'
 
-type PaymentFiltersProps = {
-    selectedMonth: string;
-    onFilter: (month: string) => void;
-};
-export function PaymentFilters({ selectedMonth, onFilter }: PaymentFiltersProps) {
-    const [filterLoading, setIsFilterLoading] = useState(false);
+export function PaymentFilter() {
+    const { fetchPayments } = usePayment();
 
-    const currentMonth = new Date().toLocaleString('default', { month: 'long' }).toLowerCase();
-
-    const { handleSubmit, control, reset } = useForm({
+    const { register, handleSubmit, control, reset } = useForm<PaymentFilters>({
+        resolver: zodResolver(paymentFiltersSchema),
         defaultValues: {
-            month: selectedMonth || currentMonth,
+            collaboratorName: '',
+            role: 'all',
+            month: new Date().toISOString().slice(0, 7),
         },
     });
 
-    async function handleFilter() {
-        setIsFilterLoading(true);
-        onFilter(selectedMonth); 
-        setIsFilterLoading(false);
+    async function handleFilter(data: PaymentFilters) {
+        await fetchPayments(data);
     }
 
     function handleClearFilters() {
-        reset({ month: currentMonth });
-    }
+        const defaultFilters = {
+            collaboratorName: '',
+            role: 'all',
+            month: new Date().toISOString().slice(0, 7),
+        };
 
+        reset(defaultFilters);
+        fetchPayments(defaultFilters);
+    }
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const currentYear = parseInt(currentMonth.split("-")[0], 10);
+    
     return (
-        <div className="flex justify-between">
-            <form onSubmit={handleSubmit(handleFilter)} className="flex items-center gap-2">
+        <div className='flex justify-between'>
+            <form
+                onSubmit={handleSubmit(handleFilter)}
+                className="flex items-center gap-2"
+            >
+                <span className="text-sm font-semibold">Filtros:</span>
+                <Input
+                    placeholder="Nome do colaborador"
+                    className="h-8 w-[17rem]"
+                    {...register('collaboratorName')}
+                />
                 <span className="text-sm font-semibold">Ordenar por data:</span>
                 <Controller
                     name="month"
@@ -40,6 +55,7 @@ export function PaymentFilters({ selectedMonth, onFilter }: PaymentFiltersProps)
                         <Select
                             name={name}
                             onValueChange={onChange}
+                            defaultValue={currentMonth}
                             value={value}
                             disabled={disabled}
                         >
@@ -47,33 +63,55 @@ export function PaymentFilters({ selectedMonth, onFilter }: PaymentFiltersProps)
                                 <SelectValue placeholder="Ordenar" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem className="cursor-pointer" value="january">Janeiro</SelectItem>
-                                <SelectItem className="cursor-pointer" value="february">Fevereiro</SelectItem>
-                                <SelectItem className="cursor-pointer" value="march">Março</SelectItem>
-                                <SelectItem className="cursor-pointer" value="april">Abril</SelectItem>
-                                <SelectItem className="cursor-pointer" value="may">Maio</SelectItem>
-                                <SelectItem className="cursor-pointer" value="june">Junho</SelectItem>
-                                <SelectItem className="cursor-pointer" value="july">Julho</SelectItem>
-                                <SelectItem className="cursor-pointer" value="august">Agosto</SelectItem>
-                                <SelectItem className="cursor-pointer" value="september">Setembro</SelectItem>
-                                <SelectItem className="cursor-pointer" value="october">Outubro</SelectItem>
-                                <SelectItem className="cursor-pointer" value="november">Novembro</SelectItem>
-                                <SelectItem className="cursor-pointer" value="december">Dezembro</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-01`}>Janeiro</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-02`}>Fevereiro</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-03`}>Março</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-04`}>Abril</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-05`}>Maio</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-06`}>Junho</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-07`}>Julho</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-08`}>Agosto</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-09`}>Setembro</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-10`}>Outubro</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-11`}>Novembro</SelectItem>
+                                <SelectItem className="cursor-pointer" value={`${currentYear}-12`}>Dezembro</SelectItem>
                             </SelectContent>
                         </Select>
                     )}
                 ></Controller>
-                {filterLoading ? (
-                    <Button disabled variant="default" size="xs" type="submit">
-                        <Search className="mr-2 h-4 w-4" />
-                        Filtrando...
-                    </Button>
-                ) : (
-                    <Button variant="default" size="xs" type="submit">
-                        <Search className="mr-2 h-4 w-4" />
-                        Filtrar
-                    </Button>
-                )}
+                <Controller
+                    name="role"
+                    control={control}
+                    render={({ field: { name, onChange, value, disabled } }) => {
+                        return (
+                            <Select
+                                defaultValue="all"
+                                name={name}
+                                onValueChange={onChange}
+                                value={value}
+                                disabled={disabled}
+                            >
+                                <SelectTrigger className="h-8 w-[180px]">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem className="cursor-pointer" value="all">Todos cargos</SelectItem>
+                                    <SelectItem className="cursor-pointer" value="nutricionista">Nutricionista</SelectItem>
+                                    <SelectItem className="cursor-pointer" value="fisioterapeuta">Fisioterapeuta</SelectItem>
+                                    <SelectItem className="cursor-pointer" value="enfermeiro">Enfermeiro</SelectItem>
+                                    <SelectItem className="cursor-pointer" value="técnico de enfermagem">Técnico de Enfermagem</SelectItem>
+                                    <SelectItem className="cursor-pointer" value="fonoaudiólogo">Fonoaudiólogo</SelectItem>
+                                    <SelectItem className="cursor-pointer" value="psicólogo">Psicólogo</SelectItem>
+                                    <SelectItem className="cursor-pointer" value="dentista">Dentista</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        )
+                    }}
+                ></Controller>
+                <Button variant="default" size="xs" type="submit">
+                    <Search className="mr-2 h-4 w-4" />
+                    Filtrar resultados
+                </Button>
                 <Button
                     onClick={handleClearFilters}
                     variant="outline"
@@ -81,11 +119,9 @@ export function PaymentFilters({ selectedMonth, onFilter }: PaymentFiltersProps)
                     type="button"
                 >
                     <X className="mr-2 h-4 w-4" />
-                    Limpar
+                    Remover filtros
                 </Button>
             </form>
         </div>
-    );
+    )
 }
-
-

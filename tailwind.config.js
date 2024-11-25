@@ -18,7 +18,7 @@ export default {
 				'banner': "url('/assets/banner.jpg')",
 			},
 			colors: {
-				cooper:'hsl(142.1 70.6% 45.3%)',
+				cooper: 'hsl(142.1 70.6% 45.3%)',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				card: {
