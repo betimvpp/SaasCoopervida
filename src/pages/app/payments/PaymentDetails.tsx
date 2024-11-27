@@ -7,7 +7,7 @@ import { usePayment } from '@/contexts/paymentContext'; // Importe o contexto
 import { format } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
 
-export const PaymentDetails = ({ payment, isAdmin, loading, open }: { payment: PaymentInfo; isAdmin: string; loading: boolean; open: boolean }) => {
+export const PaymentDetails = ({ payment, isAdmin, loading }: { payment: PaymentInfo; isAdmin: string; loading: boolean; open: boolean }) => {
     const [pageIndex, setPageIndex] = useState(0)
     const { fetchCollaboratorScales, totalScalesCount, collaboratorScalesData, loading: loadingScales } = usePayment(); // Use o contexto para acessar a função e os dados
     const isFirstRender = useRef(true);

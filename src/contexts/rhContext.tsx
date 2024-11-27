@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createContext, ReactNode, useContext, useEffect, useState, useCallback } from 'react';
+import { createContext, ReactNode, useContext, useState, useCallback } from 'react';
 import supabase from '@/lib/supabase';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';

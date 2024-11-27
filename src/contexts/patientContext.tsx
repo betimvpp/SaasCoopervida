@@ -1,5 +1,5 @@
 import supabase from '@/lib/supabase';
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
