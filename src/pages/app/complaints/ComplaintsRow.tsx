@@ -5,6 +5,7 @@ import { Search } from 'lucide-react'
 import { useState } from 'react'
 // import { ComplaintsDetails } from './ComplaintsDetails'
 import { Complaint, useComplaints } from '@/contexts/complaintsContext'
+import { ComplaintsDetails } from './ComplaintsDetails'
 
 function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -24,7 +25,7 @@ export const ComplaintsRow = ({ complaint }: { complaint: Complaint }) => {
                             <span className="sr-only">Detalhes do Complainto</span>
                         </Button>
                     </DialogTrigger>
-                    {/* <ComplaintsDetails open={isDetailsOpen} complaint={complaint} /> */}
+                    <ComplaintsDetails complaint={complaint} />
                 </Dialog>
             </TableCell>
 

@@ -26,7 +26,7 @@ export const Payments = () => {
       <Helmet title="Pagamentos" />
       <h1 className="text-4xl font-bold textslate mb-2">Painel de Pagamentos</h1>
       <PaymentFilter />
-      <div className=" h-full w-full max-h-[700px] shadow-lg border rounded-md">
+      <div className="h-full w-full max-h-[700px] shadow-lg border rounded-md">
         <PaymentTable />
         {paymentData?.length === 0 && loading === false &&
           <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhum usuário encontrado!</div>

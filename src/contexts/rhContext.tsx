@@ -181,10 +181,10 @@ export const HumanResourcesProvider = ({ children }: { children: ReactNode }) =>
         }
     };
 
-    useEffect(() => {
-        fetchHumanResources();
-        fetchHumanResourcesNotPaginated();
-    }, [fetchHumanResources, fetchHumanResourcesNotPaginated]);
+    // useEffect(() => {
+    //     fetchHumanResources();
+    //     fetchHumanResourcesNotPaginated();
+    // }, [fetchHumanResources, fetchHumanResourcesNotPaginated]);
 
     return (
         <HumanResourcesContext.Provider value={{ humanResources, humanResourcesNotPaginated, fetchHumanResources, fetchHumanResourcesNotPaginated, loading, addHumanResources, updateHumanResources }}>

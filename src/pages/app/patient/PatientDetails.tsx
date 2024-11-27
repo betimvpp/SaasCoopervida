@@ -133,15 +133,12 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                             </TableCell>
                         </TableRow>
                         {!isLoading && collaboratorData?.role === 'admin' ? (
-                            <>
-                                <TableRow>
-                                    <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
-                                    <TableCell className="flex justify-start -mt-2">
-                                        <Input id="pagamento_dia" type="number" {...register("pagamento_dia")} />
-                                    </TableCell>
-                                </TableRow>
-
-                            </>
+                            <TableRow>
+                                <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
+                                <TableCell className="flex justify-start -mt-2">
+                                    <Input id="pagamento_dia" type="number" {...register("pagamento_dia")} />
+                                </TableCell>
+                            </TableRow>
                         ) : (
                             <></>
                         )}

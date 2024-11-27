@@ -90,10 +90,10 @@ export const DocumentsProvider = ({ children }: { children: ReactNode }) => {
         setLoading(false);
     }, []);
 
-    useEffect(() => {
-        fetchDocuments();
-        fetchDocumentsNotPaginated();
-    }, [fetchDocuments, fetchDocumentsNotPaginated]);
+    // useEffect(() => {
+    //     fetchDocuments();
+    //     fetchDocumentsNotPaginated();
+    // }, [fetchDocuments, fetchDocumentsNotPaginated]);
 
     return (
         <DocumentsContext.Provider value={{ documents, loading, fetchDocuments, documentsNotPaginated, fetchDocumentsNotPaginated }}>

@@ -29,7 +29,7 @@ export const ScaleCalendarDetailsRow = ({ scale }: { scale: Scale }) => {
             case 'T':
                 return '13:00 às 19:00';
             default:
-                return defaultHorario; // Usa o horario_gerenciamento como fallback
+                return defaultHorario;
         }
     };
 
@@ -44,11 +44,7 @@ export const ScaleCalendarDetailsRow = ({ scale }: { scale: Scale }) => {
             ) : (
                 <></>
             )}
-            {collaboratorData?.role === 'admin' ? (
-                <TableCell className="text-center font-semibold">{scale?.valor_pago}</TableCell>
-            ) : (
-                <></>
-            )}
+            <TableCell className="text-center font-semibold">{scale?.valor_pago}</TableCell>
             <TableCell>{scale?.pagamentoAR_AV}</TableCell>
             <TableCell>
                 {getServiceTime(scale?.tipo_servico, scale?.horario_gerenciamento!)}

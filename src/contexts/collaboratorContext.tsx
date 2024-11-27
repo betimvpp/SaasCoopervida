@@ -65,7 +65,7 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
             .select('*')
             .neq("role", "rh")
             .neq("role", "admin")
-            .range(pageIndex * 10, pageIndex * 10 + 9); // Atualiza o range com base no pageIndex
+            .range(pageIndex * 10, pageIndex * 10 + 9);
 
         if (filters.collaboratorId) {
             query = query.eq('funcionario_id', filters.collaboratorId);
@@ -121,55 +121,12 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const addCollaborator = async (newCollaborator: Partial<Collaborator>) => {
-        // try {
-        //     if (!newCollaborator.email || !newCollaborator.cpf) {
-        //         throw new Error('Dados inválidos');
-        //     }
-
-        //     const response = await api.post('/auth/v1/signup', {
-        //         email: newCollaborator.email,
-        //         password: newCollaborator.cpf,
-        //     });
-
-        //     const newUserData = response.data;
-        //     if (!newUserData?.user?.id) {
-        //         throw new Error('Erro ao criar usuário: ID de usuário não retornado');
-        //     }
-
-        //     const collaboratorWithId = {
-        //         ...newCollaborator,
-        //         funcionario_id: newUserData.user.id,
-        //         status: newCollaborator.status || "Ativo",
-        //     };
-
-        //     const { data, error: insertError } = await supabase
-        //         .from('funcionario')
-        //         .insert(collaboratorWithId)
-        //         .select()
-        //         .single();
-
-        //     if (insertError || !data) {
-        //         throw new Error(`Erro ao inserir colaborador: ${insertError?.message}`);
-        //     }
-
-        //     if(collaborators.length>=10){
-        //         setCollaboratorsNotPaginated((prevCollaborators) => [...prevCollaborators, data]);
-        //     } else{
-        //         setCollaborators((prevCollaborators) => [...prevCollaborators, data]);
-        //     }
-
-        //     toast.success("Colaborador adicionado com sucesso!");
-        // } catch (error) {
-        //     console.error("Erro ao adicionar colaborador:", error);
-        //     toast.error("Erro ao adicionar colaborador!");
-        // }
-        let createdUserId: string | null = null; // Armazena o ID do usuário criado
+        let createdUserId: string | null = null; 
         try {
             if (!newCollaborator.email || !newCollaborator.cpf) {
                 throw new Error('Dados inválidos');
             }
 
-            // Criar usuário na tabela de autenticação
             const response = await api.post('/auth/v1/signup', {
                 email: newCollaborator.email,
                 password: newCollaborator.cpf,
@@ -182,14 +139,12 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
                 throw new Error('Erro ao criar usuário: ID de usuário não retornado');
             }
 
-            // Preparar os dados do colaborador
             const collaboratorWithId = {
                 ...newCollaborator,
                 funcionario_id: createdUserId,
                 status: newCollaborator.status || "Ativo",
             };
 
-            // Inserir na tabela `funcionario`
             const { data, error: insertError } = await supabase
                 .from('funcionario')
                 .insert(collaboratorWithId)
@@ -265,10 +220,10 @@ export const CollaboratorProvider = ({ children }: { children: ReactNode }) => {
         return data || null;
     };
 
-    useEffect(() => {
-        fetchCollaborator();
-        fetchCollaboratorNotPaginated();
-    }, [fetchCollaborator, fetchCollaboratorNotPaginated]);
+    // useEffect(() => {
+    //     fetchCollaborator();
+    //     fetchCollaboratorNotPaginated();
+    // }, [fetchCollaborator, fetchCollaboratorNotPaginated]);
 
     return (
         <CollaboratorContext.Provider

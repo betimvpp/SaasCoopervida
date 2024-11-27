@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useAuth } from "@/contexts/authContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const signInForm = z.object({
   email: z.string().email(),
@@ -22,7 +22,7 @@ export function Login() {
   const navigate = useNavigate();
 
   async function handleLogin(dataResp: SignInForm) {
-    const loginSuccess = await login(dataResp); 
+    const loginSuccess = await login(dataResp);
 
     if (loginSuccess) {
       navigate("/");
@@ -32,7 +32,7 @@ export function Login() {
 
 
   return (
-    <Card className="mx-auto">
+    <Card className="mx-auto w-full">
       <Helmet title="Login" />
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold">Login</CardTitle>
@@ -53,6 +53,10 @@ export function Login() {
             Login
           </Button>
         </form>
+        <Separator className="w-4/5 m-auto mb-2 mt-4" />
+      <span className="w-full flex items-center justify-center text-center m-auto">
+        <Link to={"recuperar-senha"} className=" text-muted-foreground">Esqueci minha senha!</Link>
+      </span>
       </CardContent>
     </Card>
   );

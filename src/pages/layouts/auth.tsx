@@ -11,7 +11,7 @@ export function AuthLayout() {
           All rights reserved to CodeHere® - {new Date().getFullYear()}
         </footer>
       </div>
-      <div className="flex items-center justify-center h-screen m-auto min-w-[25rem]">
+      <div className="flex items-center justify-center h-screen m-auto w-[25rem] max-w-[25rem]">
         <span className="absolute top-8 right-8">
           <ModeToggle />
         </span>

@@ -14,6 +14,8 @@ import { WelcolmePage } from '@/pages/app/WelcolmePage'
 import { Payments } from '@/pages/app/payments/Payments'
 import { Complaints } from '@/pages/app/complaints/Complaints'
 import { Documents } from '@/pages/app/documents/Documents'
+import { RecoverPassword } from '@/pages/login/RecoverPassword'
+import { ResetPassword } from '@/pages/login/ResetPassword'
 
 export const router = createBrowserRouter([
   {
@@ -85,6 +87,8 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       { path: '/login', element: <Login /> },
+      { path: '/login/recuperar-senha', element: <RecoverPassword /> },
+      { path: '/login/nova-senha', element: <ResetPassword /> },
     ],
   },
 

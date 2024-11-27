@@ -220,10 +220,10 @@ export const PatientProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, []);
 
-  useEffect(() => {
-    fetchPatients();
-    fetchPatientsNotPaginated();
-  }, [fetchPatients, fetchPatientsNotPaginated]);
+  // useEffect(() => {
+  //   fetchPatients();
+  //   fetchPatientsNotPaginated();
+  // }, [fetchPatients, fetchPatientsNotPaginated]);
 
   return (
     <PatientContext.Provider value={{ fetchPatientsNotPaginated, updatePatient, patientsNotPaginated, patients, loading, fetchPatients, addPatient }}>

@@ -55,12 +55,7 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                                     ) : (
                                         <></>
                                     )}
-                                    {collaboratorData?.role === 'admin' ? (
-                                        <TableHead className="text-center font-semibold">Valor Pago</TableHead>
-                                    ) : (
-                                        <></>
-                                    )}
-
+                                    <TableHead className="text-center font-semibold">Valor Pago</TableHead>
                                     <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
                                     <TableHead className="text-center font-semibold">Horário</TableHead>
                                 </TableRow>
@@ -81,11 +76,7 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                                 ) : (
                                     <></>
                                 )}
-                                {collaboratorData?.role === 'admin' ? (
-                                    <TableHead className="text-center font-semibold">Valor Pago</TableHead>
-                                ) : (
-                                    <></>
-                                )}
+                                <TableHead className="text-center font-semibold">Valor Pago</TableHead>
                                 <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
                                 <TableHead className="text-center font-semibold">Horário</TableHead>
                             </TableRow>

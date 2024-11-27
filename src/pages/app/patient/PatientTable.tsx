@@ -25,27 +25,15 @@ export const PatientTable = () => {
     return (
         <Table>
             <TableHeader>
-                {!isLoading && collaboratorData?.role === 'admin' ? (
-                    <TableRow className="text-center">
-                        <TableHead className="w-4"></TableHead>
-                        <TableHead className="text-center">Nome Completo</TableHead>
-                        <TableHead className="text-center">CPF</TableHead>
-                        <TableHead className="text-center">Telefone</TableHead>
-                        <TableHead className="text-center">Plano de Saúde</TableHead>
-                        <TableHead className="text-center">Pagamento/Dia</TableHead>
-                        <TableHead className="text-center">Pagamento Profissional</TableHead>
-                    </TableRow>
-                ) : (
-                    <TableRow className="text-center">
-                        <TableHead className="w-4"></TableHead>
-                        <TableHead className="text-center">Nome Completo</TableHead>
-                        <TableHead className="text-center">CPF</TableHead>
-                        <TableHead className="text-center">Telefone</TableHead>
-                        <TableHead className="text-center">Plano de Saúde</TableHead>
-                        <TableHead className="text-center">Cidade</TableHead>
-                        <TableHead className="text-center">Rua</TableHead>
-                    </TableRow>
-                )}
+                <TableRow className="text-center">
+                    <TableHead className="w-4"></TableHead>
+                    <TableHead className="text-center">Nome Completo</TableHead>
+                    <TableHead className="text-center">CPF</TableHead>
+                    <TableHead className="text-center">Telefone</TableHead>
+                    <TableHead className="text-center">Plano de Saúde</TableHead>
+                    <TableHead className="text-center">Pagamento/Dia</TableHead>
+                    {!isLoading && collaboratorData?.role === 'admin' ? <TableHead className="text-center">Pagamento a Profissional</TableHead> : <></>}
+                </TableRow>
             </TableHeader>
             <TableBody>
                 {patients && patients.map((patient) => (
@@ -53,7 +41,6 @@ export const PatientTable = () => {
                 ))}
             </TableBody>
             {loading === true && patients.length <= 0 && <PatientTableSkeleton />}
-
         </Table>
     )
 }

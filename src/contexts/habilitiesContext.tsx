@@ -93,9 +93,9 @@ export const HabilityProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         console.log('Especialidade adicionada com sucesso:', data);
     }, [fetchHabilitys]);
     
-    useEffect(() => {
-        fetchHabilitys();
-    }, [fetchHabilitys]);
+    // useEffect(() => {
+    //     fetchHabilitys();
+    // }, [fetchHabilitys]);
 
     return (
         <HabilityContext.Provider value={{ habilities, loading, fetchHabilitys, fetchPatientHabilities, addSpecialty }}>

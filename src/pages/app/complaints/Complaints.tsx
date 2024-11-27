@@ -5,8 +5,6 @@ import { useComplaints } from '@/contexts/complaintsContext';
 import { ComplaintsFilters } from './ComplaintsFilters';
 import { ComplaintsTable } from './ComplaintsTable';
 
-
-
 export const Complaints = () => {
   const { complaintsNotPaginated, fetchComplaints, fetchComplaintsNotPaginated } = useComplaints();
   const [pageIndex, setPageIndex] = useState(0);

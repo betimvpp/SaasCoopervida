@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 export const complaintSchema = z.object({
     id: z.number(),
     colaborador_id: z.string().uuid(),
-    problem_description: z.string().nullable().optional(),
+    problem_descripiton: z.string().optional(),
     data: z.string().nullable().optional(),
     nomeFuncionario: z.string().optional().nullable(),
     roleFuncionario: z.string().optional().nullable(),
@@ -135,10 +135,10 @@ export const ComplaintsProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
-    useEffect(() => {
-        fetchComplaints();
-        fetchComplaintsNotPaginated();
-    }, [fetchComplaints, fetchComplaintsNotPaginated]);
+    // useEffect(() => {
+    //     fetchComplaints();
+    //     fetchComplaintsNotPaginated();
+    // }, [fetchComplaints, fetchComplaintsNotPaginated]);
 
     return (
         <ComplaintsContext.Provider value={{
