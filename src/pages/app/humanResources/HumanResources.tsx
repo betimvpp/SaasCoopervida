@@ -28,7 +28,7 @@ export const HumanResources = () => {
       <Helmet title="RH" />
       <h1 className="text-4xl font-bold textslate mb-2">Painel de RH</h1>
       <HumanResourcesFilters />
-      <div className=" h-full w-full max-h-[700px] shadow-lg border rounded-md">
+      <div className="w-full max-h-[700px] shadow-lg border rounded-md">
         <HumanResourcesTable />
         {humanResources?.length === 0 && loading === false &&
           <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhum usuário encontrado!</div>

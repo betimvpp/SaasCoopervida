@@ -40,7 +40,7 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
             <DialogHeader>
                 <DialogTitle>Escalas para {date.format("DD/MM/YYYY")}</DialogTitle>
             </DialogHeader>
-            <div className=" h-full w-full max-h-[700px] shadow-lg border rounded-md">
+            <div className="w-full max-h-[700px] shadow-lg border rounded-md">
                 {loading ? (
                     <>
                         <Table>
@@ -50,11 +50,7 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                                     <TableHead className="text-center font-semibold">Nome do Funcionário</TableHead>
                                     <TableHead className="text-center font-semibold">Nome do Paciente</TableHead>
                                     <TableHead className="text-center font-semibold">Data</TableHead>
-                                    {collaboratorData?.role === 'admin' ? (
-                                        <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
-                                    ) : (
-                                        <></>
-                                    )}
+                                    {collaboratorData?.role === 'admin' ? <TableHead className="text-center font-semibold">Valor Recebido</TableHead> : <></>}
                                     <TableHead className="text-center font-semibold">Valor Pago</TableHead>
                                     <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
                                     <TableHead className="text-center font-semibold">Horário</TableHead>
@@ -71,11 +67,8 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                                 <TableHead className="text-center font-semibold">Nome do Funcionário</TableHead>
                                 <TableHead className="text-center font-semibold">Nome do Paciente</TableHead>
                                 <TableHead className="text-center font-semibold">Data</TableHead>
-                                {collaboratorData?.role === 'admin' ? (
-                                    <TableHead className="text-center font-semibold">Valor Recebido</TableHead>
-                                ) : (
-                                    <></>
-                                )}
+                                {collaboratorData?.role === 'admin' ?
+                                    <TableHead className="text-center font-semibold">Valor Recebido</TableHead> : <></>}
                                 <TableHead className="text-center font-semibold">Valor Pago</TableHead>
                                 <TableHead className="text-center font-semibold">Forma de Pagamento</TableHead>
                                 <TableHead className="text-center font-semibold">Horário</TableHead>

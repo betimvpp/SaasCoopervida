@@ -168,7 +168,6 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
                 const monthNumber = parseInt(month.split("-")[1], 10);
                 const lastDayOfMonth = new Date(year, monthNumber, 0).getDate();
 
-                // Contagem total de escalas para o colaborador
                 const { count: totalScalesCount, error: totalError } = await supabase
                     .from("escala")
                     .select("*", { count: "exact", head: true })

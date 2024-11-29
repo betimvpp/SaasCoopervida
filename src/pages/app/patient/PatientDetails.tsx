@@ -1,10 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { useAuth } from "@/contexts/authContext";
-import { Collaborator, useCollaborator } from "@/contexts/collaboratorContext";
+
 import { useHabilities } from "@/contexts/habilitiesContext";
 import { Patient, usePatients } from "@/contexts/patientContext";
 import { useEffect, useState } from "react";
@@ -12,12 +11,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export interface PatientDetailsProps {
-    patient: Patient;
-    open: boolean;
-}
 
-export const PatientDetails = ({ patient }: PatientDetailsProps) => {
+export const PatientDetails = ({ patient, isAdmin, isLoading }: { patient: Patient; isAdmin: string; isLoading: boolean; }, { }) => {
     const { habilities, loading, fetchPatientHabilities } = useHabilities();
     const { register, handleSubmit, setValue } = useForm<Patient>({
         defaultValues: patient,
@@ -25,19 +20,6 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
     const { updatePatient } = usePatients()
     const [selectedHabilities, setSelectedHabilities] = useState<number[]>([]);
 
-    const { user } = useAuth();
-    const { getCollaboratorById } = useCollaborator();
-    const [collaboratorData, setCollaboratorData] = useState<Collaborator | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        if (user) {
-            setIsLoading(true);
-            getCollaboratorById(user.id)
-                .then(data => setCollaboratorData(data))
-                .finally(() => setIsLoading(false));
-        }
-    }, [user, getCollaboratorById]);
 
     const handleUpdate = async (dataResp: Patient) => {
         if (!dataResp.cpf) {
@@ -82,7 +64,7 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
 
 
     return (
-        <DialogContent className="min-w-[1000px]">
+        < >
             <DialogHeader>
                 <DialogTitle>Detalhes do Paciente: {patient.nome}</DialogTitle>
                 <DialogDescription>Status: {patient.status}</DialogDescription>
@@ -132,7 +114,7 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                                 <Input id="rua" type="text" {...register("rua")} />
                             </TableCell>
                         </TableRow>
-                        {!isLoading && collaboratorData?.role === 'admin' ? (
+                        {!isLoading && isAdmin === 'admin' ? (
                             <TableRow>
                                 <TableCell className="font-semibold">Pagamento/Dia:</TableCell>
                                 <TableCell className="flex justify-start -mt-2">
@@ -154,7 +136,7 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                             <TableCell className="flex justify-start -mt-2">
                                 <Select
                                     {...register("status")}
-                                    defaultValue={patient.status}
+                                    defaultValue={patient?.status}
                                     onValueChange={(value) => setValue("status", value)}
                                 >
                                     <SelectTrigger >
@@ -194,6 +176,6 @@ export const PatientDetails = ({ patient }: PatientDetailsProps) => {
                     <Button type="submit">Editar</Button>
                 </DialogFooter>
             </form>
-        </DialogContent>
+        </>
     )
 }

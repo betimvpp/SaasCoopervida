@@ -39,11 +39,7 @@ export const ScaleCalendarDetailsRow = ({ scale }: { scale: Scale }) => {
             <TableCell>{scale?.nomeFuncionario}</TableCell>
             <TableCell>{scale?.nomePaciente}</TableCell>
             <TableCell>{scale?.data}</TableCell>
-            {collaboratorData?.role === 'admin' ? (
-                <TableCell className="text-center font-semibold">{scale?.valor_recebido}</TableCell>
-            ) : (
-                <></>
-            )}
+            {collaboratorData?.role === 'admin' ? <TableCell className="text-center font-semibold">{scale?.valor_recebido}</TableCell> : <></>}
             <TableCell className="text-center font-semibold">{scale?.valor_pago}</TableCell>
             <TableCell>{scale?.pagamentoAR_AV}</TableCell>
             <TableCell>

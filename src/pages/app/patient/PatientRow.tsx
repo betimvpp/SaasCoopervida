@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { PatientDetails } from './PatientDetails'
 import { useAuth } from '@/contexts/authContext'
 import { Collaborator, useCollaborator } from '@/contexts/collaboratorContext'
+import { PatientTabs } from './PatientTabs'
 
 export const PatientRow = ({ patient }: { patient: Patient }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -74,7 +75,7 @@ export const PatientRow = ({ patient }: { patient: Patient }) => {
                                     <span className="sr-only">Detalhes do RH</span>
                                 </Button>
                             </DialogTrigger>
-                            <PatientDetails open={isDetailsOpen} patient={patient} />
+                            <PatientTabs open={isDetailsOpen} patient={patient} />
                         </Dialog>
                     </TableCell>
 
@@ -95,9 +96,11 @@ export const PatientRow = ({ patient }: { patient: Patient }) => {
                     </TableCell>
 
                     <TableCell className="text-center">
+                        {patient?.pagamento_dia}
+                    </TableCell>
+                    <TableCell className="text-center">
                         {patient?.cidade}
                     </TableCell>
-
                     <TableCell className="text-center">
                         {patient?.rua}
                     </TableCell>

@@ -8,12 +8,14 @@ import { collaboratorFiltersSchema, CollaboratorFiltersSchema, useCollaborator }
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import { CollaboratorAdditioner } from './CollaboratorAdditioner'
 import { useState } from 'react'
+import { CityAdditioner } from './CityAdditioner'
 
 
 
 export function CollaboratorFilters() {
   const { fetchCollaborator } = useCollaborator();
   const [isAdditionerOpen, setIsAdditionerOpen] = useState(false);
+  const [isCityAdditionerOpen, setIsCityAdditionerOpen] = useState(false);
 
   const { register, handleSubmit, control, reset } = useForm<CollaboratorFiltersSchema>({
     resolver: zodResolver(collaboratorFiltersSchema),
@@ -93,14 +95,25 @@ export function CollaboratorFilters() {
         </Button>
       </form>
 
-      <Dialog open={isAdditionerOpen} onOpenChange={setIsAdditionerOpen}>
-        <DialogTrigger asChild>
-          <Button variant={'secondary'} size={"xs"}>
-            Adcionar Colaborador
-          </Button>
-        </DialogTrigger>
-        <CollaboratorAdditioner />
-      </Dialog>
+      <span className='flex gap-4'>
+        <Dialog open={isCityAdditionerOpen} onOpenChange={setIsCityAdditionerOpen}>
+          <DialogTrigger asChild>
+            <Button variant={'outline'} size={"xs"} className='border-primary text-primary'>
+              Adcionar Cidade
+            </Button>
+          </DialogTrigger>
+          <CityAdditioner />
+        </Dialog>
+
+        <Dialog open={isAdditionerOpen} onOpenChange={setIsAdditionerOpen}>
+          <DialogTrigger asChild>
+            <Button variant={'secondary'} size={"xs"}>
+              Adcionar Colaborador
+            </Button>
+          </DialogTrigger>
+          <CollaboratorAdditioner />
+        </Dialog>
+      </span>
     </div>
   )
 }
