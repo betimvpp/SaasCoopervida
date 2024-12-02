@@ -13,17 +13,17 @@ import {
     Table,
     TableCell,
 } from "@/components/ui/table";
-import { Patient } from "@/contexts/patientContext";
+import { Collaborator } from "@/contexts/collaboratorContext";
 import { Scale } from "@/contexts/scaleContext";
 import supabase from "@/lib/supabase";
-// import { PatientTableSkeleton } from "./PatientTableSkeleton";
+// import { CollaboratorTableSkeleton } from "./CollaboratorTableSkeleton";
 import { Button } from "@/components/ui/button";
 import { Check, Pencil, Trash2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 
-export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Patient; isAdmin: string; isLoading: boolean; }) => {
-    const [scales, setPatientScalesData] = useState<Scale[]>([]);
+export const CollaboratorSchales = ({ collaborator, isAdmin, isLoading, }: { collaborator: Collaborator; isAdmin: string; isLoading: boolean; }) => {
+    const [scales, setCollaboratorScalesData] = useState<Scale[]>([]);
     const [loading, setLoading] = useState(false);
     const [totalCount, setTotalScalesCount] = useState(0);
     const [pageIndex, setPageIndex] = useState(0);
@@ -33,7 +33,7 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
         pagamentoAR_AV: string;
     }>({ valor_pago: "", pagamentoAR_AV: "" });
 
-    const fetchPatientScales = useCallback(async (paciente_id: string, pageIndex: number = 0) => {
+    const fetchCollaboratorScales = useCallback(async (funcionario_id: string, pageIndex: number = 0) => {
         try {
             setLoading(true);
             const perPage = 10;
@@ -42,7 +42,7 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
             const { count: totalScalesCount, error: totalError } = await supabase
                 .from("escala")
                 .select("*", { count: "exact", head: true })
-                .eq("paciente_id", paciente_id);
+                .eq("funcionario_id", funcionario_id);
 
             if (totalError) {
                 console.error("Erro ao buscar contagem de escalas:", totalError);
@@ -52,13 +52,13 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
             const { data: allScales, error: scalesError } = await supabase
                 .from("escala")
                 .select(`escala_id, paciente_id, funcionario_id, data, tipo_servico, valor_recebido, valor_pago, pagamentoAR_AV`)
-                .eq("paciente_id", paciente_id)
+                .eq("funcionario_id", funcionario_id)
                 .order("data", { ascending: false })
                 .range(offset, offset + perPage - 1);
 
             if (scalesError) {
                 console.error("Erro ao buscar escalas:", scalesError);
-                setPatientScalesData([]);
+                setCollaboratorScalesData([]);
                 return;
             }
 
@@ -80,7 +80,7 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
 
                 return {
                     ...scale,
-                    nomeFuncionario: collaboratorData?.nome,
+                    nomePaciente: collaboratorData?.nome,
                     data: formattedDate!,
                 };
             });
@@ -88,21 +88,21 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
             const scalesWithCollaborators = await Promise.all(collaboratorPromises);
             const validScales = scalesWithCollaborators.filter((scale): scale is Scale => scale !== null);
 
-            setPatientScalesData(validScales);
+            setCollaboratorScalesData(validScales);
             setTotalScalesCount(totalScalesCount || 0);
         } catch (error) {
-            console.error("Erro ao buscar escalas do paciente:", error);
-            setPatientScalesData([]);
+            console.error("Erro ao buscar escalas do colaborador:", error);
+            setCollaboratorScalesData([]);
         } finally {
             setLoading(false);
         }
     }, []);
 
     useEffect(() => {
-        if (patient?.paciente_id) {
-            fetchPatientScales(patient.paciente_id, pageIndex);
+        if (collaborator?.funcionario_id) {
+            fetchCollaboratorScales(collaborator?.funcionario_id, pageIndex);
         }
-    }, [patient, pageIndex]);
+    }, [collaborator, pageIndex]);
 
     const handlePageChange = (newPageIndex: number) => {
         setPageIndex(newPageIndex);
@@ -129,7 +129,7 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
             if (error) throw error;
 
             setEditingRow(null);
-            fetchPatientScales(patient.paciente_id, pageIndex); // Atualiza os dados
+            fetchCollaboratorScales(collaborator?.funcionario_id, pageIndex); // Atualiza os dados
         } catch (error) {
             console.error("Erro ao salvar alterações:", error);
         }
@@ -145,7 +145,7 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
 
             if (error) throw error;
 
-            fetchPatientScales(patient.paciente_id, pageIndex); // Atualiza os dados
+            fetchCollaboratorScales(collaborator?.funcionario_id, pageIndex); // Atualiza os dados
         } catch (error) {
             console.error("Erro ao excluir escala:", error);
         }
@@ -171,14 +171,14 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
     return (
         <>
             <DialogHeader>
-                <DialogTitle>Escalas do Paciente: {patient.nome}</DialogTitle>
-                <DialogDescription>Status: {patient.status}</DialogDescription>
+                <DialogTitle>Escalas do Colaborador: {collaborator.nome}</DialogTitle>
+                <DialogDescription>Status: {collaborator.status}</DialogDescription>
             </DialogHeader>
             <div className="w-full h-[625px] shadow-lg border rounded-md my-4 ">
                 <Table>
                     <TableHeader className="text-center">
                         <TableRow className="text-center">
-                            <TableHead className="text-center">Colaborador</TableHead>
+                            <TableHead className="text-center">Paciente</TableHead>
                             <TableHead className="text-center">Data</TableHead>
                             {!isLoading && isAdmin === "admin" && <TableHead className="text-center">Valor Recebido</TableHead>}
                             <TableHead className="text-center">Valor Pago</TableHead>
@@ -193,7 +193,7 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
                         <TableBody className="text-center">
                             {scales && scales.map((scale: Scale) => (
                                 <TableRow key={scale.escala_id}>
-                                    <TableCell>{scale.nomeFuncionario}</TableCell>
+                                    <TableCell>{scale.nomePaciente}</TableCell>
                                     <TableCell>{scale.data}</TableCell>
                                     {!isLoading && isAdmin === "admin" && <TableCell>{scale.valor_recebido}</TableCell>}
                                     {editingRow === scale.escala_id ? (
@@ -268,7 +268,7 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
                             ))}
                         </TableBody>
                     }
-                    {/* {loading === true && scales.length <= 0 && <PatientTableSkeleton />} */}
+                    {/* {loading === true && scales.length <= 0 && <CollaboratorTableSkeleton />} */}
                 </Table>
                 {loading && <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Carregando Escalas</div>}
                 {!loading && scales.length <= 0 && <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhuma escala encontrado!</div>}

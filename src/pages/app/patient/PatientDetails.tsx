@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 
-export const PatientDetails = ({ patient, isAdmin, isLoading }: { patient: Patient; isAdmin: string; isLoading: boolean; }, { }) => {
+export const PatientDetails = ({ patient, isAdmin, isLoading }: { patient: Patient; isAdmin: string; isLoading: boolean; }) => {
     const { habilities, loading, fetchPatientHabilities } = useHabilities();
     const { register, handleSubmit, setValue } = useForm<Patient>({
         defaultValues: patient,

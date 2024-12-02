@@ -37,7 +37,7 @@ export const PatientRow = ({ patient }: { patient: Patient }) => {
                                     <span className="sr-only">Detalhes do RH</span>
                                 </Button>
                             </DialogTrigger>
-                            <PatientDetails open={isDetailsOpen} patient={patient} />
+                            <PatientTabs patient={patient} open={isDetailsOpen}/>
                         </Dialog>
                     </TableCell>
 

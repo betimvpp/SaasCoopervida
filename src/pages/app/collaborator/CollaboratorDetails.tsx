@@ -12,7 +12,7 @@ export interface CollaboratorDetailsProps {
     open: boolean;
 }
 
-export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) => {
+export const CollaboratorDetails = ({ collaborator, isAdmin, isLoading }: { collaborator: Collaborator; isAdmin: string; isLoading: boolean; }) => {
     const { register, handleSubmit, setValue } = useForm<Collaborator>({
         defaultValues: collaborator,
     });
@@ -35,7 +35,7 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
     };
 
     return (
-        <DialogContent className="min-w-[1000px]">
+        <>
             <DialogHeader>
                 <DialogTitle>Detalhes do colaborador: {collaborator.nome}</DialogTitle>
                 <DialogDescription>Status: {collaborator.status}</DialogDescription>
@@ -153,6 +153,6 @@ export const CollaboratorDetails = ({ collaborator }: CollaboratorDetailsProps) 
                     <Button type="submit">Editar</Button>
                 </DialogFooter>
             </form>
-        </DialogContent>
+        </>
     )
 }
