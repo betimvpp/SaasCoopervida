@@ -37,7 +37,7 @@ export const CollaboratorTabs = ({ collaborator }: CollaboratorDetailsProps) => 
                 </TabsList>
 
                 <TabsContent value="details" className="w-full h-full">
-                    <CollaboratorDetails collaborator={collaborator} isAdmin={collaboratorData?.role!} isLoading={isLoading}  />
+                    <CollaboratorDetails collaborator={collaborator}  />
                 </TabsContent>
 
                 <TabsContent value="schedules" className="w-full h-full">

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import {  DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
@@ -12,7 +12,7 @@ export interface CollaboratorDetailsProps {
     open: boolean;
 }
 
-export const CollaboratorDetails = ({ collaborator, isAdmin, isLoading }: { collaborator: Collaborator; isAdmin: string; isLoading: boolean; }) => {
+export const CollaboratorDetails = ({ collaborator, }: { collaborator: Collaborator; }) => {
     const { register, handleSubmit, setValue } = useForm<Collaborator>({
         defaultValues: collaborator,
     });

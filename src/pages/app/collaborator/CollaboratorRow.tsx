@@ -4,7 +4,6 @@ import { TableCell, TableRow } from '@/components/ui/table'
 import { Collaborator } from '@/contexts/collaboratorContext'
 import { Search} from 'lucide-react'
 import { useState } from 'react'
-import { CollaboratorDetails } from './CollaboratorDetails'
 import { CollaboratorTabs } from './CollaboratorTabs'
 
 export const CollaboratorRow = ({ collaborator }: { collaborator: Collaborator }) => {
