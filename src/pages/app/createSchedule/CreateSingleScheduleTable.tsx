@@ -5,34 +5,27 @@ import { patientFiltersSchema, PatientFiltersSchema, usePatients } from '@/conte
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useState, useEffect } from 'react'
-import { 
-    // Collaborator, 
-    CollaboratorFiltersSchema, collaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
+import { CollaboratorFiltersSchema, collaboratorFiltersSchema, useCollaborator } from '@/contexts/collaboratorContext'
 import { Scale } from '@/contexts/scaleContext'
-import { DateRange, DayPicker } from "react-day-picker";
+import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { ptBR } from 'date-fns/locale'
 import { Button } from '@/components/ui/button'
-import { eachDayOfInterval, format } from 'date-fns'
+import { format } from 'date-fns'
 import { toast } from 'sonner'
-
-export const CreateScheduleTable = () => {
+import supabase from '@/lib/supabase'
+export const CreateSingleScheduleTable = () => {
     const { patients, fetchPatients } = usePatients();
     const { collaborators, fetchCollaborator } = useCollaborator();
-    // const [completedSchedules, setCompletedSchedules] = useState<Scale[]>([]);
     const [searchValue, setSearchValue] = useState('');
     const [collaboratorSearchValue, setCollaboratorSearchValue] = useState('');
     const [selectedServiceType, setSelectedServiceType] = useState<string>('');
-    const [selectedData, setSelectedData] = useState<DateRange>();
-    const [selectedCollaborators, setSelectedCollaborators] = useState<any[]>([]);
+    const [selectedData, setSelectedData] = useState<Date>();
+    const [filteredCollaborators, setFilteredCollaborators] = useState<any[]>([]);
     const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<string | null>(null);
+    const [completedSchedules, setCompletedSchedules] = useState<Scale[]>([])
 
-    const { register,
-        // handleSubmit,
-        setValue,
-        watch,
-        // reset
-    } = useForm<Scale>({});
+    const { register, setValue, watch, } = useForm<Scale>({});
 
     const { register: registerPatient, setValue: setPatientValue } = useForm<PatientFiltersSchema>({
         resolver: zodResolver(patientFiltersSchema),
@@ -48,76 +41,146 @@ export const CreateScheduleTable = () => {
         },
     });
 
-    const handlePatientSelection = (patientId: string) => {
-        const selectedPatientData = patients.find(patient => patient.paciente_id === patientId);
-        setValue('paciente_id', patientId);
+    // const handlePatientSelection = (patientId: string) => {
+    //     const selectedPatientData = patients.find(patient => patient.paciente_id === patientId);
+    //     setValue('paciente_id', patientId);
 
-        if (selectedPatientData) {
-            setValue('valor_recebido', selectedPatientData.pagamento_dia!);
-            setValue('valor_pago', selectedPatientData.pagamento_a_profissional!);
+    //     if (selectedPatientData) {
+    //         setValue('valor_recebido', selectedPatientData.pagamento_dia!);
+    //         setValue('valor_pago', selectedPatientData.pagamento_a_profissional!);
+
+
+    //         const filteredCollaborators = collaborators.filter(
+    //             collaborator => collaborator.cidade === selectedPatientData.cidade
+    //         );
+    //         setFilteredCollaborators(filteredCollaborators);
+    //     }
+    // };
+
+    const handlePatientSelection = async (patientId: string) => {
+        try {
+            // Define o paciente selecionado
+            const selectedPatientData = patients.find(patient => patient.paciente_id === patientId);
+            setValue('paciente_id', patientId);
+
+            if (selectedPatientData) {
+                // Configura os valores específicos do paciente
+                setValue('valor_recebido', selectedPatientData.pagamento_dia!);
+                setValue('valor_pago', selectedPatientData.pagamento_a_profissional!);
+
+                // Filtra colaboradores pela cidade
+                let filteredCollaborators = collaborators.filter(
+                    collaborator => collaborator.cidade === selectedPatientData.cidade
+                );
+
+                // Busca especialidades do paciente no Supabase
+                const { data: patientSpecialties, error: specialtiesError } = await supabase
+                    .from('paciente_especialidades')
+                    .select('especialidade_id')
+                    .eq('paciente_id', patientId);
+
+                if (specialtiesError) {
+                    console.error('Erro ao buscar especialidades do paciente:', specialtiesError);
+                    toast.error('Erro ao buscar especialidades do paciente.');
+                    setFilteredCollaborators(filteredCollaborators); // Continua apenas com o filtro por cidade
+                    return;
+                }
+
+                if (patientSpecialties && patientSpecialties.length > 0) {
+                    const specialtyIds = patientSpecialties.map(specialty => specialty.especialidade_id);
+
+                    // Busca colaboradores com especialidades correspondentes
+                    const { data: matchingCollaborators, error: collaboratorsError } = await supabase
+                        .from('funcionario_especialidade')
+                        .select('funcionario_id')
+                        .in('especialidade_id', specialtyIds);
+
+                    if (collaboratorsError) {
+                        console.error('Erro ao buscar colaboradores:', collaboratorsError);
+                        toast.error('Erro ao buscar colaboradores.');
+                    } else if (matchingCollaborators && matchingCollaborators.length > 0) {
+                        const matchingCollaboratorIds = matchingCollaborators.map(c => c.funcionario_id);
+
+                        // Refina a lista de colaboradores, considerando cidade e especialidades
+                        filteredCollaborators = filteredCollaborators.filter(collaborator =>
+                            matchingCollaboratorIds.includes(collaborator.funcionario_id)
+                        );
+                    } else {
+                        toast.error('Nenhum colaborador encontrado com as especialidades do paciente.');
+                        filteredCollaborators = []; // Nenhum colaborador encontrado
+                    }
+                }
+
+                // Atualiza a lista de colaboradores filtrados
+                setFilteredCollaborators(filteredCollaborators);
+            }
+        } catch (error) {
+            console.error('Erro ao processar seleção do paciente:', error);
+            toast.error('Erro inesperado ao processar seleção do paciente.');
         }
     };
 
-    const generateRotatedSchedules = () => {
-        if (!selectedData || !selectedData.from || !selectedData.to || selectedCollaborators.length === 0) return;
 
-        const dateRange = eachDayOfInterval({ start: selectedData.from, end: selectedData.to });
-        const newSchedules: Scale[] = [];
+    const generateSingleSchedule = async () => {
+        if (!selectedData || !selectedServiceType || !selectedCollaboratorId || !watch('paciente_id')) {
+            toast.error("Por favor, preencha todos os campos obrigatórios.");
+            return;
+        }
 
-        dateRange.forEach((date, index) => {
-            const collaborator = selectedCollaborators[index % selectedCollaborators.length];
+        const pagamentoAR_AV = watch("pagamentoAR_AV");
+        if (!pagamentoAR_AV) {
+            toast.error("Por favor, selecione o tipo de pagamento (À Vista ou À Receber).");
+            return;
+        }
 
-            newSchedules.push({
-                data: format(date, 'yyyy-MM-dd'),
-                paciente_id: watch('paciente_id'),
-                funcionario_id: collaborator.funcionario_id,
-                valor_recebido: watch('valor_recebido'),
-                valor_pago: collaborator.valor_pago,
-                tipo_servico: collaborator.tipo_servico,
-                pagamentoAR_AV: collaborator.pagamentoAR_AV,
-                horario_gerenciamento: collaborator.horario_gerenciamento,
-            });
-        });
+        const newSchedule: Scale = {
+            data: format(selectedData, 'yyyy-MM-dd'),
+            paciente_id: watch('paciente_id'),
+            funcionario_id: selectedCollaboratorId,
+            valor_recebido: watch('valor_recebido') || 0,
+            valor_pago: watch('valor_pago') || 0,
+            tipo_servico: selectedServiceType,
+            pagamentoAR_AV: pagamentoAR_AV, // Corrige o campo aqui
+            horario_gerenciamento: selectedServiceType === 'GR' ? watch('horario_gerenciamento') : null,
+        };
 
-        // setCompletedSchedules((prev) => {
-        //     return [...prev, ...newSchedules];
-        // });
+        const isDuplicate = completedSchedules.some(
+            (schedule) =>
+                schedule.data === newSchedule.data &&
+                schedule.funcionario_id === newSchedule.funcionario_id
+        );
+
+        if (isDuplicate) {
+            toast.error("Já existe uma escala para este colaborador nesta data.");
+            return;
+        }
+
+        try {
+            // Salvar no banco de dados
+            const { error } = await supabase
+                .from('escala')
+                .insert(newSchedule);
+
+            if (error) {
+                console.error(error);
+                toast.error("Erro ao salvar a escala no banco de dados.");
+                return;
+            }
+
+            // Atualizar a lista local após sucesso
+            setCompletedSchedules((prevSchedules) => [...prevSchedules, newSchedule]);
+
+            // Feedback de sucesso
+            toast.success("Escala adicionada com sucesso!");
+        } catch (err) {
+            console.error(err);
+            toast.error("Erro ao processar a escala.");
+        }
     };
 
     const handleComplete = () => {
-        try {
-            if (selectedCollaboratorId) {
-                const selectedCollaborator = collaborators.find(c => c.funcionario_id === selectedCollaboratorId);
-                if (selectedCollaborator) {
-                    const newCollaborator = {
-                        ...selectedCollaborator,
-                        valor_pago: Number(watch('valor_pago')),
-                        tipo_servico: selectedServiceType,
-                        horario_gerenciamento: selectedServiceType === 'GR' ? watch('horario_gerenciamento') : null,
-                        pagamentoAR_AV: watch('pagamentoAR_AV'),
-                    };
-
-                    setSelectedCollaborators(prev => {
-                        if (!prev.some(c => c.funcionario_id === newCollaborator.funcionario_id)) {
-                            return [...prev, newCollaborator];
-                        }
-                        return prev;
-                    });
-                    toast.success("Colaborador adicionado com sucesso!");
-                }
-            }
-            generateRotatedSchedules();
-        } catch (error) {
-            console.error(error);
-            toast.error("Ocorreu um erro ao adicionar o colaborador. Tente novamente.");
-        }
+        generateSingleSchedule();
     };
-
-    useEffect(() => {
-        if (selectedCollaborators.length > 0 && selectedData && selectedData.from && selectedData.to) {
-            generateRotatedSchedules();
-        }
-    }, [selectedCollaborators, selectedData]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -127,9 +190,8 @@ export const CreateScheduleTable = () => {
 
         return () => clearTimeout(timeoutId);
     }, [searchValue, fetchPatients, collaboratorSearchValue, fetchCollaborator]);
-
     return (
-        <form>
+        <form className='h-full'>
             <Table>
                 <TableBody className="grid grid-cols-6">
                     {/* Data */}
@@ -138,9 +200,14 @@ export const CreateScheduleTable = () => {
                         <TableCell className="flex justify-start -mt-2">
                             <DayPicker
                                 locale={ptBR}
-                                mode="range"
+                                mode="single"
                                 selected={selectedData}
                                 onSelect={setSelectedData}
+                                classNames={{
+                                    selected: `bg-primary rounded-full font-bold`,
+                                    chevron: `text-primary`,
+                                    day_button: `border-none`,
+                                }}
                             />
                         </TableCell>
                     </TableRow>
@@ -230,7 +297,7 @@ export const CreateScheduleTable = () => {
                                             setCollaboratorValue("collaboratorName", value);
                                         }}
                                     />
-                                    {collaborators.map((collaborator) => (
+                                    {filteredCollaborators.map((collaborator) => (
                                         <SelectItem key={collaborator.funcionario_id} value={collaborator.funcionario_id}>
                                             {collaborator.nome}
                                         </SelectItem>
@@ -256,7 +323,7 @@ export const CreateScheduleTable = () => {
                                 {...register("tipo_servico")}
                                 onValueChange={(value) => {
                                     setValue("tipo_servico", value);
-                                    setSelectedServiceType(value); // Atualiza o estado do tipo de serviço
+                                    setSelectedServiceType(value);
                                 }}
                             >
                                 <SelectTrigger>
@@ -265,7 +332,8 @@ export const CreateScheduleTable = () => {
                                 <SelectContent>
                                     <SelectItem value="SD">SD</SelectItem>
                                     <SelectItem value="SN">SN</SelectItem>
-                                    <SelectItem value="PT">PT</SelectItem>
+                                    <SelectItem value="P">P</SelectItem>
+                                    <SelectItem value="M">M</SelectItem>
                                     <SelectItem value="GR">GR</SelectItem>
                                 </SelectContent>
                             </Select>
@@ -283,15 +351,20 @@ export const CreateScheduleTable = () => {
                             </>
                         )}
                     </TableRow>
-                    <Button
-                        type="button"
-                        onClick={handleComplete}
-                        className="mt-4 bg-primary text-white px-4 py-2 rounded"
-                    >
-                        Concluir
-                    </Button>
+
+                    <TableRow>
+                        <TableCell>
+                            <Button
+                                type="button"
+                                onClick={handleComplete}
+                                className="mt-4 bg-primary text-white px-4 py-2 rounded"
+                            >
+                                Criar Escala
+                            </Button>
+                        </TableCell>
+                    </TableRow>
                 </TableBody>
-            </Table>
-        </form>
-    );
-};
+            </Table >
+        </form >
+    )
+}

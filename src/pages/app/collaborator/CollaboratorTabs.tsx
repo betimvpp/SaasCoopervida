@@ -44,7 +44,6 @@ export const CollaboratorTabs = ({ collaborator }: CollaboratorDetailsProps) => 
                     <CollaboratorSchales collaborator={collaborator} isAdmin={collaboratorData?.role!} isLoading={isLoading} />
                 </TabsContent>
             </Tabs>
-
         </DialogContent>
     )
 }

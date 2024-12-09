@@ -40,7 +40,7 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
             <DialogHeader>
                 <DialogTitle>Escalas para {date.format("DD/MM/YYYY")}</DialogTitle>
             </DialogHeader>
-            <div className="w-full max-h-[700px] shadow-lg border rounded-md">
+            <div className="w-full h-full max-h-[700px] shadow-lg border rounded-md">
                 {loading ? (
                     <>
                         <Table>
@@ -82,7 +82,7 @@ export const ScaleCalendarDetails = ({ date, scales, loading }: ScaleCalendarDet
                     </Table>
                 )}
                 {scales?.length === 0 && loading === false &&
-                    <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhum usuário encontrado!</div>
+                    <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhuma Escala encontrado!</div>
                 }
             </div>
             <Pagination

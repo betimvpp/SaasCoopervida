@@ -1,8 +1,7 @@
 
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { CreateScheduleTable } from './CreateScheduleTable';
-
+import { CreateScheduleTabs } from './CreateScheduleTabs';
 export const CreateSchedule = () => {
     return (
 
@@ -13,9 +12,8 @@ export const CreateSchedule = () => {
                 - Criar Escala
             </h1>
 
-            <div className="w-full shadow-lg border rounded-md">
-                <CreateScheduleTable />
-
+            <div className="w-full h-full shadow-lg  rounded-md">
+                <CreateScheduleTabs />
             </div>
         </div>
     )
