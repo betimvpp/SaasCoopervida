@@ -41,39 +41,19 @@ export const CreateSingleScheduleTable = () => {
         },
     });
 
-    // const handlePatientSelection = (patientId: string) => {
-    //     const selectedPatientData = patients.find(patient => patient.paciente_id === patientId);
-    //     setValue('paciente_id', patientId);
-
-    //     if (selectedPatientData) {
-    //         setValue('valor_recebido', selectedPatientData.pagamento_dia!);
-    //         setValue('valor_pago', selectedPatientData.pagamento_a_profissional!);
-
-
-    //         const filteredCollaborators = collaborators.filter(
-    //             collaborator => collaborator.cidade === selectedPatientData.cidade
-    //         );
-    //         setFilteredCollaborators(filteredCollaborators);
-    //     }
-    // };
-
     const handlePatientSelection = async (patientId: string) => {
         try {
-            // Define o paciente selecionado
             const selectedPatientData = patients.find(patient => patient.paciente_id === patientId);
             setValue('paciente_id', patientId);
 
             if (selectedPatientData) {
-                // Configura os valores específicos do paciente
                 setValue('valor_recebido', selectedPatientData.pagamento_dia!);
                 setValue('valor_pago', selectedPatientData.pagamento_a_profissional!);
 
-                // Filtra colaboradores pela cidade
                 let filteredCollaborators = collaborators.filter(
                     collaborator => collaborator.cidade === selectedPatientData.cidade
                 );
 
-                // Busca especialidades do paciente no Supabase
                 const { data: patientSpecialties, error: specialtiesError } = await supabase
                     .from('paciente_especialidades')
                     .select('especialidade_id')
@@ -89,7 +69,6 @@ export const CreateSingleScheduleTable = () => {
                 if (patientSpecialties && patientSpecialties.length > 0) {
                     const specialtyIds = patientSpecialties.map(specialty => specialty.especialidade_id);
 
-                    // Busca colaboradores com especialidades correspondentes
                     const { data: matchingCollaborators, error: collaboratorsError } = await supabase
                         .from('funcionario_especialidade')
                         .select('funcionario_id')
@@ -101,22 +80,58 @@ export const CreateSingleScheduleTable = () => {
                     } else if (matchingCollaborators && matchingCollaborators.length > 0) {
                         const matchingCollaboratorIds = matchingCollaborators.map(c => c.funcionario_id);
 
-                        // Refina a lista de colaboradores, considerando cidade e especialidades
                         filteredCollaborators = filteredCollaborators.filter(collaborator =>
                             matchingCollaboratorIds.includes(collaborator.funcionario_id)
                         );
                     } else {
                         toast.error('Nenhum colaborador encontrado com as especialidades do paciente.');
-                        filteredCollaborators = []; // Nenhum colaborador encontrado
+                        filteredCollaborators = [];
                     }
                 }
 
-                // Atualiza a lista de colaboradores filtrados
                 setFilteredCollaborators(filteredCollaborators);
             }
         } catch (error) {
             console.error('Erro ao processar seleção do paciente:', error);
             toast.error('Erro inesperado ao processar seleção do paciente.');
+        }
+    };
+
+    const fetchAvailableCollaborators = async (date: Date) => {
+        try {
+            if (!date) {
+                toast.error("Selecione uma data válida.");
+                return;
+            }
+
+            const formattedDate = format(date, 'yyyy-MM-dd');
+
+            const { data: availableCollaborators, error } = await supabase
+                .from('disponibilidade_funcionario')
+                .select('funcionario_id')
+                .eq('data', formattedDate);
+
+            if (error) {
+                console.error('Erro ao buscar colaboradores disponíveis:', error);
+                toast.error('Erro ao buscar colaboradores disponíveis.');
+                return [];
+            }
+
+            if (availableCollaborators && availableCollaborators.length > 0) {
+                const collaboratorIds = availableCollaborators.map(c => c.funcionario_id);
+
+                const filtered = collaborators.filter(collaborator =>
+                    collaboratorIds.includes(collaborator.funcionario_id)
+                );
+
+                setFilteredCollaborators(filtered);
+            } else {
+                toast.info('Nenhum colaborador disponível para a data selecionada.');
+                setFilteredCollaborators([]);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar colaboradores disponíveis:', error);
+            toast.error('Erro inesperado ao buscar colaboradores disponíveis.');
         }
     };
 
@@ -140,7 +155,7 @@ export const CreateSingleScheduleTable = () => {
             valor_recebido: watch('valor_recebido') || 0,
             valor_pago: watch('valor_pago') || 0,
             tipo_servico: selectedServiceType,
-            pagamentoAR_AV: pagamentoAR_AV, // Corrige o campo aqui
+            pagamentoAR_AV: pagamentoAR_AV,
             horario_gerenciamento: selectedServiceType === 'GR' ? watch('horario_gerenciamento') : null,
         };
 
@@ -190,6 +205,13 @@ export const CreateSingleScheduleTable = () => {
 
         return () => clearTimeout(timeoutId);
     }, [searchValue, fetchPatients, collaboratorSearchValue, fetchCollaborator]);
+
+    useEffect(() => {
+        if (selectedData) {
+            fetchAvailableCollaborators(selectedData);
+        }
+    }, [selectedData]);
+
     return (
         <form className='h-full'>
             <Table>

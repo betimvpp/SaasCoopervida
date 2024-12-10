@@ -425,9 +425,10 @@ export const CreateMultiScheduleTable = () => {
                             <Button
                                 type="button"
                                 onClick={handleComplete}
-                                className="mt-4 bg-primary text-white px-4 py-2 rounded"
+                                variant='outline'
+                                className="mt-4  px-4 py-2 rounded"
                             >
-                                Adicionar colaborador
+                                Adicionar Colaborador
                             </Button>
                         </TableCell>
                     </TableRow>
@@ -459,11 +460,11 @@ export const CreateMultiScheduleTable = () => {
                         ))}
                     </TableRow>
 
-                    <TableRow>
+                    <TableRow className='col-span-4 flex items-center justify-center'>
                         <TableCell>
                             <Button
                                 type="button"
-                                className="mt-4 bg-primary text-white px-4 py-2 rounded"
+                                className="mt-4 m-auto px-4 py-2 rounded"
                                 onClick={sendSchedulesToDatabase}
                             >
                                 Finalizar Escala
@@ -471,7 +472,9 @@ export const CreateMultiScheduleTable = () => {
                         </TableCell>
                     </TableRow>
                 </TableBody>
+
             </Table >
+
         </form >
     );
 };
