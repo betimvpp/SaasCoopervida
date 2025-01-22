@@ -141,7 +141,7 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
 
             setPaymentData(paginatedPayments);
             setPaymentDataNotPaginated(allPayments);
-            setTotalCount(allPayments.length); 
+            setTotalCount(allPayments.length);
         } catch (error) {
             console.error("Erro ao buscar pagamentos:", error);
             setPaymentData([]);
