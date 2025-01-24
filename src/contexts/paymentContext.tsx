@@ -150,7 +150,6 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
-
     const fetchCollaboratorScales = useCallback(
         async (funcionario_id: string = '', month: string = '', pageIndex: number = 0) => {
             try {
@@ -226,6 +225,7 @@ export const PaymentProvider = ({ children }: { children: ReactNode }) => {
         },
         []
     );
+
 
     return (
         <PaymentContext.Provider value={{ fetchPayments, loading, paymentData, paymentDataNotPaginated, totalCount, collaboratorScalesData, fetchCollaboratorScales, totalScalesCount }}>
