@@ -27,9 +27,9 @@ export const PaymentTable = ({ selectedMonth }: PaymentTableProps) => {
         }
     }, [user, getCollaboratorById]);
 
-    const currentMonth = selectedMonth || new Date().toISOString().slice(0, 7); 
-    const [year, month] = currentMonth.split('-').map(Number); 
-    const monthDate = new Date(year, month - 1); 
+    const currentMonth = selectedMonth || new Date().toISOString().slice(0, 7);
+    const [year, month] = currentMonth.split('-').map(Number);
+    const monthDate = new Date(year, month - 1);
     const monthName = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(monthDate);
 
     const generatePDF = () => {
@@ -42,6 +42,7 @@ export const PaymentTable = ({ selectedMonth }: PaymentTableProps) => {
             payment.nome,
             payment.telefone,
             payment.cargo,
+            payment.cidade,
             collaboratorData?.role === 'admin' ? payment.valor_recebido : '---',
             payment.valor_pago,
             payment.chave_pix,
@@ -52,6 +53,7 @@ export const PaymentTable = ({ selectedMonth }: PaymentTableProps) => {
                 'Nome do Colaborador',
                 'Telefone',
                 'Cargo',
+                'Cidade',
                 'Valor Recebido',
                 'Valor Pago',
                 'Chave Pix',
