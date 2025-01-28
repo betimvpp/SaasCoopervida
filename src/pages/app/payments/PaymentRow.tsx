@@ -25,8 +25,8 @@ export const PaymentRow = ({ payment, isAdmin, loading }: { payment: PaymentInfo
             <TableCell className="text-center">{payment.nome}</TableCell>
             <TableCell className='text-center'>{payment.telefone ? payment.telefone : "Telefone não definido"}</TableCell>
             <TableCell className="text-center">{payment.cargo}</TableCell>
-            {!loading && isAdmin === 'admin' ? <TableCell className="text-center">{payment.valor_recebido}</TableCell> : <></>}
-            <TableCell className="text-center">{payment.valor_pago}</TableCell>
+            {!loading && isAdmin === 'admin' ? <TableCell className="text-center">{payment.valor_recebido?.toFixed(2)}</TableCell> : <></>}
+            <TableCell className="text-center">{payment.valor_pago?.toFixed(2)}</TableCell>
             <TableCell className='text-center'>{payment.chave_pix ? payment.chave_pix : "Chave Pix não Informada"}</TableCell>
         </TableRow>
     )
