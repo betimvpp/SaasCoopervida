@@ -2,15 +2,15 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 
 import { useEffect } from "react";
 import { TableSkeleton } from "@/components/table-skeleton";
-import { ProdutividadeRow } from "./ProditividadeRow";
+import { ProdutivityRow } from "./ProditivityRow";
 import jsPDF from "jspdf";
-import { useProdutividade } from "@/contexts/produtividadeContex";
+import { useProdutivity } from "@/contexts/produtivityContext.tsx";
 interface PaymentTableProps {
     selectedMonth: string;
 }
 
-export const ProdutividadeTable = ({ selectedMonth }: PaymentTableProps) => {
-    const { produtividadeData, loading, paymentDataNotPaginated } = useProdutividade();
+export const ProdutivityTable = ({ selectedMonth }: PaymentTableProps) => {
+    const { produtivityData, loading, paymentDataNotPaginated } = useProdutivity();
 
 
     useEffect(() => { }, []);
@@ -24,25 +24,25 @@ export const ProdutividadeTable = ({ selectedMonth }: PaymentTableProps) => {
         const doc = new jsPDF();
 
         doc.setFontSize(12);
-        doc.text(`Relatório de Produtividade\nMês: ${monthName.charAt(0).toUpperCase() + monthName.slice(1)} \nTotal de Pacientes: ${paymentDataNotPaginated.length}`, 14, 10);
+        doc.text(`Relatório de Produtivity\nMês: ${monthName.charAt(0).toUpperCase() + monthName.slice(1)} \nTotal de Pacientes: ${paymentDataNotPaginated.length}`, 14, 10);
 
-        const tableData = paymentDataNotPaginated.map((produtividade) => ([
-            produtividade.nome_paciente,
-            produtividade.cidade,
-            produtividade.plano_saude,
-            produtividade.M,
-            produtividade.T,
-            produtividade.SD,
-            produtividade.SN,
-            produtividade.P,
-            produtividade.G,
+        const tableData = paymentDataNotPaginated.map((produtivity: any) => ([
+            produtivity.nome_paciente,
+            produtivity.city,
+            produtivity.plano_saude,
+            produtivity.M,
+            produtivity.T,
+            produtivity.SD,
+            produtivity.SN,
+            produtivity.P,
+            produtivity.G,
 
         ]));
 
         doc.autoTable({
             head: [[
                 'Nome do Paciente',
-                'Cidade',
+                'City',
                 'Contratante',
                 'M',
                 'T',
@@ -65,7 +65,7 @@ export const ProdutividadeTable = ({ selectedMonth }: PaymentTableProps) => {
                 <TableRow className="text-center">
                     <TableHead className="w-4"></TableHead>
                     <TableHead className="text-center">Nome do Paciente</TableHead>
-                    <TableHead className="text-center">Cidade</TableHead>
+                    <TableHead className="text-center">City</TableHead>
                     <TableHead className="text-center">Contratante</TableHead>
                     <TableHead className="text-center">M</TableHead>
                     <TableHead className="text-center">T</TableHead>
@@ -78,17 +78,17 @@ export const ProdutividadeTable = ({ selectedMonth }: PaymentTableProps) => {
                             onClick={generatePDF}
                             className="px-3 py-2 text-white bg-blue-500 rounded hover:bg-blue-700"
                         >
-                            Gerar Produtividade
+                            Gerar Produtivity
                         </button>
                     </TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {produtividadeData && produtividadeData.map((produtividade) => (
-                    <ProdutividadeRow key={produtividade.paciente_id} produtividade={produtividade} moth={currentMonth}  />
+                {produtivityData && produtivityData.map((produtivity: any) => (
+                    <ProdutivityRow key={produtivity.paciente_id} produtivity={produtivity} month={currentMonth} />
                 ))}
             </TableBody>
-            {loading === true && produtividadeData.length <= 0 && <TableSkeleton />}
+            {loading === true && produtivityData.length <= 0 && <TableSkeleton />}
         </Table>
     );
 

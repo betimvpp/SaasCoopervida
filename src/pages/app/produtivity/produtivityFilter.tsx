@@ -1,46 +1,46 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ProdutividadeFilter, produtividadeFilterSchema, useProdutividade } from "@/contexts/produtividadeContex"
+import { ProdutivityFilter, produtivityFilterSchema, useProdutivity } from "@/contexts/produtivityContext"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Search, X } from "lucide-react"
 import { Controller, useForm } from "react-hook-form"
 
 interface ProdutividadFilterProps {
-    setSelectedCidade: (cidade: string) => void;
+    setSelectedCity: (city: string) => void;
     setSelectedMonth: (month: string) => void;
 }
 
 
-export const ProdutividadeFiltert = ({ setSelectedCidade, setSelectedMonth }: ProdutividadFilterProps) => {
-    const { fetchProdutividade, cidadesData } = useProdutividade();
+export const ProdutivityFilter = ({ setSelectedCity, setSelectedMonth }: ProdutividadFilterProps) => {
+    const { fetchProdutivity, citiesData } = useProdutivity();
 
-    const { register, handleSubmit, control, reset } = useForm<ProdutividadeFilter>({
-        resolver: zodResolver(produtividadeFilterSchema),
+    const { register, handleSubmit, control, reset } = useForm<ProdutivityFilter>({
+        resolver: zodResolver(produtivityFilterSchema),
         defaultValues: {
             pacienteName: '',
             contratante: '',
-            cidade: '',
+            city: '',
             month: new Date().toISOString().slice(0, 7),
         },
     });
 
-    async function handleFilter(data: ProdutividadeFilter) {
-        await fetchProdutividade(data);
+    async function handleFilter(data: ProdutivityFilter) {
+        await fetchProdutivity(data);
         setSelectedMonth(data.month!);
-        setSelectedCidade(data.cidade!);
+        setSelectedCity(data.city!);
     }
 
     function handleClearFilters() {
         const defaultFilters = {
             pacienteName: '',
             contratante: '',
-            cidade: "",
+            city: "",
             month: new Date().toISOString().slice(0, 7),
         };
 
         reset(defaultFilters);
-        fetchProdutividade(defaultFilters);
+        fetchProdutivity(defaultFilters);
     }
 
     const currentMonth = new Date().toISOString().slice(0, 7);
@@ -59,7 +59,7 @@ export const ProdutividadeFiltert = ({ setSelectedCidade, setSelectedMonth }: Pr
                     className="h-8 w-[12rem]"
                     {...register('contratante')}
                 />
-                   <Input
+                <Input
                     placeholder="Nome do Paciente"
                     className="h-8 w-[12rem]"
                     {...register('pacienteName')}
@@ -98,7 +98,7 @@ export const ProdutividadeFiltert = ({ setSelectedCidade, setSelectedMonth }: Pr
                     )}
                 ></Controller>
                 <Controller
-                    name="cidade"
+                    name="city"
                     control={control}
                     render={({ field: { name, onChange, value, disabled } }) => {
                         return (
@@ -110,12 +110,12 @@ export const ProdutividadeFiltert = ({ setSelectedCidade, setSelectedMonth }: Pr
                                 disabled={disabled}
                             >
                                 <SelectTrigger className="h-8 w-[180px]">
-                                    <SelectValue  placeholder="Ordenar Por Cidade"/>
+                                    <SelectValue placeholder="Ordenar Por City" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {cidadesData && cidadesData.map((cidade) => (
-                                        <SelectItem key={cidade.id} value={cidade.cidade}>
-                                            {cidade.cidade}
+                                    {citiesData && citiesData.map((city: any) => (
+                                        <SelectItem key={city.id} value={city.city}>
+                                            {city.city}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
