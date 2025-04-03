@@ -16,6 +16,7 @@ import { Complaints } from '@/pages/app/complaints/Complaints'
 import { Documents } from '@/pages/app/documents/Documents'
 import { RecoverPassword } from '@/pages/login/RecoverPassword'
 import { ResetPassword } from '@/pages/login/ResetPassword'
+import { ContactPage } from '@/pages/app/contactPage/ContactPage'
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +85,10 @@ export const router = createBrowserRouter([
           <ProtectedRoute allowedRoles={['admin', 'rh']}>
             <Payments />
           </ProtectedRoute>
+      },
+      {
+        path: '/paginaDeContato', element:
+            <ContactPage />
       },
     ],
   },
