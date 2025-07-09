@@ -9,7 +9,7 @@ export const Produtivity = () => {
   const { produtivityData, loading, fetchProdutivity, totalCount } = useProdutivity();
   const [pageIndex, setPageIndex] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState<string>('');
-  const [selectedCity, setSelectedCity] = useState<string>('');
+
 
   const handlePageChange = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
@@ -25,7 +25,7 @@ export const Produtivity = () => {
   return (
     <div className="flex flex-col w-full h-full gap-2">
       <h1 className="text-4xl font-bold textslate mb-2">Painel de Produtividade dos Pacientes</h1>
-      <ProdutivityFilters setSelectedMonth={setSelectedMonth} setSelectedCity={setSelectedCity}
+      <ProdutivityFilters setSelectedMonth={setSelectedMonth}
       />
       <div className="w-full min-h-[700px] shadow-lg border rounded-md">
         <ProdutivityTable selectedMonth={selectedMonth}
