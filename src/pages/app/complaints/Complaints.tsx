@@ -6,7 +6,7 @@ import { ComplaintsFilters } from './ComplaintsFilters';
 import { ComplaintsTable } from './ComplaintsTable';
 
 export const Complaints = () => {
-  const { complaintsNotPaginated, fetchComplaints, fetchComplaintsNotPaginated } = useComplaints();
+  const { complaints, loading ,complaintsNotPaginated, fetchComplaints, fetchComplaintsNotPaginated } = useComplaints();
   const [pageIndex, setPageIndex] = useState(0);
   const totalCount = complaintsNotPaginated?.length || 0;
 
@@ -28,8 +28,11 @@ export const Complaints = () => {
       <Helmet title="Reclamações" />
       <h1 className="text-4xl font-bold textslate mb-2">Painel de Reclamações</h1>
       <ComplaintsFilters />
-      <div className="w-full h-full shadow-lg border rounded-md">
+      <div className="w-full min-h-[700px] shadow-lg border rounded-md">
         <ComplaintsTable />
+        {complaints?.length === 0 && loading === false &&
+          <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhuma reclamação encontrado!</div>
+        }
       </div>
       <Pagination
         pageIndex={pageIndex}

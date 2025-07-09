@@ -58,7 +58,7 @@ export const CityAdditioner = () => {
     const addCityToDatabase = useCallback(async (name: string) => {
         try {
             const { data, error } = await supabase
-                .from('cidade_de_atuacao') 
+                .from('cidade_de_atuacao')
                 .insert([{ cidade: name }]);
 
             if (error) throw error;

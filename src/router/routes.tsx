@@ -16,6 +16,9 @@ import { Complaints } from '@/pages/app/complaints/Complaints'
 import { Documents } from '@/pages/app/documents/Documents'
 import { RecoverPassword } from '@/pages/login/RecoverPassword'
 import { ResetPassword } from '@/pages/login/ResetPassword'
+import NotificationForm from '@/pages/app/notifications/NotificationForm'
+import { Produtivity } from '@/pages/app/produtivity/produtivity'
+
 import { ContactPage } from '@/pages/app/contactPage/ContactPage'
 
 export const router = createBrowserRouter([
@@ -87,9 +90,22 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
       },
       {
-        path: '/paginaDeContato', element:
-            <ContactPage />
+        path: '/mensagens', element:
+          <ProtectedRoute allowedRoles={['admin']}>
+            <NotificationForm />
+          </ProtectedRoute>
       },
+      // {
+      //   path: '/produtividade', element:
+      //     <ProtectedRoute allowedRoles={['admin', 'rh']}>
+      //       <Produtivity />
+      //     </ProtectedRoute>
+
+      // },
+      {
+        path: '/paginaDeContato', element:
+          <ContactPage />
+      }
     ],
   },
   {

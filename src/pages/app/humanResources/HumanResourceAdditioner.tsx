@@ -24,7 +24,7 @@ export const HumanResourceAdditioner = () => {
             toast.error("Cpf é obrigatório");
             return;
         }
-        
+
         try {
             await addHumanResources(dataResp);
             reset();

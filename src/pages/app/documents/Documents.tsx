@@ -6,7 +6,7 @@ import { useDocuments } from '@/contexts/docsContext';
 import { DocumentsTable } from './DocumentsTable';
 
 export const Documents = () => {
-  const { documentsNotPaginated, fetchDocuments, fetchDocumentsNotPaginated } = useDocuments();
+  const { documents, loading, documentsNotPaginated, fetchDocuments, fetchDocumentsNotPaginated } = useDocuments();
   const [pageIndex, setPageIndex] = useState(0);
   const totalCount = documentsNotPaginated?.length || 0;
 
@@ -28,8 +28,11 @@ export const Documents = () => {
       <Helmet title="Documentos" />
       <h1 className="text-4xl font-bold textslate mb-2">Painel de Documentos</h1>
       <DocumentsFilters />
-      <div className="w-full h-full shadow-lg border rounded-md">
+      <div className="w-full min-h-[700px] shadow-lg border rounded-md">
         <DocumentsTable />
+        {documents?.length === 0 && loading === false &&
+          <div className="w-full h-full m-auto text-center text-lg font-semibold text-muted-foreground flex items-center justify-center">Nenhuma reclamação encontrado!</div>
+        }
       </div>
       <Pagination
         pageIndex={pageIndex}

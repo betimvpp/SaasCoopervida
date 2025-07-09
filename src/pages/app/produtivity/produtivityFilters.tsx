@@ -1,46 +1,50 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Search, X } from 'lucide-react'
-import { Controller, useForm } from 'react-hook-form'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/components/ui/select'
-import { PaymentFilters, paymentFiltersSchema, usePayment } from '@/contexts/paymentContext'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ProdutivityFilter, produtivityFilterSchema, useProdutivity } from "@/contexts/produtivityContext"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Search, X } from "lucide-react"
+import { Controller, useForm } from "react-hook-form"
 
-interface PaymentFilterProps {
-    onFilterChange: (month: string, role: string) => void;
+interface ProdutivityFilterProps {
+    setSelectedCity: (cidade: string) => void;
+    setSelectedMonth: (month: string) => void;
 }
-export function PaymentFilter({ onFilterChange }: PaymentFilterProps) {
-    const { fetchPayments } = usePayment();
 
-    const { register, handleSubmit, control, reset } = useForm<PaymentFilters>({
-        resolver: zodResolver(paymentFiltersSchema),
+
+export const ProdutivityFilters = ({ setSelectedCity, setSelectedMonth }: ProdutivityFilterProps) => {
+    const { fetchProdutivity, citiesData } = useProdutivity();
+    const { register, handleSubmit, control, reset } = useForm<ProdutivityFilter>({
+        resolver: zodResolver(produtivityFilterSchema),
         defaultValues: {
-            collaboratorName: '',
-            plano_saude: '',
-            role: 'all',
+            pacienteName: '',
+            contratante: '',
+            cidade: '',
             month: new Date().toISOString().slice(0, 7),
         },
     });
 
-    async function handleFilter(data: PaymentFilters) {
-        await fetchPayments(data);
-        onFilterChange(data.month!, data.role!)
+    async function handleFilter(data: ProdutivityFilter) {
+        await fetchProdutivity(data);
+        setSelectedMonth(data.month!);
+        setSelectedCity(data.cidade!);
     }
 
     function handleClearFilters() {
         const defaultFilters = {
-            collaboratorName: '',
-            plano_saude: '',
-            role: 'all',
+            pacienteName: '',
+            contratante: '',
+            cidade: "",
             month: new Date().toISOString().slice(0, 7),
         };
 
         reset(defaultFilters);
-        fetchPayments(defaultFilters);
-        onFilterChange(defaultFilters.month, defaultFilters.role);
+        fetchProdutivity(defaultFilters);
     }
+
     const currentMonth = new Date().toISOString().slice(0, 7);
     const currentYear = parseInt(currentMonth.split("-")[0], 10);
+
 
     return (
         <div className='flex justify-between'>
@@ -50,16 +54,16 @@ export function PaymentFilter({ onFilterChange }: PaymentFilterProps) {
             >
                 <span className="text-sm font-semibold">Filtros:</span>
                 <Input
-                    placeholder="Contratante"
+                    placeholder="Nome do Contratante"
                     className="h-8 w-[12rem]"
-                    {...register('plano_saude')}
+                    {...register('contratante')}
                 />
-                <Input
-                    placeholder="Nome do colaborador"
-                    className="h-8 w-[17rem]"
-                    {...register('collaboratorName')}
+                   <Input
+                    placeholder="Nome do Paciente"
+                    className="h-8 w-[12rem]"
+                    {...register('pacienteName')}
                 />
-                <span className="text-sm font-semibold">Ordenar por data:</span>
+                <span className="text-sm font-semibold">Ordenar por:</span>
                 <Controller
                     name="month"
                     control={control}
@@ -72,7 +76,7 @@ export function PaymentFilter({ onFilterChange }: PaymentFilterProps) {
                             disabled={disabled}
                         >
                             <SelectTrigger className="h-8 w-[180px]">
-                                <SelectValue placeholder="Ordenar" />
+                                <SelectValue placeholder="Ordenar Por Mes" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem className="cursor-pointer" value={`${currentYear}-01`}>Janeiro</SelectItem>
@@ -87,34 +91,32 @@ export function PaymentFilter({ onFilterChange }: PaymentFilterProps) {
                                 <SelectItem className="cursor-pointer" value={`${currentYear}-10`}>Outubro</SelectItem>
                                 <SelectItem className="cursor-pointer" value={`${currentYear}-11`}>Novembro</SelectItem>
                                 <SelectItem className="cursor-pointer" value={`${currentYear}-12`}>Dezembro</SelectItem>
+
                             </SelectContent>
                         </Select>
                     )}
                 ></Controller>
                 <Controller
-                    name="role"
+                    name="cidade"
                     control={control}
                     render={({ field: { name, onChange, value, disabled } }) => {
                         return (
                             <Select
-                                defaultValue="all"
+                                defaultValue=""
                                 name={name}
                                 onValueChange={onChange}
                                 value={value}
                                 disabled={disabled}
                             >
                                 <SelectTrigger className="h-8 w-[180px]">
-                                    <SelectValue />
+                                    <SelectValue  placeholder="Ordenar Por Cidade"/>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem className="cursor-pointer" value="all">Todos cargos</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="nutricionista">Nutricionista</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="fisioterapeuta">Fisioterapeuta</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="enfermeiro">Enfermeiro</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="técnico de enfermagem">Técnico de Enfermagem</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="fonoaudiólogo">Fonoaudiólogo</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="psicólogo">Psicólogo</SelectItem>
-                                    <SelectItem className="cursor-pointer" value="dentista">Dentista</SelectItem>
+                                    {citiesData && citiesData.map((cidade) => (
+                                        <SelectItem key={cidade.id} value={cidade.cidade}>
+                                            {cidade.cidade}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         )
@@ -136,4 +138,5 @@ export function PaymentFilter({ onFilterChange }: PaymentFilterProps) {
             </form>
         </div>
     )
+
 }
