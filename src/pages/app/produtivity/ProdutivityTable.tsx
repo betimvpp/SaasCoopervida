@@ -49,7 +49,6 @@ export const ProdutivityTable = ({ selectedMonth }: PaymentTableProps) => {
                 'SN',
                 'P',
                 'G',
-
             ]],
             body: tableData,
             startY: 20,
