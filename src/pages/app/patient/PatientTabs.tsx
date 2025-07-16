@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Patient } from '@/contexts/patientContext';
 import { PatientDetails } from './PatientDetails';
 import { useCollaboratorCache } from '@/lib/useCollaboratorCache';
-import { PatientSchales } from './PatientSchales';
+import { PatientSchales } from './PatientScales';
 
 export interface PatientDetailsProps {
     patient: Patient;

@@ -24,6 +24,10 @@ const months = [
     { value: "11", label: "Novembro" },
     { value: "12", label: "Dezembro" },
 ];
+
+// Cache para armazenar dados por paciente_id, mês e página
+const patientScalesCache = new Map<string, { data: Scale[]; totalCount: number; timestamp: number }>();
+
 export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Patient; isAdmin: string; isLoading: boolean; }) => {
     const [scales, setPatientScalesData] = useState<Scale[]>([]);
     const [loading, setLoading] = useState(false);
@@ -33,7 +37,27 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
     const [editedValues, setEditedValues] = useState<{ valor_pago: string; pagamentoAR_AV: string; valor_recebido: string; tipo_servico: string; }>({ valor_pago: "", pagamentoAR_AV: "", valor_recebido: "", tipo_servico: "" });
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
 
+    const getCacheKey = (paciente_id: string, month: number, pageIndex: number) => {
+        return `${paciente_id}-${month}-${pageIndex}`;
+    };
+
+    const isCacheValid = (timestamp: number) => {
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutos
+        return Date.now() - timestamp < CACHE_DURATION;
+    };
+
     const fetchPatientScales = useCallback(async (paciente_id: string, pageIndex: number = 0, month: number) => {
+        const cacheKey = getCacheKey(paciente_id, month, pageIndex);
+        const cachedData = patientScalesCache.get(cacheKey);
+
+        // Verifica se existe cache válido
+        if (cachedData && isCacheValid(cachedData.timestamp)) {
+            setPatientScalesData(cachedData.data);
+            setTotalScalesCount(cachedData.totalCount);
+            setLoading(false);
+            return;
+        }
+
         try {
             setLoading(true);
             const perPage = 10;
@@ -90,6 +114,13 @@ export const PatientSchales = ({ patient, isAdmin, isLoading, }: { patient: Pati
 
             const scalesWithCollaborators = await Promise.all(collaboratorPromises);
             const validScales = scalesWithCollaborators.filter((scale): scale is Scale => scale !== null);
+
+            // Salva no cache
+            patientScalesCache.set(cacheKey, {
+                data: validScales,
+                totalCount: totalScalesCount || 0,
+                timestamp: Date.now()
+            });
 
             setPatientScalesData(validScales);
             setTotalScalesCount(totalScalesCount || 0);
